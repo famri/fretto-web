@@ -1,0 +1,25 @@
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.contact-form {
+  background-color: #3eb0e5 !important;
+  color: white;
+}
+.modal-content {
+  font-size: 2rem;
+}
+.qr-body {
+  font-weight: normal;
+  color: black;
+}
+.qr-header-success {
+  color: green !important;
+}
+.qr-header-failure {
+  color: red !important;
+}

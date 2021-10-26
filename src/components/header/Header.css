@@ -1,0 +1,25 @@
+.contact_us {
+  float: right;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.active {
+  border-bottom: 0.5rem solid #b2cd52;
+  color: #3eb0e5 !important;
+}
+.navbar-nav > a {
+  text-decoration: none;
+  color: #144854;
+  font-weight: bold;
+  padding: 1rem;
+  font-size: 2rem;
+}
+.navbar-nav > a:hover {
+  color: #3eb0e5;
+}
+.header-logo {
+  width: 100%;
+  max-width: 16rem;
+
+}

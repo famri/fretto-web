@@ -1,0 +1,16 @@
+.advantages-img {
+  height: 8rem;
+  width: 8rem;
+}
+.advantages-text {
+  margin-top: 2rem;
+  font-weight: bold;
+  font-size: 2rem;
+}
+.advantage {
+  text-align: center;
+}
+.advantages-container {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+}

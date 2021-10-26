@@ -1,0 +1,29 @@
+.bg-primary-light {
+  background-color: #f9f9f9 !important;
+}
+
+.footer-logo {
+  width: 100%;
+  max-width: 16rem;
+  margin-bottom: 1.5rem;
+  margin-right: 1.5rem;
+}
+.text-cap {
+  display: block;
+  color: #00221c;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+}
+.text-primary-light {
+  --bs-text-opacity: 1;
+  color: #198754 !important;
+}
+.footer {
+  background-color: #f9f9f9 !important;
+  padding-top: 2rem;
+  margin: auto 0 0 0;
+}

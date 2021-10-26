@@ -1,0 +1,22 @@
+.signup-container {
+  background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-card {
+  background-color: #3eb0e5 !important;
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 5rem;
+  margin-left: 3rem;
+  margin-right: 3rem;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}

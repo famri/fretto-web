@@ -1,0 +1,25 @@
+.transporter-img {
+    text-align: center;
+    display: block;
+    margin: auto;
+    width: 100%;
+    max-width: 50rem;
+  }
+  @media (max-width: 767px) {
+    .transporter-img {
+      display: none;
+    }
+  }
+  html {
+    font-size: 62.5%;
+  }
+  .home-message {
+    font-size: 3rem;
+  }
+  .home-container {
+    background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
