@@ -1,54 +1,34 @@
-import { useEffect, useReducer, useState } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Fragment, useEffect, useReducer } from "react";
+import { Col, Row, Spinner } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
+import useHttp from "../../hooks/use-http";
+import { fetchEngineTypes } from "../../lib/engine-types-api";
+import { fetchSuggestions } from "../../lib/places-api";
 import Icon from "../widgets/Icon";
 import "./JourneyForm.css";
-import ContactForm from "../contact-form/ContactForm";
-import Card from "react-bootstrap/Card";
+const validateWorkers = (workers) => {
+  const workersPattern = /^[0-3]{1}$/;
+  return workersPattern.test(workers);
+};
 const maxDate = () => {
   var maxDate = new Date();
   maxDate.setDate(maxDate.getDate() + 30);
   return maxDate;
 };
 const calculatePlaceName = (suggestion) => {
-  if (suggestion.type === "DELEGATION") {
+  if (suggestion.type === "DEPARTMENT") {
+    return suggestion.name + ", " + suggestion.country;
+  } else if (suggestion.type === "DELEGATION") {
     return (
       suggestion.name + ", " + suggestion.department + ", " + suggestion.country
     );
-  } else if (suggestion.type === "DEPARTMENT") {
-    return suggestion.name + ", " + suggestion.country;
   } else {
     return (
-      suggestion.name +
-      ", " +
-      suggestion.delegation +
-      ", " +
-      suggestion.department +
-      ", " +
-      suggestion.country
+      suggestion.name + ", " + suggestion.department + ", " + suggestion.country
     );
   }
-};
-
-const fetchSuggestions = async (text) => {
-  const loadedSuggestions = [];
-  const suggestionsResponse = await fetch(
-    "https://192.168.50.4:8443/wamya-backend/places?lang=fr_FR&input=" +
-      text +
-      "&country=TN"
-  );
-
-  if (!suggestionsResponse.ok) {
-    throw new Error(
-      "Problème de connexion au serveur. Merci de ressayer plus tard."
-    );
-  }
-  const suggestionData = await suggestionsResponse.json();
-  console.log(suggestionData);
-  suggestionData["content"].map((obj) => loadedSuggestions.push(obj));
-
-  return loadedSuggestions;
 };
 
 const placeReducer = (state, action) => {
@@ -186,6 +166,23 @@ const descriptionReducer = (state, action) => {
   }
 };
 
+const workersReducer = (state, action) => {
+  switch (action.type) {
+    case "WORKERS_TOUCHED":
+      return {
+        touched: true,
+        val: action?.val,
+        isValid: validateWorkers(action?.val),
+      };
+
+    case "WORKERS_BLUR":
+      return { touched: true, val: state?.val, isValid: state.isValid };
+    case "INPUT_VALIDATION":
+      return { touched: true, val: state?.val, isValid: state.isValid };
+    default:
+      throw new Error();
+  }
+};
 const departureInitialState = {
   val: "",
   showSuggestion: false,
@@ -207,7 +204,33 @@ const vehiculeInitialState = {
   val: "",
   isValid: false,
 };
-const JourneyForm = () => {
+
+const JourneyForm = (props) => {
+  const {
+    sendRequest: sendLoadEngineTypesRequest,
+    status: loadEngineTypesStatus,
+    error: loadEngineTypesError,
+    data: loadedEngineTypes,
+  } = useHttp(fetchEngineTypes, true);
+
+  const {
+    sendRequest: sendLoadDepartureSuggestionsRequest,
+    status: loadDepartureSuggestionsStatus,
+    error: loadDepartureSuggestionsError,
+    data: loadedDepartureSuggestions,
+  } = useHttp(fetchSuggestions);
+
+  const {
+    sendRequest: sendLoadArrivalSuggestionsRequest,
+    status: loadArrivalSuggestionsStatus,
+    error: loadArrivalSuggestionsError,
+    data: loadedArrivalSuggestions,
+  } = useHttp(fetchSuggestions);
+
+  useEffect(() => {
+    sendLoadEngineTypesRequest({ language: "fr_FR" });
+  }, [sendLoadEngineTypesRequest]);
+
   const [departureState, dispatchDeparture] = useReducer(
     placeReducer,
     departureInitialState
@@ -220,6 +243,12 @@ const JourneyForm = () => {
     vehiculeReducer,
     vehiculeInitialState
   );
+  const [workersState, dispatchWorkers] = useReducer(workersReducer, {
+    touched: false,
+    val: "0",
+    isValid: true,
+  });
+
   const [dateState, dispatchDate] = useReducer(dateReducer, {
     touched: false,
     val: "",
@@ -239,34 +268,12 @@ const JourneyForm = () => {
     }
   );
 
-  const [departureSuggestions, setDepartureSuggestions] = useState([]);
-  const [arrivalSuggestions, setArrivalSuggestions] = useState([]);
-
-  const [engineTypes, setEngineTypes] = useState([]);
-
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [httpError, setHttpError] = useState();
-  const [showContact, setShowContact] = useState(false);
-
-  const handleCloseContact = () => {
-    setShowContact(false);
-  };
-
-  const handleShowContact = () => {
-    setShowContact(true);
-  };
-
-  const handleSubmitContact = (email, phone) => {
-    setShowContact(false);
-    return true;
-  };
-
   const formSubmissionHandler = (event) => {
     event.preventDefault();
     dispatchDeparture({ type: "INPUT_VALIDATION" });
     dispatchArrival({ type: "INPUT_VALIDATION" });
     dispatchVehicule({ type: "INPUT_VALIDATION" });
+    dispatchWorkers({ type: "INPUT_VALIDATION" });
     dispatchDate({ type: "INPUT_VALIDATION" });
     dispatchTime({ type: "INPUT_VALIDATION" });
     dispatchDescription({ type: "INPUT_VALIDATION" });
@@ -275,72 +282,49 @@ const JourneyForm = () => {
       departureState.isValid &&
       arrivalState.isValid &&
       vehiculeState.isValid &&
+      workersState.isValid &&
       dateState.isValid &&
       timeState.isValid &&
       descriptionState.isValid
     ) {
-      handleShowContact();
+      let journeyDateTime = new Date(
+        dateState.val + "T" + timeState.val + ":00.000"
+      ).toISOString();
+      props.onJourneyRequest({
+        departurePlaceId: departureState.suggestionChoice.id,
+        departurePlaceType: departureState.suggestionChoice.type,
+        arrivalPlaceId: arrivalState.suggestionChoice.id,
+        arrivalPlaceType: arrivalState.suggestionChoice.type,
+        dateTime: journeyDateTime.substr(0, journeyDateTime.length - 1),
+        engineTypeId: loadedEngineTypes.find(
+          (e) => e.code === vehiculeState.val
+        ).id,
+        workers: parseInt(workersState.val),
+
+        description: descriptionState.val,
+      });
     }
   };
 
   useEffect(() => {
-    async function fetchDepartureSuggestions() {
-      try {
-        let suggestions = await fetchSuggestions(departureState.val);
-        setDepartureSuggestions(suggestions);
-      } catch (error) {
-        setHttpError(error.message);
-      }
-    }
-
     if (departureState.val.length >= 3 && departureState.showSuggestion) {
-      fetchDepartureSuggestions();
+      sendLoadDepartureSuggestionsRequest({
+        text: departureState.val,
+        language: "fr_FR",
+        country: "TN",
+      });
     }
-  }, [departureState.showSuggestion, departureState.val]);
+  }, [departureState, sendLoadDepartureSuggestionsRequest]);
 
   useEffect(() => {
-    async function fetchArrivalSuggestions() {
-      try {
-        let suggestions = await fetchSuggestions(arrivalState.val);
-        setArrivalSuggestions(suggestions);
-      } catch (error) {
-        setHttpError(error.message);
-      }
-    }
     if (arrivalState.val.length >= 3 && arrivalState.showSuggestion) {
-      fetchArrivalSuggestions();
+      sendLoadArrivalSuggestionsRequest({
+        text: arrivalState.val,
+        language: "fr_FR",
+        country: "TN",
+      });
     }
-  }, [arrivalState.showSuggestion, arrivalState.val]);
-
-  useEffect(() => {
-    const fetchEngineTypes = async () => {
-      try {
-        const engineTypesResponse = await fetch(
-          "https://192.168.50.4:8443/wamya-backend/engine-types?lang=fr_FR"
-        );
-        const responseData = await engineTypesResponse.json();
-        const loadedEngineTypes = [];
-        responseData["content"].map((obj) => loadedEngineTypes.push(obj));
-
-        setEngineTypes(loadedEngineTypes);
-      } catch (error) {
-        setHttpError(
-          "Problème de connexion au serveur. Merci de réessayer plus tard."
-        );
-      }
-      setIsLoading(false);
-    };
-
-    fetchEngineTypes();
-  }, []);
-
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (httpError) {
-    return <section className="api-error">{httpError}</section>;
-  }
+  }, [arrivalState, sendLoadArrivalSuggestionsRequest]);
 
   const engineTypeClassName =
     vehiculeState && vehiculeState.touched
@@ -351,14 +335,20 @@ const JourneyForm = () => {
 
   const dateClassName =
     dateState && dateState.touched
-      ? dateState.val
+      ? dateState.isValid
+        ? "is-valid"
+        : "is-invalid"
+      : "";
+  const workersClassName =
+    workersState && workersState.touched
+      ? workersState.isValid
         ? "is-valid"
         : "is-invalid"
       : "";
 
   const timeClassName =
     timeState && timeState.touched
-      ? timeState.val
+      ? timeState.isValid
         ? "is-valid"
         : "is-invalid"
       : "";
@@ -370,237 +360,297 @@ const JourneyForm = () => {
         : "is-invalid"
       : "";
 
-  return (
-    <Card className="journey-card py-3 px-3">
-      <Form onSubmit={(event) => formSubmissionHandler(event)}>
-        <Form.Group className="mb-3 autocomplete" controlId="formDeparture">
-          <Form.Label className="form-label">Ville de départ</Form.Label>
+  useEffect(() => {}, [
+    loadDepartureSuggestionsStatus,
+    loadedDepartureSuggestions,
+    loadDepartureSuggestionsError,
+    loadArrivalSuggestionsStatus,
+    loadedArrivalSuggestions,
+    loadArrivalSuggestionsError,
+  ]);
 
-          <Form.Control
-            type="text"
-            required
-            className={
-              departureState.isTouched
-                ? departureState.isValid
-                  ? "is-valid"
-                  : "is-invalid"
-                : ""
-            }
-            placeholder="Ville de départ"
-            onChange={(e) =>
-              dispatchDeparture({ type: "USER_INPUT", val: e.target.value })
-            }
-            onBlur={() => dispatchDeparture({ type: "INPUT_BLUR" })}
-            value={departureState.val}
-          />
+  if (loadEngineTypesStatus === "pending") {
+    return <Spinner variant="warning" animation="grow"></Spinner>;
+  }
 
-          {departureState.showSuggestion && departureSuggestions.length > 0 && (
-            <div className="suggestion">
-              {departureSuggestions.map((suggestion, i) => {
-                return (
-                  <div
-                    key={suggestion.id}
-                    onMouseDown={() =>
-                      dispatchDeparture({
-                        type: "USER_CLICK",
-                        suggestion: suggestion,
-                      })
-                    }
-                  >
-                    {calculatePlaceName(suggestion)}
+  if (!!loadEngineTypesError) {
+    return <h1>{loadEngineTypesError}</h1>;
+  }
+  if (loadEngineTypesStatus === "completed") {
+    return (
+      <Fragment>
+        <Card className="journey-card py-3 px-3">
+          <Form onSubmit={(event) => formSubmissionHandler(event)}>
+            <Form.Group className="mb-3 autocomplete" controlId="formDeparture">
+              <Form.Label className="form-label">Ville de départ</Form.Label>
+
+              <Form.Control
+                type="text"
+                required
+                className={
+                  departureState.isTouched
+                    ? departureState.isValid
+                      ? "is-valid"
+                      : "is-invalid"
+                    : ""
+                }
+                placeholder="Ville de départ"
+                onChange={(e) =>
+                  dispatchDeparture({
+                    type: "USER_INPUT",
+                    val: e.target.value,
+                  })
+                }
+                onBlur={() => dispatchDeparture({ type: "INPUT_BLUR" })}
+                value={departureState.val}
+              />
+              {departureState.showSuggestion &&
+                loadDepartureSuggestionsStatus === "completed" &&
+                !!loadDepartureSuggestionsError && (
+                  <div className="suggestion">
+                    <p>{loadDepartureSuggestionsError}</p>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </Form.Group>
-        <Form.Group className="mb-3 autocomplete" controlId="formArrival">
-          <Form.Label className="form-label">Ville d'arrivée</Form.Label>
-
-          <Form.Control
-            type="text"
-            required
-            className={
-              arrivalState.isTouched
-                ? arrivalState.isValid
-                  ? "is-valid"
-                  : "is-invalid"
-                : ""
-            }
-            placeholder="Ville de départ"
-            onChange={(e) =>
-              dispatchArrival({ type: "USER_INPUT", val: e.target.value })
-            }
-            onBlur={() => dispatchArrival({ type: "INPUT_BLUR" })}
-            value={arrivalState.val}
-          />
-
-          {arrivalState.showSuggestion && arrivalSuggestions.length > 0 && (
-            <div className="suggestion">
-              {arrivalSuggestions.map((suggestion, i) => {
-                return (
-                  <div
-                    key={suggestion.id}
-                    onMouseDown={() =>
-                      dispatchArrival({
-                        type: "USER_CLICK",
-                        suggestion: suggestion,
-                      })
-                    }
-                  >
-                    {calculatePlaceName(suggestion)}
+                )}
+              {departureState.showSuggestion &&
+                loadDepartureSuggestionsStatus === "completed" &&
+                loadedDepartureSuggestions.length > 0 && (
+                  <div className="suggestion">
+                    {loadedDepartureSuggestions.map((suggestion, i) => {
+                      return (
+                        <p
+                          key={suggestion.id}
+                          onMouseDown={() =>
+                            dispatchDeparture({
+                              type: "USER_CLICK",
+                              suggestion: suggestion,
+                            })
+                          }
+                        >
+                          {calculatePlaceName(suggestion)}
+                        </p>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </Form.Group>
-        <Form.Group className="mb-3 " controlId="formEngineType">
-          <Form.Label className="form-label">Véhicule</Form.Label>
-          <div
-            style={{
-              display:
-                vehiculeState.val !== undefined &&
-                vehiculeState.val.toLowerCase() !== ""
-                  ? "block"
-                  : "none",
-            }}
-          >
-            <Icon
-              name={vehiculeState.val.toLowerCase()}
-              color="white"
-              size={50}
-            />
-          </div>
-          <Form.Select
-            className={engineTypeClassName}
-            required
-            onChange={(event) =>
-              dispatchVehicule({
-                type: "VEHICULE_CHOSEN",
-                val: event.target.value,
-              })
-            }
-            onClick={(event) =>
-              dispatchVehicule({
-                type: "MENU_OPENED",
-              })
-            }
-            onBlur={(event) =>
-              dispatchVehicule({
-                type: "MENU_BLUR",
-              })
-            }
-          >
-            <option key="default" value="">
-              Choisissez un véhicule
-            </option>
-            {engineTypes.map((engineType, index) => (
-              <option key={engineType.id} value={engineType.code}>
-                {engineType.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
+                )}
+            </Form.Group>
+            <Form.Group className="mb-3 autocomplete" controlId="formArrival">
+              <Form.Label className="form-label">Ville d'arrivée</Form.Label>
 
-        <Form.Group className="mb-3" controlId="formDate">
-          <Form.Label className="form-label">Date</Form.Label>
+              <Form.Control
+                type="text"
+                required
+                className={
+                  arrivalState.isTouched
+                    ? arrivalState.isValid
+                      ? "is-valid"
+                      : "is-invalid"
+                    : ""
+                }
+                placeholder="Ville de départ"
+                onChange={(e) =>
+                  dispatchArrival({ type: "USER_INPUT", val: e.target.value })
+                }
+                onBlur={() => dispatchArrival({ type: "INPUT_BLUR" })}
+                value={arrivalState.val}
+              />
+              {arrivalState.showSuggestion &&
+                loadArrivalSuggestionsStatus === "completed" &&
+                !!loadArrivalSuggestionsError && (
+                  <div className="suggestion">
+                    <p>{loadArrivalSuggestionsError}</p>
+                  </div>
+                )}
+              {arrivalState.showSuggestion &&
+                loadArrivalSuggestionsStatus === "completed" &&
+                loadedArrivalSuggestions.length > 0 && (
+                  <div className="suggestion">
+                    {loadedArrivalSuggestions.map((suggestion, i) => {
+                      return (
+                        <div
+                          key={suggestion.id}
+                          onMouseDown={() =>
+                            dispatchArrival({
+                              type: "USER_CLICK",
+                              suggestion: suggestion,
+                            })
+                          }
+                        >
+                          {calculatePlaceName(suggestion)}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+            </Form.Group>
+            <Form.Group className="mb-3 " controlId="formEngineType">
+              <Form.Label className="form-label">Véhicule</Form.Label>
+              <div
+                style={{
+                  display:
+                    vehiculeState.val !== undefined &&
+                    vehiculeState.val.toLowerCase() !== ""
+                      ? "block"
+                      : "none",
+                }}
+              >
+                <Icon
+                  name={vehiculeState.val.toLowerCase()}
+                  color="#D0324B"
+                  size={50}
+                />
+              </div>
+              <Form.Select
+                className={engineTypeClassName}
+                required
+                onChange={(event) =>
+                  dispatchVehicule({
+                    type: "VEHICULE_CHOSEN",
+                    val: event.target.value,
+                  })
+                }
+                onClick={(event) =>
+                  dispatchVehicule({
+                    type: "MENU_OPENED",
+                  })
+                }
+                onBlur={(event) =>
+                  dispatchVehicule({
+                    type: "MENU_BLUR",
+                  })
+                }
+              >
+                <option key="default" value="">
+                  Choisissez un véhicule
+                </option>
+                {loadedEngineTypes.map((engineType, index) => (
+                  <option key={engineType.id} value={engineType.code}>
+                    {engineType.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formWorkers">
+              <Form.Label className="form-label">
+                Main d'oeuvre (personnes)
+              </Form.Label>
 
-          <Form.Control
-            required
-            className={dateClassName}
-            type="date"
-            min={new Date().toISOString().split("T")[0]}
-            max={maxDate().toISOString().split("T")[0]}
-            placeholder="Date"
-            value={dateState?.val}
-            onClick={(event) =>
-              dispatchDate({
-                type: "DATE_OPENED",
-              })
-            }
-            onChange={(e) =>
-              dispatchDate({
-                type: "DATE_CHOSEN",
-                val: e.target.value,
-              })
-            }
-            onBlur={(e) =>
-              dispatchDate({
-                type: "DATE_BLUR",
-                val: e.target.value,
-              })
-            }
-          />
-        </Form.Group>
-        <Form.Group className="mb-3 " controlId="formTime">
-          <Form.Label className="form-label">Heure</Form.Label>
+              <Form.Control
+                required
+                className={workersClassName}
+                type="number"
+                min={0}
+                max={3}
+                placeholder="nombre de manutentionnaires"
+                value={workersState?.val}
+                onChange={(e) =>
+                  dispatchWorkers({
+                    type: "WORKERS_TOUCHED",
+                    val: e.target.value,
+                  })
+                }
+                onBlur={(e) =>
+                  dispatchWorkers({
+                    type: "WORKERS_BLUR",
+                    val: parseInt(e.target.value, 10),
+                  })
+                }
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formDate">
+              <Form.Label className="form-label">Date</Form.Label>
 
-          <Form.Control
-            required
-            className={timeClassName}
-            type="time"
-            placeholder="Date"
-            value={timeState.val}
-            onClick={(event) =>
-              dispatchTime({
-                type: "TIME_OPENED",
-              })
-            }
-            onChange={(e) =>
-              dispatchTime({
-                type: "TIME_CHOSEN",
-                val: e.target.value,
-              })
-            }
-            onBlur={(e) =>
-              dispatchTime({
-                type: "TIME_BLUR",
-                val: e.target.value,
-              })
-            }
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formDescription">
-          <Form.Label className="form-label">Description</Form.Label>
+              <Form.Control
+                required
+                className={dateClassName}
+                type="date"
+                min={new Date().toISOString().split("T")[0]}
+                max={maxDate().toISOString().split("T")[0]}
+                placeholder="Date"
+                value={dateState?.val}
+                onClick={(event) =>
+                  dispatchDate({
+                    type: "DATE_OPENED",
+                  })
+                }
+                onChange={(e) =>
+                  dispatchDate({
+                    type: "DATE_CHOSEN",
+                    val: e.target.value,
+                  })
+                }
+                onBlur={(e) =>
+                  dispatchDate({
+                    type: "DATE_BLUR",
+                    val: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+            <Form.Group className="mb-3 " controlId="formTime">
+              <Form.Label className="form-label">Heure</Form.Label>
 
-          <Form.Control
-            required
-            className={descriptionClassName}
-            value={descriptionState.val}
-            onChange={(e) =>
-              dispatchDescription({
-                type: "DESCRIPTION_TOUCHED",
-                val: e.target.value,
-              })
-            }
-            onBlur={(e) =>
-              dispatchDescription({
-                type: "DESCRIPTION_BLUR",
-                val: e.target.value,
-              })
-            }
-            as="textarea"
-            rows={3}
-            placeholder="Décrivez votre demande: que voulez vous transporter? poids approximatif, etc"
-          />
-        </Form.Group>
+              <Form.Control
+                required
+                className={timeClassName}
+                type="time"
+                placeholder="Date"
+                value={timeState.val}
+                onClick={(event) =>
+                  dispatchTime({
+                    type: "TIME_OPENED",
+                  })
+                }
+                onChange={(e) =>
+                  dispatchTime({
+                    type: "TIME_CHOSEN",
+                    val: e.target.value,
+                  })
+                }
+                onBlur={(e) =>
+                  dispatchTime({
+                    type: "TIME_BLUR",
+                    val: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formDescription">
+              <Form.Label className="form-label">Description</Form.Label>
 
-        <Form.Group as={Row}>
-          <Col>
-            <Button type="submit" className="btn-success col-12 py-3 fs-2">
-              Obtenir mes devis
-            </Button>
-          </Col>
-        </Form.Group>
-      </Form>
-      <ContactForm
-        show={showContact}
-        handleClose={handleCloseContact}
-        handleSubmit={handleSubmitContact}
-      ></ContactForm>
-    </Card>
-  );
+              <Form.Control
+                required
+                className={descriptionClassName}
+                value={descriptionState.val}
+                onChange={(e) =>
+                  dispatchDescription({
+                    type: "DESCRIPTION_TOUCHED",
+                    val: e.target.value,
+                  })
+                }
+                onBlur={(e) =>
+                  dispatchDescription({
+                    type: "DESCRIPTION_BLUR",
+                    val: e.target.value,
+                  })
+                }
+                as="textarea"
+                rows={3}
+                placeholder="Décrivez votre demande: que voulez vous transporter? poids approximatif, etc"
+              />
+            </Form.Group>
+
+            <Form.Group as={Row}>
+              <Col>
+                <Button type="submit" className="btn-success col-12 py-3 fs-2">
+                  Obtenir mes devis
+                </Button>
+              </Col>
+            </Form.Group>
+          </Form>
+        </Card>
+      </Fragment>
+    );
+  }
 };
 
 export default JourneyForm;

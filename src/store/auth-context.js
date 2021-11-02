@@ -5,14 +5,23 @@ const AuthContext = React.createContext({
   isLoggedIn: false,
   token: "",
   expiryDate: null,
-  login: (token, expiryDate) => {},
+  sub: "",
+  oauthId: "",
+  isClient: true,
+  login: (token, expiresInMs, sub, oauthId, isClient) => {},
   logout: () => {},
 });
 
 export const AuthContextProvider = (props) => {
   const frettoAuthString = localStorage.getItem(FRETTO_AUTH);
 
-  let fettoAuth = { token: "", expiryDate: null };
+  let fettoAuth = {
+    token: "",
+    expiryDate: null,
+    sub: "",
+    oauthId: "",
+    isClient: true,
+  };
 
   if (!!frettoAuthString) {
     const isoDatePattern = new RegExp(
@@ -31,23 +40,42 @@ export const AuthContextProvider = (props) => {
   const isLoggedIn =
     !!authState.token &&
     !!authState.expiryDate &&
-    new Date().isBefore(authState.expiryDate);
+    new Date().getTime() < authState.expiryDate.getTime();
 
-  const loginHandler = (token, expiresInMs) => {
-    var currentDate = new Date();
-    currentDate.setMilliseconds(currentDate.getMilliseconds + expiresInMs);
-    var expiryDate = currentDate;
+  const loginHandler = (token, expiresInMs, sub, oauthId, isClient) => {
+    var date = Date.now();
+    date += expiresInMs * 1000;
+    const expiryDate = new Date(date);
 
-    setAuthState({ token: token, expiryDate: expiryDate });
+    setAuthState({
+      token: token,
+      expiryDate: expiryDate,
+      sub: sub,
+      oauthId: oauthId,
+      isClient: isClient,
+    });
+
     localStorage.setItem(
       FRETTO_AUTH,
-      JSON.stringify({ token: token, expiryDate: expiryDate })
+      JSON.stringify({
+        token: token,
+        expiryDate: expiryDate,
+        sub: sub,
+        oauthId: oauthId,
+        isClient: isClient,
+      })
     );
     setTimeout(logoutHandler, expiresInMs);
   };
 
   const logoutHandler = () => {
-    setAuthState({ token: "", expiryDate: null });
+    setAuthState({
+      token: "",
+      expiryDate: null,
+      sub: "",
+      oauthId: "",
+      isClient: true,
+    });
     localStorage.removeItem(FRETTO_AUTH);
   };
 
@@ -55,6 +83,9 @@ export const AuthContextProvider = (props) => {
     isLoggedIn: isLoggedIn,
     token: authState.token,
     expiryDate: authState.expiryDate,
+    sub: authState.sub,
+    oauthId: authState.oauthId,
+    isClient: authState.isClient,
     login: loginHandler,
     logout: logoutHandler,
   };
