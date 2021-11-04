@@ -1,15 +1,1 @@
-.signin-container {
-  background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
 
-.signin-card {
-  background-color: #3eb0e5 !important;
-  color: white;
-  font-size: 2rem;
-  margin-bottom: 5rem;
-  margin-left: 3rem;
-  margin-right: 3rem;
-}

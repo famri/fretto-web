@@ -1,4 +1,3 @@
-import { Container } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 
 import FrettoLogo from "../components/logos/FrettoLogo";
@@ -6,7 +5,7 @@ import SignUpForm from "../components/signup-form/SignUpForm";
 import useHttp from "../hooks/use-http";
 import { signup } from "../lib/authentication-api";
 import AuthContext from "../store/auth-context";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, Fragment } from "react";
 import { createUserPreference } from "../lib/user-preferences-api";
 import "./SignUp.css";
 const SignUp = () => {
@@ -39,7 +38,7 @@ const SignUp = () => {
       if (signupError === null) {
         authCtx.login(
           signupData.token,
-          signupData.expiresInMs,
+          signupData.expiresInSec,
           signupData.sub,
           signupData.oauthId,
           signupData.isClient
@@ -90,9 +89,9 @@ const SignUp = () => {
     history,
     sendLocaleUserPreferenceRequest,
   ]);
-  
+
   return (
-    <Container fluid className="signup-container">
+    <Fragment>
       <FrettoLogo width="170px"></FrettoLogo>
 
       <h2 className="text-center py-2 fs-1 my-1">Prêt à nous rejoindre ?</h2>
@@ -102,13 +101,15 @@ const SignUp = () => {
           Connexion
         </Link>
       </div>
-      <SignUpForm
-        isLoading={signupStatus === "pending"}
-        errorMessage={signupError}
-        onSignUp={sendSignupRequest}
-        showTransporterSwitch={true}
-      ></SignUpForm>
-    </Container>
+      <div className="mx-auto">
+        <SignUpForm
+          isLoading={signupStatus === "pending"}
+          errorMessage={signupError}
+          onSignUp={sendSignupRequest}
+          showTransporterSwitch={true}
+        ></SignUpForm>
+      </div>
+    </Fragment>
   );
 };
 

@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
+import { Container, Button, Nav, Navbar } from "react-bootstrap";
+
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logos/fretto_logo.png";
 import AuthContext from "../../store/auth-context";
+
 import "./MainNavigation.css";
 const Header = () => {
   const authCtx = useContext(AuthContext);
@@ -22,7 +22,7 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav>
+          <Nav className="me-auto">
             <NavLink to="/" activeClassName="active" exact={true}>
               Accueil
             </NavLink>
@@ -36,17 +36,26 @@ const Header = () => {
                 Inscription
               </NavLink>
             )}
-            {authCtx.isLoggedIn && (
-              <NavLink
-                to="/logout"
-                activeClassName="active"
-                className="justify-content-end"
-                onClick={(event) => handleDisconnect()}
-              >
-                Déconnexion
+            {authCtx.isLoggedIn && authCtx.isClient && (
+              <NavLink to="/journey-requests" activeClassName="active">
+                Demandes
+              </NavLink>
+            )}
+            {authCtx.isLoggedIn && !authCtx.isClient && (
+              <NavLink to="/journeys" activeClassName="active ">
+                Trajets
               </NavLink>
             )}
           </Nav>
+          {authCtx.isLoggedIn && (
+            <Button
+              variant="danger"
+              className="me-3 fs-2 my-3 mx-3"
+              onClick={(event) => handleDisconnect()}
+            >
+              Déconnexion
+            </Button>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

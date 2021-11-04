@@ -1,5 +1,5 @@
-import { Fragment, useReducer } from "react";
-import { Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
+import { useReducer } from "react";
+import { Button, Card, Form, Spinner ,Col} from "react-bootstrap";
 import "./SignInForm.css";
 
 const validateEmail = (email) => {
@@ -98,68 +98,60 @@ const SignInForm = (props) => {
   };
 
   return (
-    <Fragment>
-      <Row className="justify-content-md-center">
-        <Col md={3}>
-          <Card className="py-4 signin-card">
-            <Form className="px-4" onSubmit={(event) => signinHandler(event)}>
-              <Form.Group className="mb-3">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  className={emailClassName}
-                  required
-                  type="email"
-                  placeholder="Votre email"
-                  onChange={(e) =>
-                    dispatchEmail({ type: "USER_INPUT", val: e.target.value })
-                  }
-                  onBlur={() => dispatchEmail({ type: "INPUT_BLUR" })}
-                  value={emailState.val}
-                ></Form.Control>
-              </Form.Group>
+    <Card className="py-4 signin-card">
+      <Form className="px-4" onSubmit={(event) => signinHandler(event)}>
+        <Form.Group className="mb-3">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            className={emailClassName}
+            required
+            type="email"
+            placeholder="Votre email"
+            onChange={(e) =>
+              dispatchEmail({ type: "USER_INPUT", val: e.target.value })
+            }
+            onBlur={() => dispatchEmail({ type: "INPUT_BLUR" })}
+            value={emailState.val}
+          ></Form.Control>
+        </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Mot de passe</Form.Label>
-                <Form.Control
-                  required
-                  type="password"
-                  className={passwordClassName}
-                  placeholder="Votre mot de passe"
-                  onChange={(e) =>
-                    dispatchPassword({
-                      type: "USER_INPUT",
-                      val: e.target.value,
-                    })
-                  }
-                  minLength={8}
-                  maxLength={12}
-                  onBlur={() => dispatchPassword({ type: "INPUT_BLUR" })}
-                  value={passwordState.val}
-                ></Form.Control>
-              </Form.Group>
-              {props.errorMessage && (
-                <p className="error">{props.errorMessage}</p>
+        <Form.Group className="mb-3">
+          <Form.Label>Mot de passe</Form.Label>
+          <Form.Control
+            required
+            type="password"
+            className={passwordClassName}
+            placeholder="Votre mot de passe"
+            onChange={(e) =>
+              dispatchPassword({
+                type: "USER_INPUT",
+                val: e.target.value,
+              })
+            }
+            minLength={8}
+            maxLength={12}
+            onBlur={() => dispatchPassword({ type: "INPUT_BLUR" })}
+            value={passwordState.val}
+          ></Form.Control>
+        </Form.Group>
+        {props.errorMessage && <p className="error">{props.errorMessage}</p>}
+        <Form.Group>
+          <Col>
+            <Button
+              type="submit"
+              variant="success"
+              className="col-12 py-3 fs-2 mt-4 fw-bold"
+              disabled={props.isLoading}
+            >
+              {props.isLoading && (
+                <Spinner animation="border" variant="light" />
               )}
-              <Form.Group as={Row}>
-                <Col>
-                  <Button
-                    type="submit"
-                    variant="success"
-                    className="col-12 py-3 fs-2 mt-4"
-                    disabled={props.isLoading}
-                  >
-                    {props.isLoading && (
-                      <Spinner animation="border" variant="light" />
-                    )}
-                    <span className="mx-2">Connexion </span>
-                  </Button>
-                </Col>
-              </Form.Group>
-            </Form>
-          </Card>
-        </Col>
-      </Row>
-    </Fragment>
+              <span className="mx-2">Connexion </span>
+            </Button>
+          </Col>
+        </Form.Group>
+      </Form>
+    </Card>
   );
 };
 

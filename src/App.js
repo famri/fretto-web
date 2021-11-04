@@ -3,9 +3,10 @@ import { Route, Switch } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import JourneyRequests from "./pages/JourneyRequests";
+import JourneyProposals from "./pages/JourneyProposals";
 import Logout from "./pages/Logout";
 import NotFound from "./pages/NotFound";
-import SignIn2 from "./pages/SignIn";
+import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import AuthContext from "./store/auth-context";
 
@@ -24,21 +25,29 @@ function App() {
         )}
         {!authCtx.isLoggedIn && (
           <Route path="/signin">
-            <SignIn2 />
+            <SignIn />
           </Route>
         )}
-        {authCtx.isLoggedIn && (
+        {authCtx.isLoggedIn && authCtx.isClient && (
           <Route path="/journey-requests">
             <JourneyRequests />
           </Route>
         )}
-
+        {authCtx.isLoggedIn && !authCtx.isClient && (
+          <Route path="/journeys">
+            <JourneyRequests />
+          </Route>
+        )}
         {!authCtx.isLoggedIn && (
           <Route path="/logout">
             <Logout />
           </Route>
         )}
-
+        {authCtx.isLoggedIn && authCtx.isClient && (
+          <Route path="/proposals/:journeyId">
+            <JourneyProposals />
+          </Route>
+        )}
         <Route path="*">
           <NotFound></NotFound>
         </Route>

@@ -11,5 +11,5 @@ export async function fetchGenders(params) {
   }
  
 
-  return  responseData["content"];
+  return  responseData.content;
 }

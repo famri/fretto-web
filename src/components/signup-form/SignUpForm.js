@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
 import useHttp from "../../hooks/use-http";
 import { fetchGenders } from "../../lib/genders-api";
@@ -411,260 +411,256 @@ const SignUpForm = (props) => {
   }
   if (fetchGendersStatus === "completed") {
     return (
-      <Fragment>
-        <Card className="py-4 signup-card">
-          <Form className="px-4" onSubmit={(event) => handleSignup(event)}>
-            {props.showTransporterSwitch && (
-              <Form.Group className="mb-3">
-                <Form.Switch
-                  type="switch"
-                  label="Je suis transporteur"
-                  className="fs-3"
-                  value={isTransporter}
-                  onChange={() => setIsTransporter(!isTransporter)}
-                />
-              </Form.Group>
-            )}
+      <Card className="py-4 signup-card ">
+        <Form className="px-4" onSubmit={(event) => handleSignup(event)}>
+          {props.showTransporterSwitch && (
             <Form.Group className="mb-3">
-              <Form.Label>Genre</Form.Label>
+              <Form.Switch
+                type="switch"
+                label="Je suis transporteur"
+                className="fs-3 fw-bold"
+                value={isTransporter}
+                onChange={() => setIsTransporter(!isTransporter)}
+              />
+            </Form.Group>
+          )}
+          <Form.Group className="mb-3">
+            <Form.Label>Genre</Form.Label>
+            <Form.Select
+              className={genderClassName}
+              required
+              onChange={(event) =>
+                dispatchGender({
+                  type: "GENDER_CHOSEN",
+                  val: event.target.value,
+                })
+              }
+              onClick={(event) =>
+                dispatchGender({
+                  type: "MENU_OPENED",
+                })
+              }
+              onBlur={(event) =>
+                dispatchGender({
+                  type: "MENU_BLUR",
+                })
+              }
+              value={genderState.val}
+            >
+              <option key="default" value="">
+                Genre
+              </option>
+              {gendersData.map((gender, index) => (
+                <option key={gender.id} value={gender.id}>
+                  {gender.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Nom</Form.Label>
+            <Form.Control
+              required={true}
+              type="text"
+              className={lastnameClassName}
+              value={lastnameState.val}
+              onChange={(e) =>
+                dispatchLastname({
+                  type: "NAME_TOUCHED",
+                  val: e.target.value,
+                })
+              }
+              onBlur={(e) =>
+                dispatchLastname({
+                  type: "NAME_BLUR",
+                  val: e.target.value,
+                })
+              }
+              placeholder="Votre nom"
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Prénom</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              className={firstnameClassName}
+              value={firstnameState.val}
+              onChange={(e) =>
+                dispatchFirstname({
+                  type: "NAME_TOUCHED",
+                  val: e.target.value,
+                })
+              }
+              onBlur={(e) =>
+                dispatchFirstname({
+                  type: "NAME_BLUR",
+                  val: e.target.value,
+                })
+              }
+              placeholder="Votre prénom"
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Date de naissance</Form.Label>
+            <Form.Control
+              required
+              type="date"
+              className={dateOfBirthClassName}
+              value={birthDateState.val}
+              max={maxDateOfBirth().toISOString().split("T")[0]}
+              onChange={(e) =>
+                dispatchDateOfBirth({
+                  type: "BIRTH_DATE_TOUCHED",
+                  val: e.target.value,
+                })
+              }
+              onBlur={(e) =>
+                dispatchDateOfBirth({
+                  type: "BIRTH_DATE_BLUR",
+                  val: e.target.value,
+                })
+              }
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              className={emailClassName}
+              required
+              type="email"
+              placeholder="Votre email"
+              onChange={(e) =>
+                dispatchEmail({
+                  type: "USER_INPUT",
+                  val: e.target.value,
+                })
+              }
+              onBlur={() => dispatchEmail({ type: "INPUT_BLUR" })}
+              value={emailState.val}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Téléphone Mobile</Form.Label>
+            <div className="row-group">
               <Form.Select
-                className={genderClassName}
+                style={{ width: "45%" }}
+                className={iccClassName}
                 required
                 onChange={(event) =>
-                  dispatchGender({
-                    type: "GENDER_CHOSEN",
+                  dispatchIcc({
+                    type: "ICC_CHOSEN",
                     val: event.target.value,
                   })
                 }
                 onClick={(event) =>
-                  dispatchGender({
+                  dispatchIcc({
                     type: "MENU_OPENED",
                   })
                 }
                 onBlur={(event) =>
-                  dispatchGender({
+                  dispatchIcc({
                     type: "MENU_BLUR",
                   })
                 }
-                value={genderState.val}
+                value={iccState.val}
               >
-                <option key="default" value="">
-                  Genre
-                </option>
-                {gendersData.map((gender, index) => (
-                  <option key={gender.id} value={gender.id}>
-                    {gender.name}
-                  </option>
-                ))}
+                <option value="">Indicateur</option>
+                <option value="+216">+216</option>
               </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Nom</Form.Label>
               <Form.Control
-                required={true}
-                type="text"
-                className={lastnameClassName}
-                value={lastnameState.val}
-                onChange={(e) =>
-                  dispatchLastname({
-                    type: "NAME_TOUCHED",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={(e) =>
-                  dispatchLastname({
-                    type: "NAME_BLUR",
-                    val: e.target.value,
-                  })
-                }
-                placeholder="Votre nom"
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Prénom</Form.Label>
-              <Form.Control
+                style={{ display: "inline" }}
+                className={phoneClassName}
                 required
-                type="text"
-                className={firstnameClassName}
-                value={firstnameState.val}
+                type="number"
+                placeholder="Numéro mobile"
                 onChange={(e) =>
-                  dispatchFirstname({
-                    type: "NAME_TOUCHED",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={(e) =>
-                  dispatchFirstname({
-                    type: "NAME_BLUR",
-                    val: e.target.value,
-                  })
-                }
-                placeholder="Votre prénom"
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Date de naissance</Form.Label>
-              <Form.Control
-                required
-                type="date"
-                className={dateOfBirthClassName}
-                value={birthDateState.val}
-                max={maxDateOfBirth().toISOString().split("T")[0]}
-                onChange={(e) =>
-                  dispatchDateOfBirth({
-                    type: "BIRTH_DATE_TOUCHED",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={(e) =>
-                  dispatchDateOfBirth({
-                    type: "BIRTH_DATE_BLUR",
-                    val: e.target.value,
-                  })
-                }
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                className={emailClassName}
-                required
-                type="email"
-                placeholder="Votre email"
-                onChange={(e) =>
-                  dispatchEmail({
+                  dispatchPhone({
                     type: "USER_INPUT",
                     val: e.target.value,
                   })
                 }
-                onBlur={() => dispatchEmail({ type: "INPUT_BLUR" })}
-                value={emailState.val}
+                onBlur={() => dispatchPhone({ type: "INPUT_BLUR" })}
+                value={phoneState.val}
               ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Téléphone Mobile</Form.Label>
-              <div className="row-group">
-                <Form.Select
-                  style={{ width: "45%" }}
-                  className={iccClassName}
-                  required
-                  onChange={(event) =>
-                    dispatchIcc({
-                      type: "ICC_CHOSEN",
-                      val: event.target.value,
-                    })
-                  }
-                  onClick={(event) =>
-                    dispatchIcc({
-                      type: "MENU_OPENED",
-                    })
-                  }
-                  onBlur={(event) =>
-                    dispatchIcc({
-                      type: "MENU_BLUR",
-                    })
-                  }
-                  value={iccState.val}
-                >
-                  <option value="">Indicateur</option>
-                  <option value="+216">+216</option>
-                </Form.Select>
-                <Form.Control
-                  style={{ display: "inline" }}
-                  className={phoneClassName}
-                  required
-                  type="number"
-                  placeholder="Numéro mobile"
-                  onChange={(e) =>
-                    dispatchPhone({
-                      type: "USER_INPUT",
-                      val: e.target.value,
-                    })
-                  }
-                  onBlur={() => dispatchPhone({ type: "INPUT_BLUR" })}
-                  value={phoneState.val}
-                ></Form.Control>
-              </div>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Mot de passe</Form.Label>
-              <Form.Control
-                required
-                type="password"
-                className={passwordClassName}
-                placeholder="Votre mot de passe"
-                minLength={8}
-                maxLength={12}
-                onChange={(e) =>
-                  dispatchPassword({
-                    type: "USER_INPUT",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={() => dispatchPassword({ type: "INPUT_BLUR" })}
-                value={passwordState.val}
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Confirmation</Form.Label>
-              <Form.Control
-                required
-                type="password"
-                className={passwordConfirmClassName}
-                placeholder="Confirmez votre mot de passe"
-                minLength={8}
-                maxLength={12}
-                onChange={(e) =>
-                  dispatchPasswordConfirm({
-                    type: "USER_INPUT",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={() => dispatchPasswordConfirm({ type: "INPUT_BLUR" })}
-                value={passwordConfirmState.val}
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Check
-                required
-                type="checkbox"
-                label="J'accepte les conditions d'utilisation du service Fretto."
-                className="fs-3"
-                checked={checkedTos}
-                onChange={() => setCheckedTos(!checkedTos)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Check
-                required
-                type="checkbox"
-                label="J'accepte de recevoir des offres de la part de Fretto et ses partenaires."
-                className="fs-3"
-                checked={checkedNewsletter}
-                onChange={() => setCheckedNewsletter(!checkedNewsletter)}
-              />
-            </Form.Group>
-            {props.errorMessage && (
-              <p className="error">{props.errorMessage}</p>
-            )}
-            <Form.Group as={Row}>
-              <Col>
-                <Button
-                  type="submit"
-                  variant="success"
-                  className="col-12 py-3 fs-2 mt-4"
-                  disabled={props.isLoading || !checkedNewsletter || !checkedTos}
-                >
-                  {props.isLoading && (
-                    <Spinner animation="border" variant="light" />
-                  )}
-                  <span className="mx-2">Inscription </span>
-                </Button>
-              </Col>
-            </Form.Group>
-          </Form>
-        </Card>
-      </Fragment>
+            </div>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Mot de passe</Form.Label>
+            <Form.Control
+              required
+              type="password"
+              className={passwordClassName}
+              placeholder="Votre mot de passe"
+              minLength={8}
+              maxLength={12}
+              onChange={(e) =>
+                dispatchPassword({
+                  type: "USER_INPUT",
+                  val: e.target.value,
+                })
+              }
+              onBlur={() => dispatchPassword({ type: "INPUT_BLUR" })}
+              value={passwordState.val}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Confirmation</Form.Label>
+            <Form.Control
+              required
+              type="password"
+              className={passwordConfirmClassName}
+              placeholder="Confirmez votre mot de passe"
+              minLength={8}
+              maxLength={12}
+              onChange={(e) =>
+                dispatchPasswordConfirm({
+                  type: "USER_INPUT",
+                  val: e.target.value,
+                })
+              }
+              onBlur={() => dispatchPasswordConfirm({ type: "INPUT_BLUR" })}
+              value={passwordConfirmState.val}
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Check
+              required
+              type="checkbox"
+              label="J'accepte les conditions d'utilisation du service Fretto."
+              className="fs-3"
+              checked={checkedTos}
+              onChange={() => setCheckedTos(!checkedTos)}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Check
+              required
+              type="checkbox"
+              label="J'accepte de recevoir des offres de la part de Fretto et ses partenaires."
+              className="fs-3"
+              checked={checkedNewsletter}
+              onChange={() => setCheckedNewsletter(!checkedNewsletter)}
+            />
+          </Form.Group>
+          {props.errorMessage && <p className="error">{props.errorMessage}</p>}
+          <Form.Group as={Row}>
+            <Col>
+              <Button
+                type="submit"
+                variant="success"
+                className="col-12 py-3 fs-2 mt-4 fw-bold"
+                disabled={props.isLoading || !checkedNewsletter || !checkedTos}
+              >
+                {props.isLoading && (
+                  <Spinner animation="border" variant="light" />
+                )}
+                <span className="mx-2">Inscription </span>
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
+      </Card>
     );
   }
 };

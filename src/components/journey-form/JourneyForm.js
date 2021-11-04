@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { Col, Row, Spinner } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -378,277 +378,282 @@ const JourneyForm = (props) => {
   }
   if (loadEngineTypesStatus === "completed") {
     return (
-      <Fragment>
-        <Card className="journey-card py-3 px-3">
-          <Form onSubmit={(event) => formSubmissionHandler(event)}>
-            <Form.Group className="mb-3 autocomplete" controlId="formDeparture">
-              <Form.Label className="form-label">Ville de départ</Form.Label>
+      <Card className="journey-card py-3 px-3">
+        <Form onSubmit={(event) => formSubmissionHandler(event)}>
+          <Form.Group className="mb-3 autocomplete" controlId="formDeparture">
+            <Form.Label className="form-label">Ville de départ</Form.Label>
 
-              <Form.Control
-                type="text"
-                required
-                className={
-                  departureState.isTouched
-                    ? departureState.isValid
-                      ? "is-valid"
-                      : "is-invalid"
-                    : ""
-                }
-                placeholder="Ville de départ"
-                onChange={(e) =>
-                  dispatchDeparture({
-                    type: "USER_INPUT",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={() => dispatchDeparture({ type: "INPUT_BLUR" })}
-                value={departureState.val}
-              />
-              {departureState.showSuggestion &&
-                loadDepartureSuggestionsStatus === "completed" &&
-                !!loadDepartureSuggestionsError && (
-                  <div className="suggestion">
-                    <p>{loadDepartureSuggestionsError}</p>
-                  </div>
-                )}
-              {departureState.showSuggestion &&
-                loadDepartureSuggestionsStatus === "completed" &&
-                loadedDepartureSuggestions.length > 0 && (
-                  <div className="suggestion">
-                    {loadedDepartureSuggestions.map((suggestion, i) => {
-                      return (
-                        <p
-                          key={suggestion.id}
-                          onMouseDown={() =>
-                            dispatchDeparture({
-                              type: "USER_CLICK",
-                              suggestion: suggestion,
-                            })
-                          }
-                        >
-                          {calculatePlaceName(suggestion)}
-                        </p>
-                      );
-                    })}
-                  </div>
-                )}
-            </Form.Group>
-            <Form.Group className="mb-3 autocomplete" controlId="formArrival">
-              <Form.Label className="form-label">Ville d'arrivée</Form.Label>
+            <Form.Control
+              type="text"
+              required
+              className={
+                departureState.isTouched
+                  ? departureState.isValid
+                    ? "is-valid"
+                    : "is-invalid"
+                  : ""
+              }
+              placeholder="Ville de départ"
+              onChange={(e) =>
+                dispatchDeparture({
+                  type: "USER_INPUT",
+                  val: e.target.value,
+                })
+              }
+              onBlur={() => dispatchDeparture({ type: "INPUT_BLUR" })}
+              value={departureState.val}
+            />
+            {departureState.showSuggestion &&
+              loadDepartureSuggestionsStatus === "completed" &&
+              !!loadDepartureSuggestionsError && (
+                <div className="suggestion">
+                  <p>{loadDepartureSuggestionsError}</p>
+                </div>
+              )}
+            {departureState.showSuggestion &&
+              loadDepartureSuggestionsStatus === "completed" &&
+              loadedDepartureSuggestions.length > 0 && (
+                <div className="suggestion">
+                  {loadedDepartureSuggestions.map((suggestion, i) => {
+                    return (
+                      <p
+                        key={suggestion.id}
+                        onMouseDown={() =>
+                          dispatchDeparture({
+                            type: "USER_CLICK",
+                            suggestion: suggestion,
+                          })
+                        }
+                      >
+                        {calculatePlaceName(suggestion)}
+                      </p>
+                    );
+                  })}
+                </div>
+              )}
+          </Form.Group>
+          <Form.Group className="mb-3 autocomplete" controlId="formArrival">
+            <Form.Label className="form-label">Ville d'arrivée</Form.Label>
 
-              <Form.Control
-                type="text"
-                required
-                className={
-                  arrivalState.isTouched
-                    ? arrivalState.isValid
-                      ? "is-valid"
-                      : "is-invalid"
-                    : ""
-                }
-                placeholder="Ville de départ"
-                onChange={(e) =>
-                  dispatchArrival({ type: "USER_INPUT", val: e.target.value })
-                }
-                onBlur={() => dispatchArrival({ type: "INPUT_BLUR" })}
-                value={arrivalState.val}
+            <Form.Control
+              type="text"
+              required
+              className={
+                arrivalState.isTouched
+                  ? arrivalState.isValid
+                    ? "is-valid"
+                    : "is-invalid"
+                  : ""
+              }
+              placeholder="Ville de départ"
+              onChange={(e) =>
+                dispatchArrival({ type: "USER_INPUT", val: e.target.value })
+              }
+              onBlur={() => dispatchArrival({ type: "INPUT_BLUR" })}
+              value={arrivalState.val}
+            />
+            {arrivalState.showSuggestion &&
+              loadArrivalSuggestionsStatus === "completed" &&
+              !!loadArrivalSuggestionsError && (
+                <div className="suggestion">
+                  <p>{loadArrivalSuggestionsError}</p>
+                </div>
+              )}
+            {arrivalState.showSuggestion &&
+              loadArrivalSuggestionsStatus === "completed" &&
+              loadedArrivalSuggestions.length > 0 && (
+                <div className="suggestion">
+                  {loadedArrivalSuggestions.map((suggestion, i) => {
+                    return (
+                      <div
+                        key={suggestion.id}
+                        onMouseDown={() =>
+                          dispatchArrival({
+                            type: "USER_CLICK",
+                            suggestion: suggestion,
+                          })
+                        }
+                      >
+                        {calculatePlaceName(suggestion)}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+          </Form.Group>
+          <Form.Group className="mb-3 " controlId="formEngineType">
+            <Form.Label className="form-label">Véhicule</Form.Label>
+            <div
+              style={{
+                display:
+                  vehiculeState.val !== undefined &&
+                  vehiculeState.val.toLowerCase() !== ""
+                    ? "block"
+                    : "none",
+              }}
+            >
+              <Icon
+                name={vehiculeState.val.toLowerCase()}
+                color="#D0324B"
+                size={50}
               />
-              {arrivalState.showSuggestion &&
-                loadArrivalSuggestionsStatus === "completed" &&
-                !!loadArrivalSuggestionsError && (
-                  <div className="suggestion">
-                    <p>{loadArrivalSuggestionsError}</p>
-                  </div>
-                )}
-              {arrivalState.showSuggestion &&
-                loadArrivalSuggestionsStatus === "completed" &&
-                loadedArrivalSuggestions.length > 0 && (
-                  <div className="suggestion">
-                    {loadedArrivalSuggestions.map((suggestion, i) => {
-                      return (
-                        <div
-                          key={suggestion.id}
-                          onMouseDown={() =>
-                            dispatchArrival({
-                              type: "USER_CLICK",
-                              suggestion: suggestion,
-                            })
-                          }
-                        >
-                          {calculatePlaceName(suggestion)}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-            </Form.Group>
-            <Form.Group className="mb-3 " controlId="formEngineType">
-              <Form.Label className="form-label">Véhicule</Form.Label>
-              <div
-                style={{
-                  display:
-                    vehiculeState.val !== undefined &&
-                    vehiculeState.val.toLowerCase() !== ""
-                      ? "block"
-                      : "none",
-                }}
-              >
-                <Icon
-                  name={vehiculeState.val.toLowerCase()}
-                  color="#D0324B"
-                  size={50}
-                />
-              </div>
-              <Form.Select
-                className={engineTypeClassName}
-                required
-                onChange={(event) =>
-                  dispatchVehicule({
-                    type: "VEHICULE_CHOSEN",
-                    val: event.target.value,
-                  })
-                }
-                onClick={(event) =>
-                  dispatchVehicule({
-                    type: "MENU_OPENED",
-                  })
-                }
-                onBlur={(event) =>
-                  dispatchVehicule({
-                    type: "MENU_BLUR",
-                  })
-                }
-              >
-                <option key="default" value="">
-                  Choisissez un véhicule
+            </div>
+            <Form.Select
+              className={engineTypeClassName}
+              required
+              onChange={(event) =>
+                dispatchVehicule({
+                  type: "VEHICULE_CHOSEN",
+                  val: event.target.value,
+                })
+              }
+              onClick={(event) =>
+                dispatchVehicule({
+                  type: "MENU_OPENED",
+                })
+              }
+              onBlur={(event) =>
+                dispatchVehicule({
+                  type: "MENU_BLUR",
+                })
+              }
+            >
+              <option key="default" value="">
+                Choisissez un véhicule
+              </option>
+              {loadedEngineTypes.map((engineType, index) => (
+                <option key={engineType.id} value={engineType.code}>
+                  {engineType.name}
                 </option>
-                {loadedEngineTypes.map((engineType, index) => (
-                  <option key={engineType.id} value={engineType.code}>
-                    {engineType.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formWorkers">
-              <Form.Label className="form-label">
-                Main d'oeuvre (personnes)
-              </Form.Label>
+              ))}
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formWorkers">
+            <Form.Label className="form-label">
+              Main d'oeuvre (personnes)
+            </Form.Label>
 
-              <Form.Control
-                required
-                className={workersClassName}
-                type="number"
-                min={0}
-                max={3}
-                placeholder="nombre de manutentionnaires"
-                value={workersState?.val}
-                onChange={(e) =>
-                  dispatchWorkers({
-                    type: "WORKERS_TOUCHED",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={(e) =>
-                  dispatchWorkers({
-                    type: "WORKERS_BLUR",
-                    val: parseInt(e.target.value, 10),
-                  })
-                }
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formDate">
-              <Form.Label className="form-label">Date</Form.Label>
+            <Form.Control
+              required
+              className={workersClassName}
+              type="number"
+              min={0}
+              max={3}
+              placeholder="nombre de manutentionnaires"
+              value={workersState?.val}
+              onChange={(e) =>
+                dispatchWorkers({
+                  type: "WORKERS_TOUCHED",
+                  val: e.target.value,
+                })
+              }
+              onBlur={(e) =>
+                dispatchWorkers({
+                  type: "WORKERS_BLUR",
+                  val: parseInt(e.target.value, 10),
+                })
+              }
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formDate">
+            <Form.Label className="form-label">Date</Form.Label>
 
-              <Form.Control
-                required
-                className={dateClassName}
-                type="date"
-                min={new Date().toISOString().split("T")[0]}
-                max={maxDate().toISOString().split("T")[0]}
-                placeholder="Date"
-                value={dateState?.val}
-                onClick={(event) =>
-                  dispatchDate({
-                    type: "DATE_OPENED",
-                  })
-                }
-                onChange={(e) =>
-                  dispatchDate({
-                    type: "DATE_CHOSEN",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={(e) =>
-                  dispatchDate({
-                    type: "DATE_BLUR",
-                    val: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
-            <Form.Group className="mb-3 " controlId="formTime">
-              <Form.Label className="form-label">Heure</Form.Label>
+            <Form.Control
+              required
+              className={dateClassName}
+              type="date"
+              min={new Date().toISOString().split("T")[0]}
+              max={maxDate().toISOString().split("T")[0]}
+              placeholder="Date"
+              value={dateState?.val}
+              onClick={(event) =>
+                dispatchDate({
+                  type: "DATE_OPENED",
+                })
+              }
+              onChange={(e) =>
+                dispatchDate({
+                  type: "DATE_CHOSEN",
+                  val: e.target.value,
+                })
+              }
+              onBlur={(e) =>
+                dispatchDate({
+                  type: "DATE_BLUR",
+                  val: e.target.value,
+                })
+              }
+            />
+          </Form.Group>
+          <Form.Group className="mb-3 " controlId="formTime">
+            <Form.Label className="form-label">Heure</Form.Label>
 
-              <Form.Control
-                required
-                className={timeClassName}
-                type="time"
-                placeholder="Date"
-                value={timeState.val}
-                onClick={(event) =>
-                  dispatchTime({
-                    type: "TIME_OPENED",
-                  })
-                }
-                onChange={(e) =>
-                  dispatchTime({
-                    type: "TIME_CHOSEN",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={(e) =>
-                  dispatchTime({
-                    type: "TIME_BLUR",
-                    val: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formDescription">
-              <Form.Label className="form-label">Description</Form.Label>
+            <Form.Control
+              required
+              className={timeClassName}
+              type="time"
+              placeholder="Date"
+              value={timeState.val}
+              onClick={(event) =>
+                dispatchTime({
+                  type: "TIME_OPENED",
+                })
+              }
+              onChange={(e) =>
+                dispatchTime({
+                  type: "TIME_CHOSEN",
+                  val: e.target.value,
+                })
+              }
+              onBlur={(e) =>
+                dispatchTime({
+                  type: "TIME_BLUR",
+                  val: e.target.value,
+                })
+              }
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formDescription">
+            <Form.Label className="form-label">Description</Form.Label>
 
-              <Form.Control
-                required
-                className={descriptionClassName}
-                value={descriptionState.val}
-                onChange={(e) =>
-                  dispatchDescription({
-                    type: "DESCRIPTION_TOUCHED",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={(e) =>
-                  dispatchDescription({
-                    type: "DESCRIPTION_BLUR",
-                    val: e.target.value,
-                  })
-                }
-                as="textarea"
-                rows={3}
-                placeholder="Décrivez votre demande: que voulez vous transporter? poids approximatif, etc"
-              />
-            </Form.Group>
-
-            <Form.Group as={Row}>
-              <Col>
-                <Button type="submit" className="btn-success col-12 py-3 fs-2">
-                  Obtenir mes devis
-                </Button>
-              </Col>
-            </Form.Group>
-          </Form>
-        </Card>
-      </Fragment>
+            <Form.Control
+              required
+              className={descriptionClassName}
+              value={descriptionState.val}
+              onChange={(e) =>
+                dispatchDescription({
+                  type: "DESCRIPTION_TOUCHED",
+                  val: e.target.value,
+                })
+              }
+              onBlur={(e) =>
+                dispatchDescription({
+                  type: "DESCRIPTION_BLUR",
+                  val: e.target.value,
+                })
+              }
+              as="textarea"
+              rows={3}
+              placeholder="Décrivez votre demande: que voulez vous transporter? poids approximatif, etc"
+            />
+          </Form.Group>
+          {props.errorMessage && <p className="error">{props.errorMessage}</p>}
+          <Form.Group as={Row}>
+            <Col>
+              <Button
+                type="submit"
+                className="col-12 py-3 fs-2 fw-bold"
+                variant="success"
+              >
+                {props.isLoading && (
+                  <Spinner animation="border" variant="light" />
+                )}
+                <span className="mx-2"> Obtenir mes devis </span>
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
+      </Card>
     );
   }
 };

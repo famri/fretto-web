@@ -1,11 +1,17 @@
 import { Fragment } from "react";
+import { Container } from "react-bootstrap";
 import MainNavigation from "../header/MainNavigation";
 import Footer from "../footer/Footer";
+import classes from "./Layout.module.css";
 const Layout = (props) => {
   return (
     <Fragment>
       <MainNavigation></MainNavigation>
-      <main>{props.children}</main>
+
+      <Container fluid className={classes.main} >
+        {props.children}
+      </Container>
+
       <Footer></Footer>
     </Fragment>
   );

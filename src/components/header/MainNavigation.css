@@ -21,5 +21,11 @@
 .header-logo {
   width: 100%;
   max-width: 16rem;
-
+}
+@media (max-width: 767px) {
+  .active {
+    border-bottom: 0.5rem solid #b2cd52;
+    color: #3eb0e5 !important;
+    max-width: 40%;
+  }
 }

@@ -1,11 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext, useState, Fragment } from "react";
 import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import frettoTransporter from "../assets/images/fretto_transporter.png";
 import Advantages from "../components/advantages/Advantages";
 import JourneyForm from "../components/journey-form/JourneyForm";
-import ErrorModal from "../components/modal/ErrorModal";
 import SignUpModal from "../components/modal/SignUpModal";
 import SuccessModal from "../components/modal/SuccessModal";
 import Usp from "../components/usp/Usp";
@@ -20,15 +18,32 @@ const Home = () => {
   const authCtx = useContext(AuthContext);
   const history = useHistory();
   const [showSignup, setShowSignup] = useState(false);
+  const [journeyRequestError, setJourneyRequestError] = useState();
   const [journeyRequestParams, setJourneyRequestParams] = useState();
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [signupError, setSignupError] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   const onJourneyRequest = (journeyRequestParamsData) => {
-    setJourneyRequestParams(journeyRequestParamsData);
-    setShowSignup(true);
+    if (authCtx.isLoggedIn) {
+      setIsLoading(true);
+      createJourneyRequest({
+        journeyRequestData: journeyRequestParamsData,
+        token: authCtx.token,
+      }).then(
+        () => {
+          setIsLoading(false);
+          setShowSuccessModal(true);
+        },
+        (error) => {
+          setIsLoading(false);
+          setJourneyRequestError(error.message);
+        }
+      );
+    } else {
+      setJourneyRequestParams(journeyRequestParamsData);
+      setShowSignup(true);
+    }
   };
 
   const onSignup = (
@@ -111,7 +126,7 @@ const Home = () => {
   };
 
   return (
-    <Container fluid className="home-container">
+    <Fragment>
       <Row className="justify-content-md-center px-1">
         <Col md={6} className="py-3">
           <h2 className="text-center home-message">
@@ -126,7 +141,11 @@ const Home = () => {
           ></img>
         </Col>
         <Col md={3} className="py-3">
-          <JourneyForm onJourneyRequest={onJourneyRequest}></JourneyForm>
+          <JourneyForm
+            isLoading={isLoading}
+            onJourneyRequest={onJourneyRequest}
+            errorMessage={journeyRequestError}
+          ></JourneyForm>
         </Col>
       </Row>
       <Row className="justify-content-md-center">
@@ -153,7 +172,7 @@ const Home = () => {
         }}
         actionName="OK"
       ></SuccessModal>
-    </Container>
+    </Fragment>
   );
 };
 

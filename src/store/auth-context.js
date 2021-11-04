@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 const FRETTO_AUTH = "frettoAuth";
 const AuthContext = React.createContext({
   isLoggedIn: false,
@@ -8,13 +8,13 @@ const AuthContext = React.createContext({
   sub: "",
   oauthId: "",
   isClient: true,
-  login: (token, expiresInMs, sub, oauthId, isClient) => {},
+  login: (token, expiresInSec, sub, oauthId, isClient) => {},
   logout: () => {},
 });
 
 export const AuthContextProvider = (props) => {
   const frettoAuthString = localStorage.getItem(FRETTO_AUTH);
-
+  const history = useHistory();
   let fettoAuth = {
     token: "",
     expiryDate: null,
@@ -22,6 +22,13 @@ export const AuthContextProvider = (props) => {
     oauthId: "",
     isClient: true,
   };
+  const [logout, setLogout] = useState(false);
+
+  useEffect(() => {
+    if (logout) {
+      history.replace("/signin");
+    }
+  }, [logout, history]);
 
   if (!!frettoAuthString) {
     const isoDatePattern = new RegExp(
@@ -42,9 +49,9 @@ export const AuthContextProvider = (props) => {
     !!authState.expiryDate &&
     new Date().getTime() < authState.expiryDate.getTime();
 
-  const loginHandler = (token, expiresInMs, sub, oauthId, isClient) => {
+  const loginHandler = (token, expiresInSec, sub, oauthId, isClient) => {
     var date = Date.now();
-    date += expiresInMs * 1000;
+    date += expiresInSec * 1000;
     const expiryDate = new Date(date);
 
     setAuthState({
@@ -65,7 +72,7 @@ export const AuthContextProvider = (props) => {
         isClient: isClient,
       })
     );
-    setTimeout(logoutHandler, expiresInMs);
+    setTimeout(() => logoutHandler(), expiresInSec * 1000);
   };
 
   const logoutHandler = () => {
@@ -77,6 +84,7 @@ export const AuthContextProvider = (props) => {
       isClient: true,
     });
     localStorage.removeItem(FRETTO_AUTH);
+    setLogout(true);
   };
 
   const contextValue = {

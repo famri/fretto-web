@@ -1,5 +1,4 @@
-import { useContext, useEffect } from "react";
-import { Container } from "react-bootstrap";
+import { useContext, useEffect, Fragment } from "react";
 import { Link, useHistory } from "react-router-dom";
 import FrettoLogo from "../components/logos/FrettoLogo";
 import SignInForm from "../components/signin-form/SignInForm";
@@ -19,13 +18,12 @@ const SignIn2 = () => {
     error: signinError,
   } = useHttp(signin);
 
-
   useEffect(() => {
     if (signinStatus === "completed") {
       if (signinError === null) {
         authCtx.login(
           signinData.token,
-          signinData.expiresInMs,
+          signinData.expiresInSec,
           signinData.sub,
           signinData.oauthId,
           signinData.isClient
@@ -37,7 +35,7 @@ const SignIn2 = () => {
   }, [signinStatus, signinError, history, authCtx, signinData]);
 
   return (
-    <Container fluid className="signin-container">
+    <Fragment>
       <FrettoLogo width="170px"></FrettoLogo>
       <h2 className="text-center py-2 fs-1">Heureux de vous revoir !</h2>
       <div className="text-center my-3">
@@ -46,12 +44,14 @@ const SignIn2 = () => {
           Inscription
         </Link>
       </div>
-      <SignInForm
-        onSignin={sendSigninRequest}
-        errorMessage={signinError}
-        isLoading={signinStatus === "pending"}
-      ></SignInForm>
-    </Container>
+      <div className="mx-auto">
+        <SignInForm
+          onSignin={sendSigninRequest}
+          errorMessage={signinError}
+          isLoading={signinStatus === "pending"}
+        ></SignInForm>
+      </div>
+    </Fragment>
   );
 };
 

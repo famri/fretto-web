@@ -49,7 +49,7 @@ export async function signup(signupParams) {
 
   return {
     token: signupResponseData.access_token,
-    expiresInMs: signupResponseData.expires_in,
+    expiresInSec: signupResponseData.expires_in,
     sub: checkTokenData.sub,
     oauthId: checkTokenData.user_id,
     isClient: checkTokenData.authorities.includes("ROLE_CLIENT"),
@@ -96,7 +96,7 @@ export async function signin(signinData) {
 
   return {
     token: signinResponsedata.access_token,
-    expiresInMs: signinResponsedata.expires_in,
+    expiresInSec: signinResponsedata.expires_in,
     sub: checkTokenData.sub,
     oauthId: checkTokenData.user_id,
     isClient: checkTokenData.authorities.includes("ROLE_CLIENT"),
