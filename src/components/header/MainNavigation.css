@@ -22,6 +22,9 @@
   width: 100%;
   max-width: 16rem;
 }
+.headerNavLink {
+  font-style: italic;
+}
 @media (max-width: 767px) {
   .active {
     border-bottom: 0.5rem solid #b2cd52;

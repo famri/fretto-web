@@ -1,13 +1,13 @@
+import { useContext, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-
 import FrettoLogo from "../components/logos/FrettoLogo";
 import SignUpForm from "../components/signup-form/SignUpForm";
 import useHttp from "../hooks/use-http";
 import { signup } from "../lib/authentication-api";
-import AuthContext from "../store/auth-context";
-import { useContext, useEffect, Fragment } from "react";
 import { createUserPreference } from "../lib/user-preferences-api";
+import AuthContext from "../store/auth-context";
 import "./SignUp.css";
+import { Fragment } from "react";
 const SignUp = () => {
   const authCtx = useContext(AuthContext);
   const history = useHistory();
@@ -38,7 +38,7 @@ const SignUp = () => {
       if (signupError === null) {
         authCtx.login(
           signupData.token,
-          signupData.expiresInSec,
+          signupData.expiresInMs,
           signupData.sub,
           signupData.oauthId,
           signupData.isClient

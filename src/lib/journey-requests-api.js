@@ -9,15 +9,53 @@ export async function createJourneyRequest(params) {
     },
   });
 
+  let data;
+
   if (!response.ok) {
-    const data = await response.json();
-    throw new Error(
-      data.message || "Échec de la création de demande de trajet."
-    );
+    try {
+      data = await response.json();
+      throw new Error(
+        (data.errors && data.errors.join(", ")) ||
+          "Échec de la création de demande de trajet."
+      );
+    } catch (error) {
+      throw new Error("Échec de la création de demande de trajet.");
+    }
   }
 
   return null;
 }
+
+//https://192.168.50.4:8443/wamya-backend/users/me/journey-requests/62
+export async function loadJourneyRequest(params) {
+  const response = await fetch(
+    `${FRETTO_DOMAIN}/users/me/journey-requests/${params.journeyRequestId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+    }
+  );
+
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Échec de chargement des demandes de trajet.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      (data.errors && data.errors.join(", ")) ||
+        "Demandes de trajet inexistante."
+    );
+  }
+
+  return data;
+}
+
 //https://192.168.50.4:8443/wamya-backend/users/me/journey-requests?period=m6&page=0&size=25&sort=date-time,desc&lang=fr_FR
 export async function loadJourneyRequests(params) {
   const response = await fetch(
@@ -30,10 +68,16 @@ export async function loadJourneyRequests(params) {
       },
     }
   );
-  const data = await response.json();
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Échec du chargement des demandes de trajet.");
+  }
+
   if (!response.ok) {
     throw new Error(
-      (data.errors && data.errors.join(", ")) ||
+      (data && data.errors && data.errors.join(", ")) ||
         "Échec du chargement des demandes de trajet."
     );
   }

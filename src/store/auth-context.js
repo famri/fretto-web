@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 const FRETTO_AUTH = "frettoAuth";
 const AuthContext = React.createContext({
@@ -22,13 +22,6 @@ export const AuthContextProvider = (props) => {
     oauthId: "",
     isClient: true,
   };
-  const [logout, setLogout] = useState(false);
-
-  useEffect(() => {
-    if (logout) {
-      history.replace("/signin");
-    }
-  }, [logout, history]);
 
   if (!!frettoAuthString) {
     const isoDatePattern = new RegExp(
@@ -84,7 +77,7 @@ export const AuthContextProvider = (props) => {
       isClient: true,
     });
     localStorage.removeItem(FRETTO_AUTH);
-    setLogout(true);
+    history.replace("/signin");
   };
 
   const contextValue = {

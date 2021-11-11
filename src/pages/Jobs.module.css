@@ -1,0 +1,38 @@
+.jobHeader {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #134753;
+  font-style: italic;
+}
+
+.jobTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #134753;
+  font-style: italic;
+}
+.jobContract {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #134753;
+}
+.jobLocation {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #134753;
+}
+.jobDate {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #134753;
+}
+.jobDescription {
+  font-size: 2rem;
+
+  color: #134753;
+}
+.jobProfile {
+  font-size: 2rem;
+
+  color: #134753;
+}

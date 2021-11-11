@@ -1,23 +1,30 @@
 import logo from "../../assets/logos/fretto_logo.png";
-import Icon from "../widgets/Icon";
+import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
-import "./Footer.css";
+import classes from "./Footer.module.css";
 import playstore from "../../assets/images/fr_android.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const Footer = () => {
   return (
-    <footer className="footer border-top">
-      <Row className="justify-content-md-center">
+    <footer className={classes.footer + " border-top"}>
+      <Row className="d-flex justify-content-center">
         <Col md={2}>
           <Link to="/">
-            <img className="footer-logo" src={logo} alt="Fretto logo" />
+            <img className={classes.footerLogo} src={logo} alt="Fretto logo" />
           </Link>
           <a href="https://play.google.com/store/apps/details?id=fr.excentria-it.fretto&gl=FR">
-            <img src={playstore} className="footer-logo" alt="play_store_logo"></img>
+            <img
+              src={playstore}
+              className={classes.footerLogo}
+              alt="play_store_logo"
+            ></img>
           </a>
         </Col>
         <Col md={2}>
-          <span className="text-cap text-primary-light">Support</span>
+          <span className={classes.textPrimaryLight + " " + classes.textCap}>
+            Support
+          </span>
 
           <ul className="list-unstyled ">
             <li>
@@ -32,15 +39,17 @@ const Footer = () => {
             </li>
 
             <li>
-              <Link to="/client-reviews" className="link-dark fs-2">
-                Avis Clients
+              <Link to="/contact" className="link-dark fs-2">
+                Nous Contacter
               </Link>
             </li>
           </ul>
         </Col>
 
         <Col md={2}>
-          <span className="text-cap text-primary-light">Société</span>
+          <span className={classes.textPrimaryLight + " " + classes.textCap}>
+            Société
+          </span>
 
           <ul className="list-unstyled ">
             <li>
@@ -49,39 +58,42 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link to="/transporter-signup" className="link-dark fs-2">
-                Rejoignez Nous
+              <Link to="/client-reviews" className="link-dark fs-2">
+                Avis Clients
+              </Link>
+            </li>
+            <li>
+              <Link to="/jobs" className="link-dark fs-2">
+                Offres d'emploi
               </Link>
               <span className="badge bg-warning text-dark rounded-pill ms-2 fs-4">
-                5
+                3
               </span>
-            </li>
-
-            <li>
-              <Link to="/contacts" className="link-dark fs-2">
-                Contacts
-              </Link>
             </li>
           </ul>
         </Col>
         <Col md={2}>
-          <span className="text-cap text-primary-light">Platforme</span>
+          <span className={classes.textPrimaryLight + " " + classes.textCap}>
+            Platforme
+          </span>
 
           <ul className="list-unstyled ">
             <li>
-              <Link to="/web" className="link-dark fs-2 ">
+              <Link to="/" className="link-dark fs-2 ">
                 Web
               </Link>
             </li>
             <li>
-              <Link to="/android" className="link-dark fs-2">
+              <Link to="https://play.google.com/store/apps/details?id=fr.excentria-it.fretto&gl=FR" className="link-dark fs-2">
                 Android
               </Link>
             </li>
           </ul>
         </Col>
         <Col md={2}>
-          <span className="text-cap text-primary-light">Légal</span>
+          <span className={classes.textPrimaryLight + " " + classes.textCap}>
+            Légal
+          </span>
 
           <ul className="list-unstyled ">
             <li>
@@ -97,20 +109,28 @@ const Footer = () => {
           </ul>
         </Col>
       </Row>
-      <Row className="border-top justify-content-md-center  ">
+      <Row className="d-flex border-top justify-content-center  ">
         <Col md={6} className="fs-2 my-auto">
           <p>© Fretto 2021. Tous droits réservés.</p>
         </Col>
         <Col md={2} className="my-auto">
           <ul className="list-inline ">
             <li className="list-inline-item">
-              <a href="https://twitter.com/" className=" btn rounded-circle">
-                <Icon name="twitter" color="#1DA1F2" size={50} />
+              <a href="https://facebook.com/" className=" btn rounded-circle">
+                <FontAwesomeIcon
+                  icon={faFacebook}
+                  className={classes.facebookIcon}
+                  size="4x"
+                />
               </a>
             </li>
             <li className="list-inline-item">
-              <a href="https://facebook.com/" className="btn rounded-circle">
-                <Icon name="facebook" color="#0777E9" size={50} />
+              <a href="https://twitter.com/" className="btn rounded-circle">
+                <FontAwesomeIcon
+                  icon={faTwitter}
+                  className={classes.twitterIcon}
+                  size="4x"
+                />
               </a>
             </li>
           </ul>

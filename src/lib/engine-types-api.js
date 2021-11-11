@@ -1,14 +1,23 @@
 const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
 
 export async function fetchEngineTypes(params) {
-  const engineTypesResponse = await fetch(
+  const response = await fetch(
     `${FRETTO_DOMAIN}/engine-types?lang=${params.language}`
   );
-  const responseData = await engineTypesResponse.json();
 
-  if (!engineTypesResponse.ok) {
-    throw new Error(responseData.message || "Could not fetch engine types.");
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Echec du chargement des types de véhicule.");
   }
 
-  return responseData["content"];
+  if (!response.ok) {
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Echec du chargement des types de véhicule."
+    );
+  }
+
+  return data.content;
 }

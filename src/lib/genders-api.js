@@ -1,15 +1,23 @@
 const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
 
 export async function fetchGenders(params) {
-  const gendersResponse = await fetch(
-    `${FRETTO_DOMAIN}/genders?lang=${params.language}`
+  const response = await fetch(
+    `${FRETTO_DOMAIN}/genders?lang=${params.locale}`
   );
-  const responseData = await gendersResponse.json();
+  let data;
 
-  if (!gendersResponse.ok) {
-    throw new Error(responseData.message || "Could not fetch genders.");
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Échec du chargement des genres.");
   }
- 
 
-  return  responseData.content;
+  if (!response.ok) {
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec du chargement des genres."
+    );
+  }
+
+  return data.content;
 }

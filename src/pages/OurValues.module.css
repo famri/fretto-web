@@ -1,0 +1,20 @@
+.valuesTitle {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #134753;
+  font-style: italic;
+}
+.valueContent {
+  font-size: 2rem;
+  font-style: italic;
+}
+.valueName {
+  font-size: 3rem;
+  color: #134753;
+  font-weight: bold;
+  font-style: italic;
+  color: #134753;
+}
+.valueIcon {
+  color: #b3ce55;
+}

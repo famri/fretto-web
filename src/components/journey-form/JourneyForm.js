@@ -92,7 +92,7 @@ const vehiculeReducer = (state, action) => {
       return {
         touched: true,
         val: state.val,
-        isValid: state.isValid !== "",
+        isValid: state.isValid,
       };
 
     case "INPUT_VALIDATION":

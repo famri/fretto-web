@@ -1,14 +1,14 @@
-.bg-primary-light {
+.bgPrimaryLight {
   background-color: #f9f9f9 !important;
 }
 
-.footer-logo {
+.footerLogo {
   width: 100%;
   max-width: 16rem;
   margin-bottom: 1.5rem;
   margin-right: 1.5rem;
 }
-.text-cap {
+.textCap {
   display: block;
   color: #00221c;
   font-size: 0.75rem;
@@ -18,7 +18,7 @@
   margin-bottom: 1rem;
   font-size: 2.5rem;
 }
-.text-primary-light {
+.textPrimaryLight {
   --bs-text-opacity: 1;
   color: #198754 !important;
 }
@@ -26,4 +26,12 @@
   background-color: #f9f9f9 !important;
   padding-top: 2rem;
   margin: auto 0 0 0;
+}
+
+.facebookIcon {
+  color: #0a82ed;
+}
+
+.twitterIcon {
+  color: #1d9bf0;
 }

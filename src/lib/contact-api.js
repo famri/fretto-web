@@ -1,11 +1,10 @@
 const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
-export async function createUserPreference(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/user-preferences`, {
+export async function sendUserContactForm(params) {
+  const response = await fetch(`${FRETTO_DOMAIN}/user-messages`, {
     method: "POST",
-    body: JSON.stringify(params.userPreference),
+    body: JSON.stringify(params),
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${params.token}`,
     },
   });
 
@@ -16,10 +15,10 @@ export async function createUserPreference(params) {
       data = await response.json();
       throw new Error(
         (data && data.errors && data.errors.join(", ")) ||
-          "Échec de la création de préférence."
+          "Échec de l'envoi de votre message."
       );
     } catch (error) {
-      throw new Error("Échec de la création de préférence.");
+      throw new Error("Échec de l'envoi de votre message.");
     }
   }
 

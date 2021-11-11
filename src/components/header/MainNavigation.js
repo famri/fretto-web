@@ -23,26 +23,26 @@ const Header = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <NavLink to="/" activeClassName="active" exact={true}>
+            <NavLink to="/" activeClassName="active" exact={true} className="headerNavLink">
               Accueil
             </NavLink>
             {!authCtx.isLoggedIn && (
-              <NavLink to="/signin" activeClassName="active">
+              <NavLink to="/signin" activeClassName="active" className="headerNavLink">
                 Connexion
               </NavLink>
             )}
             {!authCtx.isLoggedIn && (
-              <NavLink to="/signup" activeClassName="active">
+              <NavLink to="/signup" activeClassName="active" className="headerNavLink">
                 Inscription
               </NavLink>
             )}
             {authCtx.isLoggedIn && authCtx.isClient && (
-              <NavLink to="/journey-requests" activeClassName="active">
+              <NavLink to="/journey-requests" activeClassName="active" className="headerNavLink">
                 Demandes
               </NavLink>
             )}
             {authCtx.isLoggedIn && !authCtx.isClient && (
-              <NavLink to="/journeys" activeClassName="active ">
+              <NavLink to="/journeys" activeClassName="active " className="headerNavLink">
                 Trajets
               </NavLink>
             )}
@@ -50,7 +50,7 @@ const Header = () => {
           {authCtx.isLoggedIn && (
             <Button
               variant="danger"
-              className="me-3 fs-2 my-3 mx-3"
+              className="me-3 fs-2 my-3 mx-3 headerNavLink"
               onClick={(event) => handleDisconnect()}
             >
               Déconnexion

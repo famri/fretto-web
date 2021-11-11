@@ -170,6 +170,9 @@ const Home = () => {
           setShowSuccessModal(false);
           history.replace("/journey-requests");
         }}
+        onHide={()=>{
+          setShowSuccessModal(false);
+        }}
         actionName="OK"
       ></SuccessModal>
     </Fragment>

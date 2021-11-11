@@ -1,8 +1,12 @@
 .proposalCard {
-    --width: 40rem;
+  --width: 40rem;
 }
-.proposalHeader {
-  color: green;
+.transporterName {
+  color: black;
+  font-weight: bold;
+}
+.proposalPrice {
+  color: limegreen;
   font-weight: bold;
 }
 .proposalImg {
@@ -16,4 +20,13 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+.ratingStar {
+  color: orange;
+}
+.proposalRejected {
+  background-color: #e66c78 !important;
+}
+.proposalAccepted {
+  background-color: #d6e4a3 !important;
 }

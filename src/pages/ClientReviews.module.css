@@ -1,0 +1,19 @@
+.clientReviewsTitle {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #134753;
+  font-style: italic;
+}
+.avatar {
+  vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.ratingStar {
+  color: orange;
+}
+.reviewContent {
+  font-size: 2rem;
+  font-style: italic;
+}

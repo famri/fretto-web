@@ -48,7 +48,7 @@ const genderReducer = (state, action) => {
       return {
         touched: true,
         val: state.val,
-        isValid: state.isValid !== "",
+        isValid: state.isValid,
       };
 
     case "INPUT_VALIDATION":
@@ -78,7 +78,7 @@ const iccReducer = (state, action) => {
       return {
         touched: true,
         val: state.val,
-        isValid: state.isValid !== "",
+        isValid: state.isValid,
       };
 
     case "INPUT_VALIDATION":
@@ -207,7 +207,7 @@ const SignUpForm = (props) => {
   } = useHttp(fetchGenders, true);
 
   useEffect(() => {
-    fetchGendersRequest({ language: "fr_FR" });
+    fetchGendersRequest({ locale: "fr_FR" });
   }, [fetchGendersRequest]);
 
   const passwordConfirmReducer = (state, action) => {

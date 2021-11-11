@@ -51,6 +51,12 @@ const SignIn2 = () => {
           isLoading={signinStatus === "pending"}
         ></SignInForm>
       </div>
+      <div className="text-center my-3">
+        <span className="fs-5">Mot de passe oublié ? </span>
+        <Link to="/password-reset" className="link-dark">
+          Réinitialiser
+        </Link>
+      </div>
     </Fragment>
   );
 };

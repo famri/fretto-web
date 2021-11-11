@@ -7,8 +7,9 @@ const CustomModal = (props) => {
       centered
       backdrop="static"
       show={props.show}
+      onHide={props.onHide}
     >
-      <Modal.Header className={props.headerClassName}>
+      <Modal.Header className={props.headerClassName} closeButton> 
         <Modal.Title
           id="contained-modal-title-vcenter"
           className={props.titleClassName + " fs-1"}

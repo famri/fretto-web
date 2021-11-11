@@ -10,7 +10,7 @@
   height: 20rem;
   margin: 5px;
   border-radius: 50%;
-  border: 20px double;
+  border: 20px solid;
   border-color: #3eb0e5 transparent #b2cd52 transparent;
   animation: spinner 2s cubic-bezier(0.895, 0.03, 0.685, 0.22) infinite;
 }
