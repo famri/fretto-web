@@ -494,7 +494,7 @@ const JourneyForm = (props) => {
             >
               <Icon
                 name={vehiculeState.val.toLowerCase()}
-                color="#D0324B"
+                color="#B3CE55"
                 size={50}
               />
             </div>

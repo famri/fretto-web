@@ -116,7 +116,7 @@ const JourneyRequests = (props) => {
           onPeriodChosen={onPeriodChosen}
           onSortChosen={onSortChosen}
         >
-          <h1 className="d-flex justify-content-center my-auto ">
+          <h1 className="d-flex justify-content-center my-auto">
             Vous n'avez pas de demande de trajet pour cette période.
           </h1>
         </JourneyRequestsLayout>

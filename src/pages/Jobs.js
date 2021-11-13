@@ -25,14 +25,14 @@ const Jobs = () => {
   }
   if (!!error) {
     return (
-      <Container>
+      <Container className="my-auto">
         <h1 className="d-flex justify-content-center my-auto error">{error}</h1>
       </Container>
     );
   }
   if (status === "completed") {
     return (
-      <Container>
+      <Container className="my-auto">
         <Row xs={1} md={1} className="mt-5 mb-5 ">
           <Col>
             <h1

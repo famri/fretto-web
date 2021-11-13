@@ -84,9 +84,9 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link to="https://play.google.com/store/apps/details?id=fr.excentria-it.fretto&gl=FR" className="link-dark fs-2">
+              <a href="https://play.google.com/store/apps/details?id=fr.excentria-it.fretto&gl=FR" className="link-dark fs-2">
                 Android
-              </Link>
+              </a>
             </li>
           </ul>
         </Col>

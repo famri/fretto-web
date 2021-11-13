@@ -1,0 +1,18 @@
+.avatar {
+  vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.transporterName {
+  color: #134753;
+  font-weight: bold;
+  font-size: 2rem;
+}
+.messageContentRead {
+  color: grey;
+}
+.messageContentUnread {
+  color: #134753;
+}

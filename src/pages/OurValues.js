@@ -10,7 +10,7 @@ import classes from "./OurValues.module.css";
 
 const OurValues = () => {
   return (
-    <Container>
+    <Container className="my-auto">
       <Row xs={1} md={1} className="mt-5 mb-5 ">
         <Col>
           <h1

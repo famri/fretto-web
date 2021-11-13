@@ -3,12 +3,14 @@ import { Route, Switch } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import ClientReviews from "./pages/ClientReviews";
 import ContactUs from "./pages/ContactUs";
+import Discussions from "./pages/Discussions";
 import Faq from "./pages/Faq";
 import Home from "./pages/Home";
 import Jobs from "./pages/Jobs";
 import JourneyProposals from "./pages/JourneyProposals";
 import JourneyRequests from "./pages/JourneyRequests";
 import Logout from "./pages/Logout";
+import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 import OurValues from "./pages/OurValues";
 import PasswordReset from "./pages/PasswordReset";
@@ -49,6 +51,17 @@ function App() {
             <JourneyRequests />
           </Route>
         )}
+        {authCtx.isLoggedIn && authCtx.isClient && (
+          <Route path="/discussions/:discussionId/messages">
+            <Messages />
+          </Route>
+        )}
+        {authCtx.isLoggedIn && authCtx.isClient && (
+          <Route path="/discussions">
+            <Discussions />
+          </Route>
+        )}
+
         {!authCtx.isLoggedIn && (
           <Route path="/logout">
             <Logout />
@@ -59,6 +72,7 @@ function App() {
             <PasswordReset />
           </Route>
         )}
+
         <Route path="/faq">
           <Faq />
         </Route>

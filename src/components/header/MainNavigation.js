@@ -1,11 +1,10 @@
 import { useContext } from "react";
-import { Container, Button, Nav, Navbar } from "react-bootstrap";
-
+import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logos/fretto_logo.png";
 import AuthContext from "../../store/auth-context";
-
 import "./MainNavigation.css";
+
 const Header = () => {
   const authCtx = useContext(AuthContext);
 
@@ -23,27 +22,49 @@ const Header = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <NavLink to="/" activeClassName="active" exact={true} className="headerNavLink">
+            <NavLink
+              to="/"
+              activeClassName="active"
+              exact={true}
+              className="headerNavLink"
+            >
               Accueil
             </NavLink>
             {!authCtx.isLoggedIn && (
-              <NavLink to="/signin" activeClassName="active" className="headerNavLink">
+              <NavLink
+                to="/signin"
+                activeClassName="active"
+                className="headerNavLink"
+              >
                 Connexion
               </NavLink>
             )}
             {!authCtx.isLoggedIn && (
-              <NavLink to="/signup" activeClassName="active" className="headerNavLink">
+              <NavLink
+                to="/signup"
+                activeClassName="active"
+                className="headerNavLink"
+              >
                 Inscription
               </NavLink>
             )}
             {authCtx.isLoggedIn && authCtx.isClient && (
-              <NavLink to="/journey-requests" activeClassName="active" className="headerNavLink">
+              <NavLink
+                to="/journey-requests"
+                activeClassName="active"
+                className="headerNavLink"
+              >
                 Demandes
               </NavLink>
             )}
-            {authCtx.isLoggedIn && !authCtx.isClient && (
-              <NavLink to="/journeys" activeClassName="active " className="headerNavLink">
-                Trajets
+
+            {authCtx.isLoggedIn && authCtx.isClient && (
+              <NavLink
+                to="/discussions"
+                activeClassName="active "
+                className="headerNavLink"
+              >
+                Messages
               </NavLink>
             )}
           </Nav>

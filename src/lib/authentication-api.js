@@ -97,8 +97,10 @@ export async function signin(signinData) {
   if (!signinResponse.ok) {
     throw new Error(
       (signinResponseData &&
-        signinResponseData.errors &&
-        signinResponseData.errors.join(", ")) ||
+        ((signinResponseData.errorCode === "AUTHORIZATION" &&
+          "Échec de la connexion. Login ou mot de passe incorrect.") ||
+          (signinResponseData.errors &&
+            signinResponseData.errors.join(", ")))) ||
         "Échec de la connexion. Login ou mot de passe incorrect."
     );
   }

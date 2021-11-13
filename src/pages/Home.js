@@ -129,7 +129,7 @@ const Home = () => {
     <Fragment>
       <Row className="justify-content-md-center px-1">
         <Col md={6} className="py-3">
-          <h2 className="text-center home-message">
+          <h2 className="text-center home-message ">
             Votre comparatif de devis de transporteur
           </h2>
 

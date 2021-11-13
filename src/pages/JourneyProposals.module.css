@@ -1,8 +1,5 @@
-.proposalCard {
-  --width: 40rem;
-}
 .transporterName {
-  color: black;
+  color: #134753;
   font-weight: bold;
 }
 .proposalPrice {

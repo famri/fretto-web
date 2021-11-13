@@ -1,19 +1,21 @@
 .transporter-img {
-    text-align: center;
-    display: block;
-    margin: auto;
-    width: 100%;
-    max-width: 50rem;
+  text-align: center;
+  display: block;
+  margin: auto;
+  width: 100%;
+  max-width: 50rem;
+}
+@media (max-width: 767px) {
+  .transporter-img {
+    display: none;
   }
-  @media (max-width: 767px) {
-    .transporter-img {
-      display: none;
-    }
-  }
-  html {
-    font-size: 62.5%;
-  }
-  .home-message {
-    font-size: 3rem;
-  }
- 
+}
+html {
+  font-size: 62.5%;
+}
+.home-message {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #134753;
+  font-style: italic;
+}
