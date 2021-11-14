@@ -14,6 +14,7 @@ import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 import OurValues from "./pages/OurValues";
 import PasswordReset from "./pages/PasswordReset";
+import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Support from "./pages/Support";
@@ -61,7 +62,6 @@ function App() {
             <Discussions />
           </Route>
         )}
-
         {!authCtx.isLoggedIn && (
           <Route path="/logout">
             <Logout />
@@ -70,6 +70,11 @@ function App() {
         {!authCtx.isLoggedIn && (
           <Route path="/password-reset">
             <PasswordReset />
+          </Route>
+        )}
+        {authCtx.isLoggedIn && (
+          <Route path="/profile">
+            <Profile />
           </Route>
         )}
 
@@ -91,7 +96,6 @@ function App() {
         <Route path="/contact">
           <ContactUs />
         </Route>
-
         <Route path="*">
           <NotFound></NotFound>
         </Route>

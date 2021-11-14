@@ -91,7 +91,11 @@ const Messages = () => {
         setHasNext(messagesData.hasNext);
         setIsLoadingMessages(false);
         if (pageNumber === 0 && messagesData.content.length > 0) {
-          lastMessageRef.current.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+          lastMessageRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+            inline: "nearest",
+          });
         }
       })
       .catch((error) => {
@@ -119,7 +123,7 @@ const Messages = () => {
           <Row xs={1} md={1}>
             <Col className="d-flex justify-content-center">
               <img
-                alt={"transporter-" + params.discussionId + "-image"}
+                alt={"transporter-" + params.discussionId}
                 src={discussion.transporter.photoUrl}
                 className={classes.bigAvatar}
               ></img>
@@ -166,7 +170,7 @@ const Messages = () => {
                       className="d-flex justify-content-start "
                     >
                       <img
-                        alt={"transporter-" + params.discussionId + "-image"}
+                        alt={"transporter-" + params.discussionId}
                         src={discussion.transporter.photoUrl}
                         className={classes.littleAvatar}
                       ></img>
@@ -201,7 +205,7 @@ const Messages = () => {
                       className="d-flex justify-content-start "
                     >
                       <img
-                        alt={"transporter-" + params.discussionId + "-image"}
+                        alt={"transporter-" + params.discussionId}
                         src={discussion.transporter.photoUrl}
                         className={classes.littleAvatar}
                       ></img>
@@ -235,7 +239,7 @@ const Messages = () => {
                       className="d-flex justify-content-start "
                     >
                       <img
-                        alt={"transporter-" + params.discussionId + "-image"}
+                        alt={"transporter-" + params.discussionId}
                         src={discussion.transporter.photoUrl}
                         className={classes.littleAvatar}
                       ></img>
@@ -278,7 +282,7 @@ const Messages = () => {
                     </Col>
                     <Col xs={2} md={1} className="d-flex justify-content-end ">
                       <img
-                        alt={"client-" + params.discussionId + "-image"}
+                        alt={"client-" + params.discussionId}
                         src={discussion.client.photoUrl}
                         className={classes.littleAvatar}
                       ></img>
@@ -307,7 +311,7 @@ const Messages = () => {
                     </Col>
                     <Col xs={2} md={1} className="d-flex justify-content-end ">
                       <img
-                        alt={"client-" + params.discussionId + "-image"}
+                        alt={"client-" + params.discussionId}
                         src={discussion.client.photoUrl}
                         className={classes.littleAvatar}
                       ></img>
@@ -335,7 +339,7 @@ const Messages = () => {
                     </Col>
                     <Col xs={2} md={1} className="d-flex justify-content-end ">
                       <img
-                        alt={"client-" + params.discussionId + "-image"}
+                        alt={"client-" + params.discussionId}
                         src={discussion.client.photoUrl}
                         className={classes.littleAvatar}
                       ></img>

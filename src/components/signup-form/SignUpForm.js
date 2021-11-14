@@ -9,6 +9,12 @@ const validatePhone = (phoneNumber) => {
   const phonePattern = /^[0-9]{8}$/;
   return phonePattern.test(phoneNumber);
 };
+
+const validateDate = (dateString) => {
+  const datePattern = /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
+  return datePattern.test(dateString);
+};
+
 const validateEmail = (email) => {
   const emailPattern = /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/;
   return emailPattern.test(email);
@@ -110,14 +116,14 @@ const dateOfBirthReducer = (state, action) => {
     case "BIRTH_DATE_TOUCHED":
       return {
         touched: true,
-        val: action?.val,
-        isValid: action.val.length > 6,
+        val: action.val,
+        isValid: validateDate(action.val),
       };
 
     case "BIRTH_DATE_BLUR":
-      return { touched: true, val: state?.val, isValid: state.isValid };
+      return { touched: true, val: state.val, isValid: state.isValid };
     case "INPUT_VALIDATION":
-      return { touched: true, val: state?.val, isValid: state.isValid };
+      return { touched: true, val: state.val, isValid: state.isValid };
     default:
       throw new Error();
   }

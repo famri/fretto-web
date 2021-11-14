@@ -64,7 +64,16 @@ const Header = () => {
                 activeClassName="active "
                 className="headerNavLink"
               >
-                Messages
+                Discussions
+              </NavLink>
+            )}
+            {authCtx.isLoggedIn && authCtx.isClient && (
+              <NavLink
+                to="/profile"
+                activeClassName="active "
+                className="headerNavLink"
+              >
+                Profil
               </NavLink>
             )}
           </Nav>

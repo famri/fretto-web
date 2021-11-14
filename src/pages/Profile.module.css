@@ -1,0 +1,11 @@
+.bigAvatar {
+  vertical-align: middle;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.userName {
+  color: #134753;
+  font-weight: bold;
+}
