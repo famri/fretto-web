@@ -11,7 +11,7 @@ const validatePhone = (phoneNumber) => {
 };
 
 const validateDate = (dateString) => {
-  const datePattern = /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
+  const datePattern = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/;
   return datePattern.test(dateString);
 };
 
