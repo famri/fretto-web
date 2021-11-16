@@ -2,6 +2,7 @@ import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useReducer, useState } from "react";
 import { Button, Card, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { updateMobileSection } from "../../lib/profile-api";
 import AuthContext from "../../store/auth-context";
 
@@ -69,7 +70,7 @@ const MobileSection = (props) => {
 
   const [iccState, dispatchIcc] = useReducer(iccReducer, {
     touched: false,
-    val: "+216",
+    val: "1",
     isValid: true,
   });
   const [phoneState, dispatchPhone] = useReducer(phoneReducer, {
@@ -168,7 +169,7 @@ const MobileSection = (props) => {
                 value={iccState.val}
               >
                 <option value="">Indicateur</option>
-                <option value="+216">+216</option>
+                <option value="1">+216</option>
               </Form.Select>
               <Form.Control
                 disabled={!editMobileSection}
@@ -206,9 +207,9 @@ const MobileSection = (props) => {
             </OverlayTrigger>
           )}
           {!props.mobileData.checkedd && (
-            <Button variant="success" className="fs-2 fw-bold ">
+            <Link to="" className="fs-2  ">
               Faire vérifier mon numéro mobile
-            </Button>
+            </Link>
           )}
         </div>
       </Card.Footer>

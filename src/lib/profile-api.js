@@ -118,3 +118,30 @@ export async function updateMobileSection(params) {
     );
   }
 }
+
+export async function updateProfileImage(params) {
+  const formData = new FormData();
+  formData.append("image", params.image);
+
+  const response = await fetch(`${FRETTO_DOMAIN}/profiles/me/avatars`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${params.token}`,
+    },
+    body: formData,
+  });
+
+  let data;
+
+  if (!response.ok) {
+    try {
+      data = await response.json();
+    } catch (error) {
+      throw new Error("Échec de la mise à jour de la photo du profil.");
+    }
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec de la mise à jour de la photo du profil."
+    );
+  }
+}

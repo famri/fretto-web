@@ -9,8 +9,10 @@ import AuthContext from "../store/auth-context";
 import classes from "./Profile.module.css";
 import SuccessModal from "../components/modal/SuccessModal";
 import MobileSection from "../components/mobile-section/MobileSection";
+import { useHistory } from "react-router";
 const Profile = () => {
   const authContext = useContext(AuthContext);
+  const history = useHistory();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const {
     sendRequest: sendLoadProfileInfo,
@@ -45,6 +47,9 @@ const Profile = () => {
             <Row xs={1} md={1}>
               <Col className="d-flex justify-content-center">
                 <img
+                  onClick={() => {
+                    history.push("/profile/edit-profile-image");
+                  }}
                   alt={"user-profile"}
                   src={data.photoUrl}
                   className={classes.bigAvatar}
@@ -92,6 +97,12 @@ const Profile = () => {
                 mobileNumber: data.mobile.value,
                 checked: data.mobile.checked,
               }}
+              afterUpdateCallback={() =>
+                sendLoadProfileInfo({
+                  token: authContext.token,
+                  locale: "fr_FR",
+                })
+              }
             ></MobileSection>
           </Card.Body>
         </Card>

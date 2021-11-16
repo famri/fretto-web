@@ -2,6 +2,7 @@ import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useReducer, useState } from "react";
 import { Button, Card, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { updateEmailSection } from "../../lib/profile-api";
 import AuthContext from "../../store/auth-context";
 
@@ -139,9 +140,9 @@ const EmailSection = (props) => {
             </OverlayTrigger>
           )}
           {!props.emailData.checkedd && (
-            <Button variant="success" className="fs-2 fw-bold ">
+            <Link to="" className="fs-2 ">
               Faire vérifier mon email
-            </Button>
+            </Link>
           )}
         </div>
       </Card.Footer>

@@ -7,6 +7,7 @@ import {
     Container,
     Form, OverlayTrigger, Tooltip
 } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import useHttp from "../../hooks/use-http";
 import { fetchGenders } from "../../lib/genders-api";
 import { updateAboutSection } from "../../lib/profile-api";
@@ -436,9 +437,9 @@ const AboutSection = (props) => {
               </OverlayTrigger>
             )}
             {!props.aboutData.validationInfo.isValidated && (
-              <Button variant="success" className="fs-2 fw-bold ">
+              <Link to="" className="fs-2 ">
                 Faire valider mon identité
-              </Button>
+              </Link>
             )}
           </div>
         </Card.Footer>

@@ -1,0 +1,22 @@
+.editProfileImageTitle {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #134753;
+  font-style: italic;
+}
+
+@media (max-width: 767px) {
+  .sendButton {
+    margin-top: 10px;
+  }
+  .sendButtonCol {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+.sendButtonCol {
+}
+.chosenImage {
+  width: 150px;
+  height: 150px;
+}

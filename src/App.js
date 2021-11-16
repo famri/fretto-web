@@ -4,6 +4,7 @@ import Layout from "./components/layout/Layout";
 import ClientReviews from "./pages/ClientReviews";
 import ContactUs from "./pages/ContactUs";
 import Discussions from "./pages/Discussions";
+import EditProfileImage from "./pages/EditProfileImage";
 import Faq from "./pages/Faq";
 import Home from "./pages/Home";
 import Jobs from "./pages/Jobs";
@@ -70,6 +71,11 @@ function App() {
         {!authCtx.isLoggedIn && (
           <Route path="/password-reset">
             <PasswordReset />
+          </Route>
+        )}
+        {authCtx.isLoggedIn && authCtx.isClient && (
+          <Route path="/profile/edit-profile-image">
+            <EditProfileImage />
           </Route>
         )}
         {authCtx.isLoggedIn && (
