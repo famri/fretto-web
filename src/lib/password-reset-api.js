@@ -11,6 +11,7 @@ export async function requestPasswordReset(params) {
     }
   );
 
+
   let data;
 
   if (!response.ok) {

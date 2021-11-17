@@ -4,6 +4,8 @@ export async function fetchGenders(params) {
   const response = await fetch(
     `${FRETTO_DOMAIN}/genders?lang=${params.locale}`
   );
+
+  
   let data;
 
   try {

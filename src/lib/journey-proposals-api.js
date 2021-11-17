@@ -11,6 +11,9 @@ export async function loadJourneyProposals(params) {
     }
   );
 
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
   try {
     data = await response.json();
@@ -44,6 +47,11 @@ export async function updateProposalStatus(params) {
       body: JSON.stringify({ status: params.status }),
     }
   );
+
+  
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
 
   if (!response.ok) {

@@ -12,6 +12,10 @@ export async function loadDiscussions(params) {
       },
     }
   );
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
   try {
     data = await response.json();
@@ -41,6 +45,10 @@ export async function loadDiscussionMessages(params) {
       },
     }
   );
+  
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
   try {
     data = await response.json();
@@ -70,6 +78,10 @@ export async function loadDiscussion(params) {
       },
     }
   );
+  
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
   try {
     data = await response.json();
@@ -103,6 +115,10 @@ export async function sendMessage(params) {
       body: JSON.stringify({ content: params.message }),
     }
   );
+  
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
   try {
     data = await response.json();

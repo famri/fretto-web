@@ -6,11 +6,15 @@ import ReactDOM from "react-dom";
 import "./ErrorModal.css";
 
 const ErrorModal = (props) => {
+  let errorModalId = "error-modal";
+  if (props.id) {
+    errorModalId = errorModalId + "-" + props.id.toString();
+  }
   return (
     <Fragment>
       {ReactDOM.createPortal(
         <CustomModal headerClassName="error-header" titleClassName="title" {...props}></CustomModal>,
-        document.getElementById("error-modal")
+        document.getElementById(errorModalId)
       )}
     </Fragment>
   );

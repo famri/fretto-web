@@ -7,6 +7,7 @@ import Discussions from "./pages/Discussions";
 import EditProfileImage from "./pages/EditProfileImage";
 import Faq from "./pages/Faq";
 import Home from "./pages/Home";
+import IdentityCheck from "./pages/IdentityCheck";
 import Jobs from "./pages/Jobs";
 import JourneyProposals from "./pages/JourneyProposals";
 import JourneyRequests from "./pages/JourneyRequests";
@@ -20,6 +21,9 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Support from "./pages/Support";
 import AuthContext from "./store/auth-context";
+
+import MobileCheck from "./pages/MobileCheck";
+
 function App() {
   const authCtx = useContext(AuthContext);
   return (
@@ -76,6 +80,16 @@ function App() {
         {authCtx.isLoggedIn && authCtx.isClient && (
           <Route path="/profile/edit-profile-image">
             <EditProfileImage />
+          </Route>
+        )}
+        {authCtx.isLoggedIn && authCtx.isClient && (
+          <Route path="/profile/check-identity">
+            <IdentityCheck />
+          </Route>
+        )}
+        {authCtx.isLoggedIn && authCtx.isClient && (
+          <Route path="/profile/check-mobile">
+            <MobileCheck />
           </Route>
         )}
         {authCtx.isLoggedIn && (

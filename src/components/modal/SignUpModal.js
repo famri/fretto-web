@@ -29,7 +29,7 @@ const SignUpModal = (props) => {
             ></SignUpForm>
           </Modal.Body>
         </Modal>,
-        document.getElementById("error-modal")
+        document.getElementById("signup-modal")
       )}
     </Fragment>
   );

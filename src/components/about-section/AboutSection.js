@@ -1,11 +1,16 @@
-import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
+import {
+  faCheckCircle,
+  faHourglass,
+} from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useReducer, useState } from "react";
 import {
-    Button,
-    Card,
-    Container,
-    Form, OverlayTrigger, Tooltip
+  Button,
+  Card,
+  Container,
+  Form,
+  OverlayTrigger,
+  Tooltip,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import useHttp from "../../hooks/use-http";
@@ -28,13 +33,6 @@ const maxDateOfBirth = () => {
 
 const genderReducer = (state, action) => {
   switch (action.type) {
-    case "INIT":
-      return {
-        touched: false,
-        val: action.val,
-        isValid: true,
-      };
-
     case "MENU_OPENED":
       return {
         touched: true,
@@ -66,13 +64,6 @@ const genderReducer = (state, action) => {
 
 const nameReducer = (state, action) => {
   switch (action.type) {
-    case "INIT":
-      return {
-        touched: false,
-        val: action.val,
-        isValid: true,
-      };
-
     case "NAME_TOUCHED":
       return {
         touched: true,
@@ -91,13 +82,6 @@ const nameReducer = (state, action) => {
 
 const minibioReducer = (state, action) => {
   switch (action.type) {
-    case "INIT":
-      return {
-        touched: false,
-        val: action.val || "",
-        isValid:
-          action.val && action.val.length >= 6 && action.val.length <= 150,
-      };
     case "MINIBIO_TOUCHED":
       return {
         touched: true,
@@ -116,12 +100,6 @@ const minibioReducer = (state, action) => {
 
 const dateOfBirthReducer = (state, action) => {
   switch (action.type) {
-    case "INIT":
-      return {
-        touched: false,
-        val: action.val,
-        isValid: true,
-      };
     case "BIRTH_DATE_TOUCHED":
       return {
         touched: true,
@@ -172,7 +150,7 @@ const AboutSection = (props) => {
     isValid:
       props.aboutData.minibio &&
       props.aboutData.minibio.length >= 6 &&
-      props.aboutData.minibio <= 150,
+      props.aboutData.minibio.length <= 150,
   });
 
   const [updateAboutSectionError, setUpdateAboutSectionError] = useState();
@@ -221,36 +199,35 @@ const AboutSection = (props) => {
   };
 
   const genderClassName =
-    genderState && genderState.touched
+    editAboutSection && genderState && genderState.touched
       ? genderState.val && genderState.isValid
         ? "is-valid"
         : "is-invalid"
       : "";
   const lastnameClassName =
-    lastnameState && lastnameState.touched
+    editAboutSection && lastnameState && lastnameState.touched
       ? lastnameState.val && lastnameState.isValid
         ? "is-valid"
         : "is-invalid"
       : "";
   const firstnameClassName =
-    firstnameState && firstnameState.touched
+    editAboutSection && firstnameState && firstnameState.touched
       ? firstnameState.val && firstnameState.isValid
         ? "is-valid"
         : "is-invalid"
       : "";
   const dateOfBirthClassName =
-    birthDateState && birthDateState.touched
+    editAboutSection && birthDateState && birthDateState.touched
       ? birthDateState.val && birthDateState.isValid
         ? "is-valid"
         : "is-invalid"
       : "";
-  const minibioClassName = editAboutSection
-    ? minibioState && minibioState.touched
+  const minibioClassName =
+    editAboutSection && minibioState && minibioState.touched
       ? minibioState.val && minibioState.isValid
         ? "is-valid"
         : "is-invalid"
-      : ""
-    : "";
+      : "";
 
   if (fetchGendersStatus === "pending") {
     return (
@@ -436,11 +413,31 @@ const AboutSection = (props) => {
                 </Button>
               </OverlayTrigger>
             )}
-            {!props.aboutData.validationInfo.isValidated && (
-              <Link to="" className="fs-2 ">
-                Faire valider mon identité
-              </Link>
-            )}
+
+            {!props.aboutData.validationInfo.isValidated &&
+              props.aboutData.validationInfo.state === "PENDING" && (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={
+                    <Tooltip className="fs-2 ">Vérification encours</Tooltip>
+                  }
+                >
+                  <Button variant="light">
+                    <FontAwesomeIcon
+                      icon={faHourglass}
+                      size="3x"
+                      color="orange"
+                    />
+                  </Button>
+                </OverlayTrigger>
+              )}
+
+            {!props.aboutData.validationInfo.isValidated &&
+              props.aboutData.validationInfo.state === "NOT_VALIDATED" && (
+                <Link to="/profile/check-identity" className="fs-2 ">
+                  Faire vérifier mon identité
+                </Link>
+              )}
           </div>
         </Card.Footer>
       </Card>

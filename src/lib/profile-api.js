@@ -11,6 +11,9 @@ export async function loadProfileInfo(params) {
     }
   );
 
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
   try {
     data = await response.json();
@@ -44,6 +47,9 @@ export async function updateAboutSection(params) {
     }),
   });
 
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
 
   if (!response.ok) {
@@ -71,6 +77,9 @@ export async function updateEmailSection(params) {
     }),
   });
 
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
 
   if (!response.ok) {
@@ -104,6 +113,9 @@ export async function updateMobileSection(params) {
     }),
   });
 
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
 
   if (!response.ok) {
@@ -131,6 +143,9 @@ export async function updateProfileImage(params) {
     body: formData,
   });
 
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
 
   if (!response.ok) {
@@ -144,4 +159,131 @@ export async function updateProfileImage(params) {
         "Échec de la mise à jour de la photo du profil."
     );
   }
+}
+
+export async function uploadIdentityFile(params) {
+  const formData = new FormData();
+  formData.append("document", params.document);
+
+  const response = await fetch(`${FRETTO_DOMAIN}/users/me/identities`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${params.token}`,
+    },
+    body: formData,
+  });
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+  let data;
+
+  if (!response.ok) {
+    try {
+      data = await response.json();
+    } catch (error) {
+      throw new Error("Échec de l'envoi du document d'identité.");
+    }
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec de l'envoi du document d'identité."
+    );
+  }
+}
+
+export async function sendEmailValidationLink(params) {
+  const response = await fetch(`${FRETTO_DOMAIN}/validation-codes/email/send`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${params.token}`,
+    },
+    body: JSON.stringify({
+      email: params.email,
+    }),
+  });
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+  let data;
+
+  if (!response.ok) {
+    try {
+      data = await response.json();
+    } catch (error) {
+      throw new Error("Échec de l'envoi du lien de validation par email.");
+    }
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec de l'envoi du lien de validation par email."
+    );
+  }
+}
+
+export async function sendMobileValidationCode(params) {
+  const response = await fetch(`${FRETTO_DOMAIN}/validation-codes/sms/send`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${params.token}`,
+    },
+    body: JSON.stringify({
+      icc: params.icc,
+      mobileNumber: params.mobileNumber,
+    }),
+  });
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+  let data;
+
+  if (!response.ok) {
+    try {
+      data = await response.json();
+    } catch (error) {
+      throw new Error("Échec de l'envoi du code de validation par SMS.");
+    }
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec de l'envoi du code de validation par SMS."
+    );
+  }
+}
+
+export async function validateMobileValidationCode(params) {
+  const response = await fetch(
+    `${FRETTO_DOMAIN}/validation-codes/sms/validate`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: JSON.stringify({
+        code: params.code,
+      }),
+    }
+  );
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Échec de la validation du code.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec de la validation du code."
+    );
+  }
+
+  return data;
 }

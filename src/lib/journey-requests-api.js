@@ -9,6 +9,9 @@ export async function createJourneyRequest(params) {
     },
   });
 
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
 
   if (!response.ok) {
@@ -39,6 +42,9 @@ export async function loadJourneyRequest(params) {
     }
   );
 
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
   try {
     data = await response.json();
@@ -68,6 +74,11 @@ export async function loadJourneyRequests(params) {
       },
     }
   );
+
+  
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
   try {
     data = await response.json();

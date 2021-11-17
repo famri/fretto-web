@@ -83,13 +83,13 @@ const Profile = () => {
               }
             ></AboutSection>
 
-            <hr className="my-5 mx-5 border border-primary border-2" />
+            <hr className={classes.hrLine + " my-5 mx-5 "} />
             <EmailSection
               emailData={{ email: data.email.value }}
               afterUpdateCallback={() => setShowSuccessModal(true)}
             ></EmailSection>
 
-            <hr className="my-5 mx-5 border border-primary border-2" />
+            <hr className={classes.hrLine + " my-5 mx-5 "} />
 
             <MobileSection
               mobileData={{

@@ -6,6 +6,10 @@ import ReactDOM from "react-dom";
 import classes from "./InfoModal.module.css";
 
 const InfoModal = (props) => {
+  let infoModalId = "info-modal";
+  if (props.id) {
+    infoModalId = infoModalId + "-" + props.id.toString();
+  }
   return (
     <Fragment>
       {ReactDOM.createPortal(
@@ -13,7 +17,7 @@ const InfoModal = (props) => {
           headerClassName={classes.infoHeader}
           {...props}
         ></CustomModal>,
-        document.getElementById("info-modal")
+        document.getElementById(infoModalId)
       )}
     </Fragment>
   );

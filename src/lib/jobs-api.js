@@ -5,6 +5,7 @@ export async function loadJobs(params) {
     `${FRETTO_DOMAIN}/jobs?page=${params.page}&size=${params.size}`
   );
 
+
   let data;
   try {
     data = await response.json();

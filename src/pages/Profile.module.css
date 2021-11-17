@@ -11,3 +11,10 @@
   font-weight: bold;
   font-style: italic;
 }
+
+.hrLine {
+  border-color: #134753;
+  background-color: #134753;
+  color: #134753;
+  opacity: 1;
+}

@@ -9,6 +9,9 @@ export async function createUserPreference(params) {
     },
   });
 
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
   let data;
 
   if (!response.ok) {

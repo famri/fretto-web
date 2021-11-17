@@ -1,11 +1,14 @@
 import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useReducer, useState } from "react";
+import { Fragment, useContext, useReducer, useState } from "react";
 import { Button, Card, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { updateMobileSection } from "../../lib/profile-api";
+import { Link, useHistory } from "react-router-dom";
+import {
+  sendMobileValidationCode,
+  updateMobileSection,
+} from "../../lib/profile-api";
 import AuthContext from "../../store/auth-context";
-
+import ErrorModal from "../modal/ErrorModal";
 const validatePhone = (phoneNumber) => {
   const phonePattern = /^[0-9]{8}$/;
   return phonePattern.test(phoneNumber);
@@ -66,6 +69,7 @@ const phoneReducer = (state, action) => {
 };
 const MobileSection = (props) => {
   const authContext = useContext(AuthContext);
+  const history = useHistory();
   const [editMobileSection, setEditMobileSection] = useState(false);
 
   const [iccState, dispatchIcc] = useReducer(iccReducer, {
@@ -81,6 +85,12 @@ const MobileSection = (props) => {
 
   const [updateMobileSectionError, setUpdateMobileSectionError] = useState();
 
+  const [showFailureModal, setShowFailureModal] = useState(false);
+
+  const ICC_LIST = [
+    { key: "", value: "Indicateur" },
+    { key: "1", value: "+216" },
+  ];
   const handleSave = () => {
     dispatchIcc({ type: "INPUT_VALIDATION" });
     dispatchPhone({ type: "INPUT_VALIDATION" });
@@ -104,7 +114,20 @@ const MobileSection = (props) => {
       }
     }
   };
-
+  const requestSendMobileValidationCode = (event) => {
+    event.preventDefault();
+    sendMobileValidationCode({
+      mobileNumber: phoneState.val,
+      icc: ICC_LIST.find((el) => el.key === iccState.val).value,
+      token: authContext.token,
+    })
+      .then(() => {
+        history.push("/profile/check-mobile");
+      })
+      .catch((error) => {
+        setShowFailureModal(true);
+      });
+  };
   const iccClassName =
     iccState && iccState.touched
       ? iccState.val && iccState.isValid
@@ -119,101 +142,127 @@ const MobileSection = (props) => {
     : "";
 
   return (
-    <Card>
-      <Card.Header className="fs-2 fw-bold">
-        <div className="d-flex justify-content-between">
-          <h1>Numéro Mobile</h1>
-          <Button
-            className="fs-2"
-            onClick={() => {
-              !editMobileSection
-                ? setEditMobileSection(!editMobileSection)
-                : handleSave();
-            }}
-          >
-            {!editMobileSection ? "Editer" : "Sauvegarder"}
-          </Button>
-        </div>
-      </Card.Header>
-      <Card.Body>
-        {updateMobileSectionError && !!updateMobileSectionError.message && (
-          <h1 className="d-flex justify-content-center error">
-            {updateMobileSectionError.message}
-          </h1>
-        )}
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Téléphone Mobile</Form.Label>
-            <div className="row-group">
-              <Form.Select
-                disabled={!editMobileSection}
-                style={{ width: "45%" }}
-                className={iccClassName}
-                required
-                onChange={(event) =>
-                  dispatchIcc({
-                    type: "ICC_CHOSEN",
-                    val: event.target.value,
-                  })
-                }
-                onClick={(event) =>
-                  dispatchIcc({
-                    type: "MENU_OPENED",
-                  })
-                }
-                onBlur={(event) =>
-                  dispatchIcc({
-                    type: "MENU_BLUR",
-                  })
-                }
-                value={iccState.val}
-              >
-                <option value="">Indicateur</option>
-                <option value="1">+216</option>
-              </Form.Select>
-              <Form.Control
-                disabled={!editMobileSection}
-                style={{ display: "inline" }}
-                className={phoneClassName}
-                required
-                type="number"
-                onChange={(e) =>
-                  dispatchPhone({
-                    type: "USER_INPUT",
-                    val: e.target.value,
-                  })
-                }
-                onBlur={() => dispatchPhone({ type: "INPUT_BLUR" })}
-                value={phoneState.val}
-              ></Form.Control>
-            </div>
-          </Form.Group>
-        </Form>
-      </Card.Body>
-      <Card.Footer className="d-flex justify-content-end">
-        <div className="my-3">
-          {props.mobileData.checked && (
-            <OverlayTrigger
-              placement="top"
-              overlay={<Tooltip className="fs-2 ">Numéro mobile vérifié</Tooltip>}
+    <Fragment>
+      <Card>
+        <Card.Header className="fs-2 fw-bold">
+          <div className="d-flex justify-content-between">
+            <h1>Numéro Mobile</h1>
+            <Button
+              className="fs-2"
+              onClick={() => {
+                !editMobileSection
+                  ? setEditMobileSection(!editMobileSection)
+                  : handleSave();
+              }}
             >
-              <Button variant="light">
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  size="3x"
-                  color="#B3CE55"
-                />
-              </Button>
-            </OverlayTrigger>
+              {!editMobileSection ? "Editer" : "Sauvegarder"}
+            </Button>
+          </div>
+        </Card.Header>
+        <Card.Body>
+          {updateMobileSectionError && !!updateMobileSectionError.message && (
+            <h1 className="d-flex justify-content-center error">
+              {updateMobileSectionError.message}
+            </h1>
           )}
-          {!props.mobileData.checkedd && (
-            <Link to="" className="fs-2  ">
-              Faire vérifier mon numéro mobile
-            </Link>
-          )}
-        </div>
-      </Card.Footer>
-    </Card>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Téléphone Mobile</Form.Label>
+              <div className="row-group">
+                <Form.Select
+                  disabled={!editMobileSection}
+                  style={{ width: "45%" }}
+                  className={iccClassName}
+                  required
+                  onChange={(event) =>
+                    dispatchIcc({
+                      type: "ICC_CHOSEN",
+                      val: event.target.value,
+                    })
+                  }
+                  onClick={(event) =>
+                    dispatchIcc({
+                      type: "MENU_OPENED",
+                    })
+                  }
+                  onBlur={(event) =>
+                    dispatchIcc({
+                      type: "MENU_BLUR",
+                    })
+                  }
+                  value={iccState.val}
+                >
+                  {ICC_LIST.map((iccObj) => (
+                    <option key={iccObj.key} value={iccObj.key}>
+                      {iccObj.value}
+                    </option>
+                  ))}
+                </Form.Select>
+                <Form.Control
+                  disabled={!editMobileSection}
+                  style={{ display: "inline" }}
+                  className={phoneClassName}
+                  required
+                  type="number"
+                  onChange={(e) =>
+                    dispatchPhone({
+                      type: "USER_INPUT",
+                      val: e.target.value,
+                    })
+                  }
+                  onBlur={() => dispatchPhone({ type: "INPUT_BLUR" })}
+                  value={phoneState.val}
+                ></Form.Control>
+              </div>
+            </Form.Group>
+          </Form>
+        </Card.Body>
+        <Card.Footer className="d-flex justify-content-end">
+          <div className="my-3">
+            {props.mobileData.checked && (
+              <OverlayTrigger
+                placement="top"
+                overlay={
+                  <Tooltip className="fs-2 ">Numéro mobile vérifié</Tooltip>
+                }
+              >
+                <Button variant="light">
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    size="3x"
+                    color="#B3CE55"
+                  />
+                </Button>
+              </OverlayTrigger>
+            )}
+            {!props.mobileData.checked && (
+              <Link
+                onClick={(event) => {
+                  requestSendMobileValidationCode(event);
+                }}
+                className="fs-2  "
+              >
+                Faire vérifier mon numéro mobile
+              </Link>
+            )}
+          </div>
+        </Card.Footer>
+      </Card>
+
+      <ErrorModal
+        id={"2"}
+        show={showFailureModal}
+        title="Échec de l'envoi code par SMS"
+        description="Une erreur s'est produite lors de la tentative d'envoi du code de validation. Veuillez réessayer ou contacter le support si le problème persiste."
+        onActionClick={() => {
+          setShowFailureModal(false);
+        }}
+        onHide={() => {
+          setShowFailureModal(false);
+        }}
+        actionName="OK"
+      ></ErrorModal>
+    </Fragment>
   );
 };
 
