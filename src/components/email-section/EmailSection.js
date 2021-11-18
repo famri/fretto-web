@@ -2,12 +2,14 @@ import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, useContext, useReducer, useState } from "react";
 import { Button, Card, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Link } from "react-router-dom";
+
 import { updateEmailSection } from "../../lib/profile-api";
 import AuthContext from "../../store/auth-context";
 import ErrorModal from "../modal/ErrorModal";
 import SuccessModal from "../modal/SuccessModal";
 import { sendEmailValidationLink } from "../../lib/profile-api";
+
+
 const validateEmail = (email) => {
   const emailPattern = /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/;
   return emailPattern.test(email);
@@ -54,6 +56,7 @@ const EmailSection = (props) => {
     event.preventDefault();
     sendEmailValidationLink({
       email: emailState.val,
+      locale: "fr_FR",
       token: authContext.token,
     })
       .then(() => {
@@ -159,14 +162,15 @@ const EmailSection = (props) => {
               </OverlayTrigger>
             )}
             {!props.emailData.checked && (
-              <Link
+              <a
+                href="/profile"
+                className={ " fs-2"}
                 onClick={(event) => {
                   requestSendEmailValidationLink(event);
                 }}
-                className="fs-2 "
               >
                 Faire vérifier mon email
-              </Link>
+              </a>
             )}
           </div>
         </Card.Footer>

@@ -192,7 +192,7 @@ export async function uploadIdentityFile(params) {
 }
 
 export async function sendEmailValidationLink(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/validation-codes/email/send`, {
+  const response = await fetch(`${FRETTO_DOMAIN}/validation-codes/email/send?lang=${params.locale}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -222,7 +222,7 @@ export async function sendEmailValidationLink(params) {
 }
 
 export async function sendMobileValidationCode(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/validation-codes/sms/send`, {
+  const response = await fetch(`${FRETTO_DOMAIN}/validation-codes/sms/send?lang=${params.locale}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
