@@ -45,7 +45,7 @@ export async function loadDiscussionMessages(params) {
       },
     }
   );
-  
+
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
   }
@@ -78,7 +78,7 @@ export async function loadDiscussion(params) {
       },
     }
   );
-  
+
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
   }
@@ -115,7 +115,7 @@ export async function sendMessage(params) {
       body: JSON.stringify({ content: params.message }),
     }
   );
-  
+
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
   }
@@ -134,4 +134,73 @@ export async function sendMessage(params) {
   }
 
   return data.content;
+}
+
+//https://192.168.50.4:8443/wamya-backend/users/me/messages/count?read=false
+export async function countMissedMessages(params) {
+  const response = await fetch(
+    `${FRETTO_DOMAIN}/users/me/messages/count?read=false`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+    }
+  );
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Échec du chargement de la discussion.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      (data &&
+        ((data.errorCode === "OBJECT_NOT_FOUND" &&
+          "Échec du chargement de la discussion.") ||
+          (data.errors && data.errors.join(", ")))) ||
+        "Échec du chargement de la discussion."
+    );
+  }
+
+  return data.count;
+}
+
+// PATCH https://192.168.50.4:8443/wamya-backend/users/me/discussions/203/messages/1
+export async function updateMessageReadStatus(params) {
+  const response = await fetch(
+    `${FRETTO_DOMAIN}/users/me/discussions/${params.discussionId}/messages/${params.messageId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: JSON.stringify({ isRead: params.isRead }),
+    }
+  );
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+
+  if (!response.ok) {
+    let data;
+    try {
+      data = await response.json();
+    } catch (error) {
+      throw new Error("Échec de la mise à jour du statut de message.");
+    }
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec de la mise à jour du statut de message."
+    );
+  }
+  return;
 }

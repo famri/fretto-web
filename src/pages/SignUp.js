@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { Fragment, useContext, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import FrettoLogo from "../components/logos/FrettoLogo";
 import SignUpForm from "../components/signup-form/SignUpForm";
@@ -7,7 +7,7 @@ import { signup } from "../lib/authentication-api";
 import { createUserPreference } from "../lib/user-preferences-api";
 import AuthContext from "../store/auth-context";
 import "./SignUp.css";
-import { Fragment } from "react";
+
 const SignUp = () => {
   const authCtx = useContext(AuthContext);
   const history = useHistory();
@@ -43,6 +43,7 @@ const SignUp = () => {
           signupData.oauthId,
           signupData.isClient
         );
+
         sendTimezoneUserPreferenceRequest({
           userPreference: { timezone: "Africa/Tunis" },
           token: signupData.token,

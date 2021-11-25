@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState, createContext } from "react";
 import { useHistory } from "react-router-dom";
 const FRETTO_AUTH = "frettoAuth";
-const AuthContext = React.createContext({
+const AuthContext = createContext({
   isLoggedIn: false,
   token: "",
   expiryDate: null,

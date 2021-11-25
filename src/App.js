@@ -73,7 +73,12 @@ function App() {
           </Route>
         )}
         {!authCtx.isLoggedIn && (
-          <Route path="/password-reset">
+          <Route path="/request-password-reset">
+            <PasswordReset />
+          </Route>
+        )}
+        {!authCtx.isLoggedIn && (
+          <Route path="/reset-password">
             <PasswordReset />
           </Route>
         )}

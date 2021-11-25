@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
   Button,
   Card,
@@ -6,7 +6,7 @@ import {
   Container,
   Form,
   Row,
-  Spinner,
+  Spinner
 } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
@@ -15,22 +15,70 @@ import {
   loadDiscussion,
   loadDiscussionMessages,
   sendMessage,
+  updateMessageReadStatus
 } from "../lib/discussions-api";
 import AuthContext from "../store/auth-context";
+import {
+  WebSocketContext,
+  WebSocketContextMethods
+} from "../store/websocket-context";
 import classes from "./Messages.module.css";
-const Messages = () => {
+
+const Messages = (props) => {
   const params = useParams();
   const authContext = useContext(AuthContext);
   const messageContent = useRef();
+  const webSocketContextMethods = useContext(WebSocketContextMethods);
+  const webSocketContext = useContext(WebSocketContext);
 
-  const lastMessageRef = useRef();
+  const messageBoxRef = useRef();
+  const lastMessageRef = useRef(null);
+
+  const handleLastMessageRef = useCallback(
+    (node) => {
+      if (lastMessageRef.current) {
+      }
+      if (node) {
+        node.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+          inline: "nearest",
+        });
+        const lastMessage = webSocketContext.currentDiscussionMessages.find(
+          (e, index) =>
+            index === webSocketContext.currentDiscussionMessages.length - 1
+        );
+        if (!lastMessage.read) {
+          updateMessageReadStatus({
+            token: authContext.token,
+            discussionId: params.discussionId,
+            messageId: lastMessage.id,
+            isRead: true,
+          })
+            .then(() => webSocketContextMethods.decrementMissedMessagesCount())
+            .catch((error) =>
+              console.log("error when update message read status: \n" + error)
+            );
+        }
+      }
+      lastMessageRef.current = node;
+    },
+    [
+      authContext.token,
+      params.discussionId,
+      webSocketContext.currentDiscussionMessages,
+    
+      webSocketContextMethods,
+    ]
+  );
+
   const [isLoadingDiscussion, setIsLoadingDiscussion] = useState(true);
-  const [isLoadingMessages, setIsLoadingMessages] = useState();
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
 
   const [error, setError] = useState();
   const [discussion, setDiscussion] = useState();
   const [hasNext, setHasNext] = useState(true);
-  const [messages, setMessages] = useState([]);
+
   const [pageNumber, setPageNumber] = useState(0);
 
   const {
@@ -68,7 +116,6 @@ const Messages = () => {
         setDiscussion(discussionData);
         setIsLoadingDiscussion(false);
       })
-      .then(() => {})
       .catch((error) => {
         setError(error.message);
         setIsLoadingDiscussion(false);
@@ -84,25 +131,23 @@ const Messages = () => {
       token: authContext.token,
     })
       .then((messagesData) => {
-        setMessages((oldMessages) => [
-          ...messagesData.content.reverse(),
-          ...oldMessages,
-        ]);
+        webSocketContextMethods.updateCurrentDiscussionMessages(
+          messagesData.content,
+          pageNumber === 0
+        );
         setHasNext(messagesData.hasNext);
         setIsLoadingMessages(false);
-        if (pageNumber === 0 && messagesData.content.length > 0) {
-          lastMessageRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: "end",
-            inline: "nearest",
-          });
-        }
       })
       .catch((error) => {
         setError(error.message);
         setIsLoadingMessages(false);
       });
-  }, [params.discussionId, authContext.token, pageNumber]);
+  }, [
+    params.discussionId,
+    authContext.token,
+    pageNumber,
+    webSocketContextMethods,
+  ]);
 
   if (isLoadingDiscussion) {
     return (
@@ -154,203 +199,229 @@ const Messages = () => {
               </Button>
             </div>
           )}
-          {messages.map((m, index) => {
-            if (discussion.transporter.id === m.authorId) {
-              if (index === 0) {
-                return (
-                  <Row
-                    key={m.id}
-                    xs={2}
-                    md={2}
-                    className="d-flex justify-content-start my-3"
-                  >
-                    <Col
+          {!isLoadingMessages &&
+            webSocketContext.currentDiscussionMessages.map((m, index) => {
+              if (discussion.transporter.id === m.authorId) {
+                if (index === 0) {
+                  return (
+                    <Row
+                      key={m.id}
                       xs={2}
-                      md={1}
-                      className="d-flex justify-content-start "
+                      md={2}
+                      className="d-flex justify-content-start my-3"
                     >
-                      <img
-                        alt={"transporter-" + params.discussionId}
-                        src={discussion.transporter.photoUrl}
-                        className={classes.littleAvatar}
-                      ></img>
-                    </Col>
-                    <Col
-                      xs={10}
-                      md={11}
-                      className="d-flex justify-content-start "
-                    >
-                      <span
-                        className={
-                          classes.transporterMessageContent + " fs-2 ml-5"
-                        }
+                      <Col
+                        xs={2}
+                        md={1}
+                        className="d-flex justify-content-start "
                       >
-                        {m.content}
-                      </span>
-                    </Col>
-                  </Row>
-                );
-              } else if (index === messages.length - 1) {
-                return (
-                  <Row
-                    key={m.id}
-                    ref={lastMessageRef}
-                    xs={2}
-                    md={2}
-                    className="d-flex justify-content-start my-3"
-                  >
-                    <Col
+                        <img
+                          alt={"transporter-" + params.discussionId}
+                          src={discussion.transporter.photoUrl}
+                          className={classes.littleAvatar}
+                        ></img>
+                      </Col>
+                      <Col
+                        xs={10}
+                        md={11}
+                        className="d-flex justify-content-start "
+                      >
+                        <span
+                          className={
+                            classes.transporterMessageContent + " fs-2 ml-5"
+                          }
+                        >
+                          {m.content}
+                        </span>
+                      </Col>
+                    </Row>
+                  );
+                } else if (
+                  index ===
+                  webSocketContext.currentDiscussionMessages.length - 1
+                ) {
+                  return (
+                    <Row
+                      ref={handleLastMessageRef}
+                      key={m.id}
                       xs={2}
-                      md={1}
-                      className="d-flex justify-content-start "
+                      md={2}
+                      className="d-flex justify-content-start my-3"
                     >
-                      <img
-                        alt={"transporter-" + params.discussionId}
-                        src={discussion.transporter.photoUrl}
-                        className={classes.littleAvatar}
-                      ></img>
-                    </Col>
-                    <Col
-                      xs={10}
-                      md={11}
-                      className="d-flex justify-content-start "
-                    >
-                      <span
-                        className={
-                          classes.transporterMessageContent + " fs-2 ml-5"
-                        }
+                      <Col
+                        xs={2}
+                        md={1}
+                        className="d-flex justify-content-start "
                       >
-                        {m.content}
-                      </span>
-                    </Col>
-                  </Row>
-                );
+                        <img
+                          alt={"transporter-" + params.discussionId}
+                          src={discussion.transporter.photoUrl}
+                          className={classes.littleAvatar}
+                        ></img>
+                      </Col>
+                      <Col
+                        xs={10}
+                        md={11}
+                        className="d-flex justify-content-start "
+                      >
+                        <span
+                          className={
+                            classes.transporterMessageContent + " fs-2 ml-5"
+                          }
+                        >
+                          {m.content}
+                        </span>
+                      </Col>
+                    </Row>
+                  );
+                } else {
+                  return (
+                    <Row
+                      key={m.id}
+                      xs={2}
+                      md={2}
+                      className="d-flex justify-content-start my-3"
+                    >
+                      <Col
+                        xs={2}
+                        md={1}
+                        className="d-flex justify-content-start "
+                      >
+                        <img
+                          alt={"transporter-" + params.discussionId}
+                          src={discussion.transporter.photoUrl}
+                          className={classes.littleAvatar}
+                        ></img>
+                      </Col>
+                      <Col
+                        xs={10}
+                        md={11}
+                        className="d-flex justify-content-start "
+                      >
+                        <span
+                          className={
+                            classes.transporterMessageContent + " fs-2 ml-5"
+                          }
+                        >
+                          {m.content}
+                        </span>
+                      </Col>
+                    </Row>
+                  );
+                }
               } else {
-                return (
-                  <Row
-                    key={m.id}
-                    xs={2}
-                    md={2}
-                    className="d-flex justify-content-start my-3"
-                  >
-                    <Col
+                if (index === 0) {
+                  return (
+                    <Row
+                      key={m.id}
                       xs={2}
-                      md={1}
-                      className="d-flex justify-content-start "
+                      md={2}
+                      className="d-flex justify-content-end my-3"
                     >
-                      <img
-                        alt={"transporter-" + params.discussionId}
-                        src={discussion.transporter.photoUrl}
-                        className={classes.littleAvatar}
-                      ></img>
-                    </Col>
-                    <Col
-                      xs={10}
-                      md={11}
-                      className="d-flex justify-content-start "
-                    >
-                      <span
-                        className={
-                          classes.transporterMessageContent + " fs-2 ml-5"
-                        }
+                      <Col
+                        xs={10}
+                        md={11}
+                        className="d-flex justify-content-end "
                       >
-                        {m.content}
-                      </span>
-                    </Col>
-                  </Row>
-                );
+                        <span
+                          className={
+                            classes.clientMessageContent + " fs-2 ml-5"
+                          }
+                        >
+                          {m.content}
+                        </span>
+                      </Col>
+                      <Col
+                        xs={2}
+                        md={1}
+                        className="d-flex justify-content-end "
+                      >
+                        <img
+                          alt={"client-" + params.discussionId}
+                          src={discussion.client.photoUrl}
+                          className={classes.littleAvatar}
+                        ></img>
+                      </Col>
+                    </Row>
+                  );
+                } else if (
+                  index ===
+                  webSocketContext.currentDiscussionMessages.length - 1
+                ) {
+                  return (
+                    <Row
+                      ref={handleLastMessageRef}
+                      key={m.id}
+                      xs={2}
+                      md={2}
+                      className="d-flex justify-content-end my-3"
+                    >
+                      <Col
+                        xs={10}
+                        md={11}
+                        className="d-flex justify-content-end "
+                      >
+                        <span
+                          className={
+                            classes.clientMessageContent + " fs-2 ml-5"
+                          }
+                          id={m.id}
+                        >
+                          {m.content}
+                        </span>
+                      </Col>
+                      <Col
+                        xs={2}
+                        md={1}
+                        className="d-flex justify-content-end "
+                      >
+                        <img
+                          alt={"client-" + params.discussionId}
+                          src={discussion.client.photoUrl}
+                          className={classes.littleAvatar}
+                        ></img>
+                      </Col>
+                    </Row>
+                  );
+                } else {
+                  return (
+                    <Row
+                      key={m.id}
+                      xs={2}
+                      md={2}
+                      className="d-flex justify-content-end my-3"
+                    >
+                      <Col
+                        xs={10}
+                        md={11}
+                        className="d-flex justify-content-end "
+                      >
+                        <span
+                          className={
+                            classes.clientMessageContent + " fs-2 ml-5"
+                          }
+                        >
+                          {m.content}
+                        </span>
+                      </Col>
+                      <Col
+                        xs={2}
+                        md={1}
+                        className="d-flex justify-content-end "
+                      >
+                        <img
+                          alt={"client-" + params.discussionId}
+                          src={discussion.client.photoUrl}
+                          className={classes.littleAvatar}
+                        ></img>
+                      </Col>
+                    </Row>
+                  );
+                }
               }
-            } else {
-              if (index === 0) {
-                return (
-                  <Row
-                    key={m.id}
-                    xs={2}
-                    md={2}
-                    className="d-flex justify-content-end my-3"
-                  >
-                    <Col
-                      xs={10}
-                      md={11}
-                      className="d-flex justify-content-end "
-                    >
-                      <span
-                        className={classes.clientMessageContent + " fs-2 ml-5"}
-                      >
-                        {m.content}
-                      </span>
-                    </Col>
-                    <Col xs={2} md={1} className="d-flex justify-content-end ">
-                      <img
-                        alt={"client-" + params.discussionId}
-                        src={discussion.client.photoUrl}
-                        className={classes.littleAvatar}
-                      ></img>
-                    </Col>
-                  </Row>
-                );
-              } else if (index === messages.length - 1) {
-                return (
-                  <Row
-                    key={m.id}
-                    ref={lastMessageRef}
-                    xs={2}
-                    md={2}
-                    className="d-flex justify-content-end my-3"
-                  >
-                    <Col
-                      xs={10}
-                      md={11}
-                      className="d-flex justify-content-end "
-                    >
-                      <span
-                        className={classes.clientMessageContent + " fs-2 ml-5"}
-                      >
-                        {m.content}
-                      </span>
-                    </Col>
-                    <Col xs={2} md={1} className="d-flex justify-content-end ">
-                      <img
-                        alt={"client-" + params.discussionId}
-                        src={discussion.client.photoUrl}
-                        className={classes.littleAvatar}
-                      ></img>
-                    </Col>
-                  </Row>
-                );
-              } else {
-                return (
-                  <Row
-                    key={m.id}
-                    xs={2}
-                    md={2}
-                    className="d-flex justify-content-end my-3"
-                  >
-                    <Col
-                      xs={10}
-                      md={11}
-                      className="d-flex justify-content-end "
-                    >
-                      <span
-                        className={classes.clientMessageContent + " fs-2 ml-5"}
-                      >
-                        {m.content}
-                      </span>
-                    </Col>
-                    <Col xs={2} md={1} className="d-flex justify-content-end ">
-                      <img
-                        alt={"client-" + params.discussionId}
-                        src={discussion.client.photoUrl}
-                        className={classes.littleAvatar}
-                      ></img>
-                    </Col>
-                  </Row>
-                );
-              }
-            }
-          })}
+            })}
         </Card.Body>
-        <Card.Footer>
+        <Card.Footer ref={messageBoxRef}>
           <Row xs={1} md={1} className="d-flex justify-content-center my-3">
             <Col xs={12} md={12}>
               <Row xs={1} md={1}>

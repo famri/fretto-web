@@ -1,16 +1,19 @@
 import { useContext } from "react";
-import { Button, Container, Nav, Navbar } from "react-bootstrap";
+import { Badge, Button, Container, Nav, Navbar } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logos/fretto_logo.png";
 import AuthContext from "../../store/auth-context";
-import "./MainNavigation.css";
+import { WebSocketContext } from "../../store/websocket-context";
+import classes from "./MainNavigation.css";
 
 const Header = () => {
   const authCtx = useContext(AuthContext);
-
+  const webSocketContext = useContext(WebSocketContext);
   const handleDisconnect = () => {
+    webSocketContext.disconnect();
     authCtx.logout();
   };
+
   return (
     <Navbar expand="md" bg="light" sticky="top" className="border-bottom">
       <Container>
@@ -26,7 +29,7 @@ const Header = () => {
               to="/"
               activeClassName="active"
               exact={true}
-              className="headerNavLink"
+              className={classes.headerNavLink}
             >
               Accueil
             </NavLink>
@@ -34,7 +37,7 @@ const Header = () => {
               <NavLink
                 to="/signin"
                 activeClassName="active"
-                className="headerNavLink"
+                className={classes.headerNavLink}
               >
                 Connexion
               </NavLink>
@@ -43,7 +46,7 @@ const Header = () => {
               <NavLink
                 to="/signup"
                 activeClassName="active"
-                className="headerNavLink"
+                className={classes.headerNavLink}
               >
                 Inscription
               </NavLink>
@@ -52,7 +55,7 @@ const Header = () => {
               <NavLink
                 to="/journey-requests"
                 activeClassName="active"
-                className="headerNavLink"
+                className={classes.headerNavLink}
               >
                 Demandes
               </NavLink>
@@ -62,16 +65,21 @@ const Header = () => {
               <NavLink
                 to="/discussions"
                 activeClassName="active "
-                className="headerNavLink"
+                className={classes.headerNavLink}
               >
                 Discussions
+                {webSocketContext.missedMessagesCount > 0 && (
+                  <Badge className={" rounded-pill mx-2 bg-danger"}>
+                    {webSocketContext.missedMessagesCount}
+                  </Badge>
+                )}
               </NavLink>
             )}
             {authCtx.isLoggedIn && authCtx.isClient && (
               <NavLink
                 to="/profile"
                 activeClassName="active "
-                className="headerNavLink"
+                className={classes.headerNavLink}
               >
                 Profil
               </NavLink>
@@ -80,7 +88,7 @@ const Header = () => {
           {authCtx.isLoggedIn && (
             <Button
               variant="danger"
-              className="me-3 fs-2 my-3 mx-3 headerNavLink"
+              className={classes.headerNavLink + " me-3 fs-2 my-3 mx-3 "}
               onClick={(event) => handleDisconnect()}
             >
               Déconnexion

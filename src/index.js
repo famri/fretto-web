@@ -6,10 +6,13 @@ import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { AuthContextProvider } from "./store/auth-context";
+import { WebSocketMessagesContextController } from "./store/websocket-context";
 ReactDOM.render(
   <BrowserRouter>
     <AuthContextProvider>
-      <App />
+      <WebSocketMessagesContextController>
+        <App />
+      </WebSocketMessagesContextController>
     </AuthContextProvider>
   </BrowserRouter>,
 

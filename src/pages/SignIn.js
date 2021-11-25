@@ -1,4 +1,4 @@
-import { useContext, useEffect, Fragment } from "react";
+import { Fragment, useContext, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import FrettoLogo from "../components/logos/FrettoLogo";
 import SignInForm from "../components/signin-form/SignInForm";
@@ -6,11 +6,10 @@ import useHttp from "../hooks/use-http";
 import { signin } from "../lib/authentication-api";
 import AuthContext from "../store/auth-context";
 import "./SignIn.css";
-const SignIn2 = () => {
+const SignIn = () => {
   const history = useHistory();
 
   const authCtx = useContext(AuthContext);
-
   const {
     sendRequest: sendSigninRequest,
     status: signinStatus,
@@ -53,7 +52,7 @@ const SignIn2 = () => {
       </div>
       <div className="text-center my-3">
         <span className="fs-5">Mot de passe oublié ? </span>
-        <Link to="/password-reset" className="link-dark">
+        <Link to="/request-password-reset" className="link-dark">
           Réinitialiser
         </Link>
       </div>
@@ -61,4 +60,4 @@ const SignIn2 = () => {
   );
 };
 
-export default SignIn2;
+export default SignIn;
