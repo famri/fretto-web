@@ -5,7 +5,7 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from "react";
 import webstomp from "webstomp-client";
 import { countMissedMessages } from "../lib/discussions-api";
@@ -31,6 +31,7 @@ export const WebSocketContextMethods = createContext({
   decrementMissedMessagesCount: (count) => {},
   updateCurrentDiscussionMessages: (messages, doReset) => {},
   updateCurrentDiscussions: (discussions) => {},
+  insertIntoCurrentDiscussionMessages: (message) => {},
 });
 
 export const WebSocketMessagesContextController = (props) => {
@@ -98,6 +99,14 @@ export const WebSocketMessagesContextController = (props) => {
     },
     []
   );
+
+  const insertIntoCurrentDiscussionMessages = useCallback((message) => {
+    setCurrentDiscussionMessages((oldDiscussioMessages) => [
+      ...oldDiscussioMessages.slice(1),
+      message,
+    ]);
+  }, []);
+
   const authContext = useContext(AuthContext);
 
   const subscribe = useCallback(
@@ -254,6 +263,7 @@ export const WebSocketMessagesContextController = (props) => {
       decrementMissedMessagesCount,
       updateCurrentDiscussionMessages,
       updateCurrentDiscussions,
+      insertIntoCurrentDiscussionMessages,
     }),
     [
       connect,
@@ -263,6 +273,7 @@ export const WebSocketMessagesContextController = (props) => {
       decrementMissedMessagesCount,
       updateCurrentDiscussionMessages,
       updateCurrentDiscussions,
+      insertIntoCurrentDiscussionMessages,
     ]
   );
 

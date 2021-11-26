@@ -133,7 +133,7 @@ export async function sendMessage(params) {
     );
   }
 
-  return data.content;
+  return data;
 }
 
 //https://192.168.50.4:8443/wamya-backend/users/me/messages/count?read=false

@@ -27,28 +27,59 @@ import classes from "./Messages.module.css";
 const Messages = (props) => {
   const params = useParams();
   const authContext = useContext(AuthContext);
-  const messageContent = useRef();
+  const [messageContent, setMessageContent] = useState("");
   const webSocketContextMethods = useContext(WebSocketContextMethods);
   const webSocketContext = useContext(WebSocketContext);
 
-  const messageBoxRef = useRef();
   const lastMessageRef = useRef(null);
+
+  const [isLoadingDiscussion, setIsLoadingDiscussion] = useState(true);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+
+  const [error, setError] = useState();
+  const [discussion, setDiscussion] = useState();
+  const [hasNext, setHasNext] = useState(true);
+
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const {
+    sendRequest: sendMessageRequest,
+    status: sendMessageStatus,
+    data: sentMessageData,
+    error: sendMessageError,
+  } = useHttp(sendMessage);
+
+  const handleSendMessage = () => {
+    if (messageContent.length > 0) {
+      sendMessageRequest({
+        message: messageContent,
+        discussionId: params.discussionId,
+        token: authContext.token,
+      });
+    }
+  };
 
   const handleLastMessageRef = useCallback(
     (node) => {
       if (lastMessageRef.current) {
       }
       if (node) {
-        node.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-          inline: "nearest",
-        });
+        setTimeout(
+          () =>
+            node.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+              inline: "nearest",
+            }),
+          300
+        );
+
         const lastMessage = webSocketContext.currentDiscussionMessages.find(
           (e, index) =>
             index === webSocketContext.currentDiscussionMessages.length - 1
         );
-        if (!lastMessage.read) {
+
+        if (lastMessage.authorId !== authContext.oauthId && !lastMessage.read) {
           updateMessageReadStatus({
             token: authContext.token,
             discussionId: params.discussionId,
@@ -67,44 +98,27 @@ const Messages = (props) => {
       authContext.token,
       params.discussionId,
       webSocketContext.currentDiscussionMessages,
-    
+      authContext.oauthId,
       webSocketContextMethods,
     ]
   );
-
-  const [isLoadingDiscussion, setIsLoadingDiscussion] = useState(true);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-
-  const [error, setError] = useState();
-  const [discussion, setDiscussion] = useState();
-  const [hasNext, setHasNext] = useState(true);
-
-  const [pageNumber, setPageNumber] = useState(0);
-
-  const {
-    sendRequest: sendMessageRequest,
-    status: sendMessageStatus,
-    error: sendMessageError,
-  } = useHttp(sendMessage);
-
-  const handleSendMessage = () => {
-    if (
-      messageContent.current.value &&
-      messageContent.current.value.length > 0
-    ) {
-      sendMessageRequest({
-        message: messageContent.current.value,
-        discussionId: params.discussionId,
-        token: authContext.token,
-      });
-    }
-  };
-
   useEffect(() => {
-    if (sendMessageStatus === "completed") {
-      setPageNumber(0);
+    if (
+      sendMessageStatus === "completed" &&
+      !sendMessageError &&
+      sentMessageData
+    ) {
+      webSocketContextMethods.insertIntoCurrentDiscussionMessages(
+        sentMessageData
+      );
+      setMessageContent("");
     }
-  }, [sendMessageStatus, sendMessageError]);
+  }, [
+    sendMessageStatus,
+    sendMessageError,
+    webSocketContextMethods,
+    sentMessageData,
+  ]);
 
   useEffect(() => {
     setIsLoadingDiscussion(true);
@@ -201,7 +215,7 @@ const Messages = (props) => {
           )}
           {!isLoadingMessages &&
             webSocketContext.currentDiscussionMessages.map((m, index) => {
-              if (discussion.transporter.id === m.authorId) {
+              if (authContext.oauthId !== m.authorId) {
                 if (index === 0) {
                   return (
                     <Row
@@ -421,7 +435,7 @@ const Messages = (props) => {
               }
             })}
         </Card.Body>
-        <Card.Footer ref={messageBoxRef}>
+        <Card.Footer>
           <Row xs={1} md={1} className="d-flex justify-content-center my-3">
             <Col xs={12} md={12}>
               <Row xs={1} md={1}>
@@ -436,7 +450,7 @@ const Messages = (props) => {
               <Row xs={2} md={2}>
                 <Col xs={9} md={11} className="">
                   <Form.Control
-                    ref={messageContent}
+                    onChange={(event) => setMessageContent(event.target.value)}
                     type="text"
                     as="textarea"
                     rows={2}
