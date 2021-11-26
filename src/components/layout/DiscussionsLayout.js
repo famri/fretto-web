@@ -1,4 +1,4 @@
-import { Card, Dropdown } from "react-bootstrap";
+import { Card, Dropdown, Pagination } from "react-bootstrap";
 
 const DiscussionsLayout = (props) => {
   return (
@@ -49,6 +49,11 @@ const DiscussionsLayout = (props) => {
         </div>
       </Card.Header>
       <Card.Body>{props.children}</Card.Body>
+      <Card.Footer>
+        <Pagination size="lg" className="centered">
+          {props.pagingItems}
+        </Pagination>
+      </Card.Footer>
     </Card>
   );
 };

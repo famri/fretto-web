@@ -75,7 +75,6 @@ export async function loadJourneyRequests(params) {
     }
   );
 
-  
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
   }
@@ -93,5 +92,5 @@ export async function loadJourneyRequests(params) {
     );
   }
 
-  return data.content;
+  return data;
 }

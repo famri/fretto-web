@@ -30,7 +30,7 @@ export async function loadDiscussions(params) {
     );
   }
 
-  return data.content;
+  return data;
 }
 
 //https://192.168.50.4:8443/wamya-backend/users/me/discussions/1/messages?page=0&size=25

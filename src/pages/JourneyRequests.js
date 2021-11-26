@@ -6,6 +6,7 @@ import {
   Col,
   Container,
   ListGroup,
+  Pagination,
   Row
 } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
@@ -17,6 +18,8 @@ import { loadJourneyRequests } from "../lib/journey-requests-api";
 import AuthContext from "../store/auth-context";
 import classes from "./JourneyRequests.module.css";
 
+const PAGE_SIZE = 25;
+
 const JourneyRequests = (props) => {
   const history = useHistory();
   const authCtx = useContext(AuthContext);
@@ -25,6 +28,9 @@ const JourneyRequests = (props) => {
   const [periodCriterion, setPeriodCriterion] = useState("m1");
   const [periodTitle, setPeriodTitle] = useState("Dernier mois");
   const [sortTitle, setSortTitle] = useState("Plus récent en premier");
+
+  const [pageNumber, setPageNumber] = useState(0);
+  const [totalPages, setTotalPages] = useState();
 
   const [periodItems] = useState([
     { key: "w1", name: "Dernière semaine" },
@@ -53,8 +59,8 @@ const JourneyRequests = (props) => {
     setPeriodCriterion(eventKey);
     sendLoadJourneyRequests({
       period: periodCriterion,
-      page: "0",
-      size: "25",
+      page: pageNumber,
+      size: PAGE_SIZE,
       sort: sortCriterion,
       lang: "fr_FR",
       token: authCtx.token,
@@ -66,8 +72,8 @@ const JourneyRequests = (props) => {
     setSortCriterion(eventKey);
     sendLoadJourneyRequests({
       period: periodCriterion,
-      page: "0",
-      size: "25",
+      page: pageNumber,
+      size: PAGE_SIZE,
       sort: sortCriterion,
       lang: "fr_FR",
       token: authCtx.token,
@@ -77,19 +83,26 @@ const JourneyRequests = (props) => {
   useEffect(() => {
     sendLoadJourneyRequests({
       period: periodCriterion,
-      page: "0",
-      size: "25",
+      page: pageNumber,
+      size: PAGE_SIZE,
       sort: sortCriterion,
       lang: "fr_FR",
       token: authCtx.token,
     });
-  }, [sendLoadJourneyRequests, authCtx.token, periodCriterion, sortCriterion]);
+  }, [
+    sendLoadJourneyRequests,
+    authCtx.token,
+    periodCriterion,
+    sortCriterion,
+    pageNumber,
+  ]);
 
   useEffect(() => {
     if (data) {
-      setShowDetailsArray(data.map((jr) => false));
+      setShowDetailsArray(data.content.map((jr) => false));
+      setTotalPages(data.totalPages);
     }
-  }, [status, data, error, setShowDetailsArray]);
+  }, [data]);
 
   if (status === "pending") {
     return (
@@ -98,6 +111,7 @@ const JourneyRequests = (props) => {
       </Container>
     );
   }
+
   if (!!error) {
     return (
       <Container>
@@ -105,7 +119,22 @@ const JourneyRequests = (props) => {
       </Container>
     );
   }
-  if (!!data && data.length === 0) {
+
+  let pagingItems = [];
+  for (let number = 1; number <= totalPages; number++) {
+    pagingItems.push(
+      <Pagination.Item
+        key={number}
+        active={number - 1 === pageNumber}
+        onClick={() => setPageNumber(number - 1)}
+        style={{ cursor: "pointer" }}
+      >
+        {number}
+      </Pagination.Item>
+    );
+  }
+
+  if (data && data.content.length === 0) {
     return (
       <Container>
         <JourneyRequestsLayout
@@ -115,6 +144,7 @@ const JourneyRequests = (props) => {
           sortItems={sortItems}
           onPeriodChosen={onPeriodChosen}
           onSortChosen={onSortChosen}
+          pagingItems={pagingItems}
         >
           <h1 className="d-flex justify-content-center my-auto">
             Vous n'avez pas de demande de trajet pour cette période.
@@ -126,21 +156,29 @@ const JourneyRequests = (props) => {
   if (status === "completed") {
     return (
       <Container>
-        {!!data && data.length > 0 && (
-          <JourneyRequestsLayout
-            periodTitle={periodTitle}
-            periodItems={periodItems}
-            sortTitle={sortTitle}
-            sortItems={sortItems}
-            onPeriodChosen={onPeriodChosen}
-            onSortChosen={onSortChosen}
-          >
+        <JourneyRequestsLayout
+          periodTitle={periodTitle}
+          periodItems={periodItems}
+          sortTitle={sortTitle}
+          sortItems={sortItems}
+          onPeriodChosen={onPeriodChosen}
+          onSortChosen={onSortChosen}
+          pagingItems={pagingItems}
+        >
+          {data && data.content.length === 0 && (
+            <h1 className="centered">
+              Vous n'avez pas de demande de trajet pour cette période.
+            </h1>
+          )}
+          {data && data.content.length > 0 && (
             <Row
               xs={1}
               md={3}
-              className={!!data && data.length > 0 && "g-" + data.length}
+              className={
+                data && data.content.length > 0 && "g-" + data.content.length
+              }
             >
-              {data.map((jr, index) => (
+              {data.content.map((jr, index) => (
                 <Col key={jr.id}>
                   <Card className={classes.journeyCard + " my-3 mx-0 "}>
                     <Card.Header
@@ -259,9 +297,8 @@ const JourneyRequests = (props) => {
                 </Col>
               ))}
             </Row>
-          </JourneyRequestsLayout>
-        )}
-        {data.length === 0 && <h1>Vous n'avez pas de demande de trajet</h1>}
+          )}
+        </JourneyRequestsLayout>
       </Container>
     );
   }

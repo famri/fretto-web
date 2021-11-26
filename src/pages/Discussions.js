@@ -1,5 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Card, Col, Container, Row, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Pagination,
+  Row,
+  Spinner
+} from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import DiscussionsLayout from "../components/layout/DiscussionsLayout";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
@@ -7,10 +15,10 @@ import { loadDiscussions } from "../lib/discussions-api";
 import AuthContext from "../store/auth-context";
 import {
   WebSocketContext,
-  WebSocketContextMethods,
+  WebSocketContextMethods
 } from "../store/websocket-context";
 import classes from "./Discussions.module.css";
-
+const PAGE_SIZE = 25;
 const Discussions = () => {
   const authCtx = useContext(AuthContext);
   const webSocketContext = useContext(WebSocketContext);
@@ -32,7 +40,7 @@ const Discussions = () => {
   ]);
 
   const [pageNumber, setPageNumber] = useState(0);
-
+  const [totalPages, setTotalPages] = useState();
   const onFilterChosen = (eventKey) => {
     setFilterTitle(filterItems.find((item) => item.key === eventKey).name);
     setFilterCriterion(eventKey);
@@ -47,13 +55,14 @@ const Discussions = () => {
     setIsLoading(true);
     loadDiscussions({
       page: pageNumber,
-      size: 25,
+      size: PAGE_SIZE,
       filter: filterCriterion,
       sort: sortCriterion,
       token: authCtx.token,
     })
       .then((discussions) => {
-        webSocketContextMethods.updateCurrentDiscussions(discussions);
+        webSocketContextMethods.updateCurrentDiscussions(discussions.content);
+        setTotalPages(discussions.totalPages);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -82,6 +91,21 @@ const Discussions = () => {
       </Container>
     );
   }
+
+  let pagingItems = [];
+  for (let number = 1; number <= totalPages; number++) {
+    pagingItems.push(
+      <Pagination.Item
+        key={number}
+        active={number - 1 === pageNumber}
+        onClick={() => setPageNumber(number - 1)}
+        style={{ cursor: "pointer" }}
+      >
+        {number}
+      </Pagination.Item>
+    );
+  }
+
   if (webSocketContext.currentDiscussions.length === 0) {
     return (
       <Container>
@@ -92,6 +116,7 @@ const Discussions = () => {
           sortItems={sortItems}
           onFilterChosen={onFilterChosen}
           onSortChosen={onSortChosen}
+          pagingItems={pagingItems}
         >
           <h1 className="d-flex justify-content-center my-auto">
             Vous n'avez pas de demande de trajet pour cette période.
@@ -109,6 +134,7 @@ const Discussions = () => {
           sortItems={sortItems}
           onFilterChosen={onFilterChosen}
           onSortChosen={onSortChosen}
+          pagingItems={pagingItems}
         >
           <Row
             xs={1}
