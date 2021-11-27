@@ -16,6 +16,7 @@ import Icon from "../components/widgets/Icon";
 import useHttp from "../hooks/use-http";
 import { loadJourneyRequests } from "../lib/journey-requests-api";
 import AuthContext from "../store/auth-context";
+import JourneyRequestsContext from "../store/Journey-requests-context";
 import classes from "./JourneyRequests.module.css";
 
 const PAGE_SIZE = 25;
@@ -23,27 +24,29 @@ const PAGE_SIZE = 25;
 const JourneyRequests = (props) => {
   const history = useHistory();
   const authCtx = useContext(AuthContext);
-
-  const [sortCriterion, setSortCriterion] = useState("date-time,desc");
-  const [periodCriterion, setPeriodCriterion] = useState("m1");
-  const [periodTitle, setPeriodTitle] = useState("Dernier mois");
-  const [sortTitle, setSortTitle] = useState("Plus récent en premier");
-
-  const [pageNumber, setPageNumber] = useState(0);
-  const [totalPages, setTotalPages] = useState();
-
-  const [periodItems] = useState([
+  const journeyRequestsContext = useContext(JourneyRequestsContext);
+  const periodItems = [
     { key: "w1", name: "Dernière semaine" },
     { key: "m1", name: "Dernier mois" },
     { key: "m3", name: "Dernier trimestre" },
     { key: "m6", name: "Dernier semestre" },
     { key: "y1", name: "Dernière année" },
-  ]);
+  ];
 
-  const [sortItems] = useState([
+  const sortItems = [
     { key: "date-time,desc", name: "Plus récent en premier" },
     { key: "date-time,asc", name: "Plus ancien en premierr" },
-  ]);
+  ];
+  const [periodTitle, setPeriodTitle] = useState(
+    periodItems.find(
+      (item) => item.key === journeyRequestsContext.periodCriterion
+    ).name
+  );
+  const [sortTitle, setSortTitle] = useState(
+    sortItems.find((item) => item.key === journeyRequestsContext.sortCriterion)
+      .name
+  );
+  const [totalPages, setTotalPages] = useState();
 
   const {
     sendRequest: sendLoadJourneyRequests,
@@ -56,45 +59,29 @@ const JourneyRequests = (props) => {
 
   const onPeriodChosen = (eventKey) => {
     setPeriodTitle(periodItems.find((item) => item.key === eventKey).name);
-    setPeriodCriterion(eventKey);
-    sendLoadJourneyRequests({
-      period: periodCriterion,
-      page: pageNumber,
-      size: PAGE_SIZE,
-      sort: sortCriterion,
-      lang: "fr_FR",
-      token: authCtx.token,
-    });
+    journeyRequestsContext.setPeriodCriterion(eventKey);
   };
 
   const onSortChosen = (eventKey) => {
     setSortTitle(sortItems.find((item) => item.key === eventKey).name);
-    setSortCriterion(eventKey);
-    sendLoadJourneyRequests({
-      period: periodCriterion,
-      page: pageNumber,
-      size: PAGE_SIZE,
-      sort: sortCriterion,
-      lang: "fr_FR",
-      token: authCtx.token,
-    });
+    journeyRequestsContext.setSortCriterion(eventKey);
   };
 
   useEffect(() => {
     sendLoadJourneyRequests({
-      period: periodCriterion,
-      page: pageNumber,
+      period: journeyRequestsContext.periodCriterion,
+      sort: journeyRequestsContext.sortCriterion,
+      page: journeyRequestsContext.pageNumber,
       size: PAGE_SIZE,
-      sort: sortCriterion,
       lang: "fr_FR",
       token: authCtx.token,
     });
   }, [
     sendLoadJourneyRequests,
     authCtx.token,
-    periodCriterion,
-    sortCriterion,
-    pageNumber,
+    journeyRequestsContext.periodCriterion,
+    journeyRequestsContext.sortCriterion,
+    journeyRequestsContext.pageNumber,
   ]);
 
   useEffect(() => {
@@ -125,8 +112,8 @@ const JourneyRequests = (props) => {
     pagingItems.push(
       <Pagination.Item
         key={number}
-        active={number - 1 === pageNumber}
-        onClick={() => setPageNumber(number - 1)}
+        active={number - 1 === journeyRequestsContext.pageNumber}
+        onClick={() => journeyRequestsContext.setPageNumber(number - 1)}
         style={{ cursor: "pointer" }}
       >
         {number}

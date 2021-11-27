@@ -156,16 +156,13 @@ export async function countMissedMessages(params) {
   try {
     data = await response.json();
   } catch (error) {
-    throw new Error("Échec du chargement de la discussion.");
+    throw new Error("Échec du décompte des messages en absence.");
   }
 
   if (!response.ok) {
     throw new Error(
-      (data &&
-        ((data.errorCode === "OBJECT_NOT_FOUND" &&
-          "Échec du chargement de la discussion.") ||
-          (data.errors && data.errors.join(", ")))) ||
-        "Échec du chargement de la discussion."
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec du décompte des messages en absence."
     );
   }
 
@@ -203,4 +200,72 @@ export async function updateMessageReadStatus(params) {
     );
   }
   return;
+}
+
+//https://192.168.50.4:8443/wamya-backend/users/me/discussions?clientId={clientId}&transporterId={transporterId}
+export async function findDiscussion(params) {
+  const response = await fetch(
+    `${FRETTO_DOMAIN}/users/me/discussions?clientId=${params.clientId}&transporterId=${params.transporterId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+    }
+  );
+
+  if (response.status === 404) {
+    return null;
+  }
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Échec du chargement de la discussion.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec du chargement de la discussion."
+    );
+  }
+
+  return data;
+}
+
+//POST https://192.168.50.4:8443/wamya-backend/users/me/discussions
+
+export async function createDiscussion(params) {
+  const response = await fetch(`${FRETTO_DOMAIN}/users/me/discussions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${params.token}`,
+    },
+    body: JSON.stringify({
+      clientId: params.clientId,
+      transporterId: params.transporterId,
+    }),
+  });
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Échec de la création de discussion.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec de la création de discussion."
+    );
+  }
+
+  return data;
 }

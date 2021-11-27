@@ -5,8 +5,9 @@ import {
   Col,
   Container,
   Form,
+  InputGroup,
   Row,
-  Spinner
+  Spinner,
 } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
@@ -15,12 +16,12 @@ import {
   loadDiscussion,
   loadDiscussionMessages,
   sendMessage,
-  updateMessageReadStatus
+  updateMessageReadStatus,
 } from "../lib/discussions-api";
 import AuthContext from "../store/auth-context";
 import {
   WebSocketContext,
-  WebSocketContextMethods
+  WebSocketContextMethods,
 } from "../store/websocket-context";
 import classes from "./Messages.module.css";
 
@@ -63,7 +64,7 @@ const Messages = (props) => {
     (node) => {
       if (lastMessageRef.current) {
       }
-      if (node) {
+      if (node && pageNumber === 0) {
         setTimeout(
           () =>
             node.scrollIntoView({
@@ -447,27 +448,25 @@ const Messages = (props) => {
               </Row>
             </Col>
             <Col xs={12} md={12}>
-              <Row xs={2} md={2}>
-                <Col xs={9} md={11} className="">
-                  <Form.Control
-                    onChange={(event) => setMessageContent(event.target.value)}
-                    type="text"
-                    as="textarea"
-                    rows={2}
-                  ></Form.Control>
-                </Col>
-                <Col xs={3} md={1} className="my-auto">
-                  <Button
-                    className="fs-2 fw-bold"
-                    onClick={() => {
-                      handleSendMessage();
-                    }}
-                    disabled={sendMessageStatus === "pending"}
-                  >
-                    Envoyer
-                  </Button>
-                </Col>
-              </Row>
+              <InputGroup>
+                <Form.Control
+                  onChange={(event) => setMessageContent(event.target.value)}
+                  type="text"
+                  as="textarea"
+                  rows={2}
+                ></Form.Control>
+
+                <Button
+                  variant="outline-secondary"
+                  className={classes.sendMessageButton + " fs-2 fw-bold"}
+                  onClick={() => {
+                    handleSendMessage();
+                  }}
+                  disabled={sendMessageStatus === "pending"}
+                >
+                  Envoyer
+                </Button>
+              </InputGroup>
             </Col>
           </Row>
         </Card.Footer>

@@ -1,34 +1,54 @@
 import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
 import {
+  faCommentAlt,
   faStar as faStarSolid,
-  faStarHalfAlt,
+  faStarHalfAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
-import { Button, Card, Col, Container, ListGroup, Row } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  InputGroup,
+  ListGroup,
+  OverlayTrigger,
+  Row,
+  Tooltip
+} from "react-bootstrap";
+import { useHistory } from "react-router";
 import { useParams } from "react-router-dom";
 import JourneyProposalsLayout from "../components/layout/JourneyProposalsLayout";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
 import InfoModal from "../components/modal/InfoModal";
 import useHttp from "../hooks/use-http";
 import {
+  createDiscussion,
+  findDiscussion,
+  sendMessage
+} from "../lib/discussions-api";
+import {
   loadJourneyProposals,
-  updateProposalStatus,
+  updateProposalStatus
 } from "../lib/journey-proposals-api";
 import { loadJourneyRequest } from "../lib/journey-requests-api";
 import AuthContext from "../store/auth-context";
 import classes from "./JourneyProposals.module.css";
-
 const JourneyProposals = () => {
   const params = useParams();
   const authCtx = useContext(AuthContext);
+  const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [journeyRequest, setJourneyRequest] = useState();
   const [journeyProposals, setJourneyProposals] = useState();
   const [error, setError] = useState();
   const [chosenProposalId, setChosenProposalId] = useState();
   const [showAcceptProposalModal, setShowAcceptProposalModal] = useState();
-
+  const [contact, setContact] = useState(false);
+  const [firstMessageContent, setFirstMessageContent] = useState("");
+  const [sendMessageError, setSendMessageError] = useState();
   useEffect(() => {
     loadJourneyRequest({
       journeyRequestId: params.journeyId,
@@ -122,6 +142,46 @@ const JourneyProposals = () => {
     setError,
   ]);
 
+  const openDiscussion = (interlocutorId) => {
+    findDiscussion({
+      clientId: authCtx.isClient ? authCtx.oauthId : interlocutorId,
+      transporterId: authCtx.isClient ? interlocutorId : authCtx.oauthId,
+      token: authCtx.token,
+    }).then((discussion) => {
+      if (discussion !== null) {
+        history.push("/discussions/" + discussion.id + "/messages");
+      } else {
+        setContact(true);
+      }
+    });
+  };
+
+  const sendFirstMessage = (interlocutorId) => {
+    if (firstMessageContent.trim().length > 0) {
+      createDiscussion({
+        token: authCtx.token,
+        clientId: authCtx.isClient ? authCtx.oauthId : interlocutorId,
+        transporterId: authCtx.isClient ? interlocutorId : authCtx.oauthId,
+      })
+        .then((discussion) => {
+          sendMessage({
+            token: authCtx.token,
+            discussionId: discussion.id,
+            message: firstMessageContent.trim(),
+          })
+            .then(() => {
+              history.push("/discussions/" + discussion.id + "/messages");
+            })
+            .catch((error) => {
+              setSendMessageError(error.message);
+            });
+        })
+        .catch((error) => {
+          setSendMessageError(error.message);
+        });
+    }
+  };
+
   if (isLoading) {
     return (
       <Container className="d-flex justify-content-center my-auto">
@@ -172,15 +232,19 @@ const JourneyProposals = () => {
               <Col key={proposal.id}>
                 <Card className={classes.proposalCard + " my-3 mx-2"}>
                   <Card.Header className=" fs-2">
-                    <Row xs={3} md={3} className="g-3">
-                      <Col md={2} key={proposal.id + "-avatar"}>
+                    <Row xs={3} md={3}>
+                      <Col xs={2} md={2} key={proposal.id + "-avatar"}>
                         <img
                           alt={"transporter-" + index + "-image"}
                           src={proposal.transporter.photoUrl}
                           className={classes.avatar}
                         ></img>
                       </Col>
-                      <Col md={7} key={proposal.id + "-transporter-info"}>
+                      <Col
+                        xs={7}
+                        md={7}
+                        key={proposal.id + "-transporter-info"}
+                      >
                         <span className={classes.transporterName}>
                           {proposal.transporter.firstname}
                         </span>
@@ -211,13 +275,63 @@ const JourneyProposals = () => {
                           )}
                       </Col>
                       <Col
+                        xs={3}
                         md={3}
                         className={classes.proposalPrice}
                         key={proposal.id + "-price"}
                       >
                         {proposal.price + " DT"}
+                        <br />
+
+                        {proposal.status.code === "ACCEPTED" && (
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip className="fs-2 ">Contacter</Tooltip>
+                            }
+                          >
+                            <Button
+                              variant="light"
+                              className={classes.contactButton}
+                              onClick={() =>
+                                openDiscussion(proposal.transporter.id)
+                              }
+                            >
+                              <FontAwesomeIcon
+                                icon={faCommentAlt}
+                                size="3x"
+                              ></FontAwesomeIcon>
+                            </Button>
+                          </OverlayTrigger>
+                        )}
                       </Col>
                     </Row>
+                    {contact && proposal.status.code === "ACCEPTED" && (
+                      <InputGroup>
+                        <Form.Control
+                          type="text"
+                          rows={1}
+                          as={"textarea"}
+                          placeholder="Votre message..."
+                          onChange={(event) => {
+                            setFirstMessageContent(event.target.value);
+                          }}
+                        ></Form.Control>
+                        <Button
+                          variant="outline-secondary"
+                          className={classes.sendFirstMessageButton + " fs-2"}
+                          onClick={() =>
+                            sendFirstMessage(proposal.transporter.id)
+                          }
+                        >
+                          Envoyer
+                        </Button>
+                      </InputGroup>
+                    )}
+                    {!!sendMessageError &&
+                      proposal.status.code === "ACCEPTED" && (
+                        <h1 className="fs-2 error">{sendMessageError}</h1>
+                      )}
                   </Card.Header>
                   <Card.Img
                     src={proposal.vehicule.photoUrl}

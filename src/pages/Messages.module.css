@@ -27,7 +27,11 @@
   border-radius: 25px 25px 25px 0;
   padding: 1rem;
 }
-.messagesCardBody{
-    max-height: 80vh;
-    overflow-y: scroll;
+.messagesCardBody {
+  max-height: 80vh;
+  overflow-y: scroll;
+}
+.sendMessageButton:hover {
+  background-color: #0084ff; /* Green */
+  color: white;
 }

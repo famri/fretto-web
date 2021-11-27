@@ -3,7 +3,7 @@
   font-weight: bold;
 }
 .proposalPrice {
-  color: limegreen;
+  color: #b2cd52;
   font-weight: bold;
 }
 .proposalImg {
@@ -26,4 +26,11 @@
 }
 .proposalAccepted {
   background-color: #d6e4a3 !important;
+}
+.contactButton {
+  color: #3eb0e5;
+}
+.sendFirstMessageButton:hover {
+  background-color: #0084ff; /* Green */
+  color: white;
 }
