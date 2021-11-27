@@ -3,14 +3,18 @@ import { Badge, Button, Container, Nav, Navbar } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logos/fretto_logo.png";
 import AuthContext from "../../store/auth-context";
-import { WebSocketContext } from "../../store/websocket-context";
+import {
+  WebSocketContext,
+  WebSocketContextMethods
+} from "../../store/websocket-context";
 import classes from "./MainNavigation.css";
 
 const Header = () => {
   const authCtx = useContext(AuthContext);
+  const webSocketContextMethods = useContext(WebSocketContextMethods);
   const webSocketContext = useContext(WebSocketContext);
   const handleDisconnect = () => {
-    webSocketContext.disconnect();
+    webSocketContextMethods.disconnect();
     authCtx.logout();
   };
 
