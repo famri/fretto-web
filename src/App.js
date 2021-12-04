@@ -13,6 +13,7 @@ import JourneyProposals from "./pages/JourneyProposals";
 import JourneyRequests from "./pages/JourneyRequests";
 import Logout from "./pages/Logout";
 import Messages from "./pages/Messages";
+import MobileCheck from "./pages/MobileCheck";
 import NotFound from "./pages/NotFound";
 import OurValues from "./pages/OurValues";
 import PasswordReset from "./pages/PasswordReset";
@@ -20,9 +21,8 @@ import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Support from "./pages/Support";
+import TransporterRating from "./pages/TransporterRating";
 import AuthContext from "./store/auth-context";
-
-import MobileCheck from "./pages/MobileCheck";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -102,6 +102,10 @@ function App() {
             <Profile />
           </Route>
         )}
+
+        <Route path="/rating">
+          <TransporterRating />
+        </Route>
 
         <Route path="/faq">
           <Faq />

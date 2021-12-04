@@ -1,0 +1,37 @@
+.ratingHeaderTitle {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #134753;
+  font-style: italic;
+}
+.avatar {
+  vertical-align: middle;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+.ratingStar {
+  color: orange;
+}
+.departurePlace {
+  color: #b2cd52;
+  font-weight: bold;
+  font-style: italic;
+}
+.arrivalPlace {
+  color: #d0324b;
+  font-weight: bold;
+  font-style: italic;
+}
+.journeyArrow {
+  color: black;
+  font-weight: bold;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.transporterName{
+  font-size: 2rem;
+  font-weight: bold;
+  color: #134753;
+  font-style: italic;
+}

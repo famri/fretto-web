@@ -167,7 +167,7 @@ const MobileSection = (props) => {
           )}
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Téléphone Mobile</Form.Label>
+              <Form.Label className="fs-2">Téléphone Mobile</Form.Label>
               <div className="row-group">
                 <Form.Select
                   disabled={!editMobileSection}

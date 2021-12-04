@@ -445,7 +445,7 @@ const JourneyForm = (props) => {
                     : "is-invalid"
                   : ""
               }
-              placeholder="Ville de départ"
+              placeholder="Ville d'arrivée"
               onChange={(e) =>
                 dispatchArrival({ type: "USER_INPUT", val: e.target.value })
               }

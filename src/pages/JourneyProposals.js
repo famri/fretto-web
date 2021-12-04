@@ -53,30 +53,29 @@ const JourneyProposals = () => {
     loadJourneyRequest({
       journeyRequestId: params.journeyId,
       token: authCtx.token,
-    }).then(
-      (data) => {
+    })
+      .then((data) => {
         setJourneyRequest(data);
         loadJourneyProposals({
           journeyId: params.journeyId,
           filter: "status:submitted,accepted,rejected",
           lang: "fr_FR",
           token: authCtx.token,
-        }).then(
-          (proposals) => {
-            setIsLoading(false);
+        })
+          .then((proposals) => {
             setJourneyProposals(proposals);
-          },
-          (error) => {
             setIsLoading(false);
-            setError(error);
-          }
-        );
-      },
-      (error) => {
+          })
+          .catch((error) => {
+            setError(error.message);
+            setIsLoading(false);
+          });
+      })
+
+      .catch((error) => {
+        setError(error.message);
         setIsLoading(false);
-        setError(error);
-      }
-    );
+      });
   }, [
     params.journeyId,
     authCtx.token,

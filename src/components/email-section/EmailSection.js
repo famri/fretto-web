@@ -122,7 +122,7 @@ const EmailSection = (props) => {
           )}
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label className="fs-2">Nom</Form.Label>
+              <Form.Label className="fs-2">Email</Form.Label>
               <Form.Control
                 disabled={!editEmailSection}
                 required={true}

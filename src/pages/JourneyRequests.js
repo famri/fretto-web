@@ -198,7 +198,7 @@ const JourneyRequests = (props) => {
                           </span>
                         </span>
                       </Card.Text>
-                    </Card.Body>{" "}
+                    </Card.Body>
                     {showDetailsArray[index] && (
                       <ListGroup className="list-group-flush">
                         <ListGroup.Item
