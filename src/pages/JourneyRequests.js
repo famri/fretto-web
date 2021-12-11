@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import {
+  Accordion,
   Badge,
   Button,
   Card,
@@ -7,7 +8,7 @@ import {
   Container,
   ListGroup,
   Pagination,
-  Row
+  Row,
 } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import JourneyRequestsLayout from "../components/layout/JourneyRequestsLayout";
@@ -55,8 +56,6 @@ const JourneyRequests = (props) => {
     status,
   } = useHttp(loadJourneyRequests, true);
 
-  const [showDetailsArray, setShowDetailsArray] = useState([]);
-
   const onPeriodChosen = (eventKey) => {
     setPeriodTitle(periodItems.find((item) => item.key === eventKey).name);
     journeyRequestsContext.setPeriodCriterion(eventKey);
@@ -86,7 +85,6 @@ const JourneyRequests = (props) => {
 
   useEffect(() => {
     if (data) {
-      setShowDetailsArray(data.content.map((jr) => false));
       setTotalPages(data.totalPages);
     }
   }, [data]);
@@ -199,72 +197,71 @@ const JourneyRequests = (props) => {
                         </span>
                       </Card.Text>
                     </Card.Body>
-                    {showDetailsArray[index] && (
-                      <ListGroup className="list-group-flush">
-                        <ListGroup.Item
-                          key={jr.id + "-distance"}
-                          className={
-                            classes.journeyDistance +
-                            " d-flex justify-content-center "
-                          }
-                        >
-                          {(jr.distance / 1000).toString().split(".")[0]} Km
-                        </ListGroup.Item>
-                        <ListGroup.Item key={jr.id + "-vehicule"}>
-                          <div className="d-flex justify-content-center">
-                            <Icon
-                              name={jr.engineType.code.toLowerCase()}
-                              color="#44B0E5"
-                              size={80}
-                            />
-                          </div>
-                          <div className="d-flex justify-content-center fs-2">
-                            {jr.engineType.name}
-                          </div>
-                        </ListGroup.Item>
+                    <Accordion>
+                      <Accordion.Item eventKey="0">
+                        <Accordion.Header>
+                          <h2>Détails</h2>
+                        </Accordion.Header>
+                        <Accordion.Body>
+                          <ListGroup className="list-group-flush">
+                            <ListGroup.Item
+                              key={jr.id + "-distance"}
+                              className={
+                                classes.journeyDistance +
+                                " d-flex justify-content-center "
+                              }
+                            >
+                              {(jr.distance / 1000).toString().split(".")[0]} Km
+                            </ListGroup.Item>
+                            <ListGroup.Item key={jr.id + "-vehicule"}>
+                              <div className="d-flex justify-content-center">
+                                <Icon
+                                  name={jr.engineType.code.toLowerCase()}
+                                  color="#44B0E5"
+                                  size={80}
+                                />
+                              </div>
+                              <div className="d-flex justify-content-center fs-2">
+                                {jr.engineType.name}
+                              </div>
+                            </ListGroup.Item>
 
-                        <ListGroup.Item
-                          key={jr.id + "-workers"}
-                          className={
-                            classes.journeyWorkers +
-                            " d-flex justify-content-center fs-2"
-                          }
-                        >
-                          <span className={classes.journeyWorkersNumber}>
-                            {jr.workers}
-                          </span>
-                          <span className="mx-2">
-                            {jr.workers > 1
-                              ? "Manutentionnaires"
-                              : "Manutentionnaire"}
-                          </span>
-                        </ListGroup.Item>
+                            <ListGroup.Item
+                              key={jr.id + "-workers"}
+                              className={
+                                classes.journeyWorkers +
+                                " d-flex justify-content-center fs-2"
+                              }
+                            >
+                              <span className={classes.journeyWorkersNumber}>
+                                {jr.workers}
+                              </span>
+                              <span className="mx-2">
+                                {jr.workers > 1
+                                  ? "Manutentionnaires"
+                                  : "Manutentionnaire"}
+                              </span>
+                            </ListGroup.Item>
 
-                        <ListGroup.Item
-                          key={jr.id + "-description"}
-                          className={
-                            classes.journeyDescription +
-                            " d-flex justify-content-center fs-2"
-                          }
-                        >
-                          <p>{jr.description}</p>
-                        </ListGroup.Item>
-                      </ListGroup>
-                    )}
+                            <ListGroup.Item
+                              key={jr.id + "-description"}
+                              className={
+                                classes.journeyDescription +
+                                " d-flex justify-content-center fs-2"
+                              }
+                            >
+                              <p>{jr.description}</p>
+                            </ListGroup.Item>
+                          </ListGroup>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    </Accordion>
+
                     <Card.Footer className="d-flex justify-content-around">
                       <Button
-                        className={classes.journeyButton + " fw-bold fs-4"}
-                        variant="primary"
-                        onClick={() => {
-                          showDetailsArray[index] = !showDetailsArray[index];
-                          setShowDetailsArray([...showDetailsArray]);
-                        }}
-                      >
-                        Détails
-                      </Button>
-
-                      <Button
-                        className={classes.journeyButton + " fw-bold fs-4"}
+                        className={
+                          classes.journeyButton + " fw-bold fs-4 col-12"
+                        }
                         variant="primary"
                         onClick={() => {
                           history.push(
@@ -273,10 +270,12 @@ const JourneyRequests = (props) => {
                         }}
                       >
                         <div>
-                          <span>Offres</span>
-                          <Badge className="rounded-pill mx-2" bg="danger">
-                            {jr.proposalsCount}
-                          </Badge>
+                          <span>Devis</span>
+                          {jr.proposalsCount > 0 && (
+                            <Badge className="rounded-pill mx-2" bg="danger">
+                              {jr.proposalsCount}
+                            </Badge>
+                          )}
                         </div>
                       </Button>
                     </Card.Footer>
