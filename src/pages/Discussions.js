@@ -41,6 +41,7 @@ const Discussions = () => {
 
   const [pageNumber, setPageNumber] = useState(0);
   const [totalPages, setTotalPages] = useState();
+
   const onFilterChosen = (eventKey) => {
     setFilterTitle(filterItems.find((item) => item.key === eventKey).name);
     setFilterCriterion(eventKey);
@@ -149,21 +150,31 @@ const Discussions = () => {
                       <Row xs={2} md={2}>
                         <Col xs={3} md={2} key={d.id + "-avatar"}>
                           <img
-                            alt={"transporter-" + index + "-image"}
-                            src={d.transporter.photoUrl}
+                            alt={
+                              authCtx.isClient
+                                ? "transporter-" + index + "-image"
+                                : "client-" + index + "-image"
+                            }
+                            src={
+                              authCtx.isClient
+                                ? d.transporter.photoUrl
+                                : d.client.photoUrl
+                            }
                             className={classes.avatar}
                           ></img>
                         </Col>
                         <Col xs={9} md={10} key={d.id + "-transporter-info"}>
-                          <span className={classes.transporterName + " ml-5"}>
-                            {d.transporter.name}
+                          <span className={classes.interlocutorName + " ml-5"}>
+                            {authCtx.isClient
+                              ? d.transporter.name
+                              : d.client.name}
                           </span>
                         </Col>
                       </Row>
                     </Card.Title>
                     <Card.Subtitle
                       className={
-                        (d.latestMessage.authorId !== d.client.id &&
+                        (d.latestMessage.authorId !== authCtx.oauthId &&
                         !d.latestMessage.read
                           ? classes.messageContentUnread
                           : classes.messageContentRead) + " fs-3 fst-italic"
@@ -171,7 +182,8 @@ const Discussions = () => {
                     >
                       <Row xs={4} md={4}>
                         <Col xs={3} md={2}>
-                          {d.latestMessage.authorId === d.client.id && "Vous:"}
+                          {d.latestMessage.authorId === authCtx.oauthId &&
+                            "Vous:"}
                         </Col>
                         <Col xs={4} md={6}>
                           {d.latestMessage.content}
@@ -191,7 +203,7 @@ const Discussions = () => {
                           </Row>
                         </Col>
                         <Col xs={1} md={1}>
-                          {d.latestMessage.authorId !== d.client.id &&
+                          {d.latestMessage.authorId !== authCtx.oauthId &&
                             !d.latestMessage.read && (
                               <Spinner
                                 variant="primary"

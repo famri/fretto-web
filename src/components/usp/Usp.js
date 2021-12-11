@@ -6,7 +6,7 @@ import "./Usp.css";
 const Usp = () => {
   return (
     <Container className="usp">
-      <h3 className="usp-header rounded-pill">100% gratuit et sans engagement!</h3>
+      <h3 className="usp-header ">100% gratuit et sans engagement!</h3>
       <div>
         <FontAwesomeIcon icon={faCheck} className="check-icon" />
 

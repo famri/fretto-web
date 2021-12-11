@@ -23,6 +23,8 @@ import SignUp from "./pages/SignUp";
 import Support from "./pages/Support";
 import TransporterRating from "./pages/TransporterRating";
 import AuthContext from "./store/auth-context";
+import "./App.css";
+import JourneySearch from "./pages/JourneySearch";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -53,16 +55,16 @@ function App() {
           </Route>
         )}
         {authCtx.isLoggedIn && !authCtx.isClient && (
-          <Route path="/journeys">
-            <JourneyRequests />
+          <Route path="/journey-search">
+            <JourneySearch />
           </Route>
         )}
-        {authCtx.isLoggedIn && authCtx.isClient && (
+        {authCtx.isLoggedIn && (
           <Route path="/discussions/:discussionId/messages">
             <Messages />
           </Route>
         )}
-        {authCtx.isLoggedIn && authCtx.isClient && (
+        {authCtx.isLoggedIn && (
           <Route path="/discussions">
             <Discussions />
           </Route>
@@ -82,17 +84,17 @@ function App() {
             <PasswordReset />
           </Route>
         )}
-        {authCtx.isLoggedIn && authCtx.isClient && (
+        {authCtx.isLoggedIn && (
           <Route path="/profile/edit-profile-image">
             <EditProfileImage />
           </Route>
         )}
-        {authCtx.isLoggedIn && authCtx.isClient && (
+        {authCtx.isLoggedIn && (
           <Route path="/profile/check-identity">
             <IdentityCheck />
           </Route>
         )}
-        {authCtx.isLoggedIn && authCtx.isClient && (
+        {authCtx.isLoggedIn && (
           <Route path="/profile/check-mobile">
             <MobileCheck />
           </Route>

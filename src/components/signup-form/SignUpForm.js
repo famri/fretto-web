@@ -431,7 +431,7 @@ const SignUpForm = (props) => {
             </Form.Group>
           )}
           <Form.Group className="mb-3">
-            <Form.Label>Genre</Form.Label>
+            <Form.Label>Genre <span style={{ color: "#D0324B" }}>*</span></Form.Label>
             <Form.Select
               className={genderClassName}
               required
@@ -464,7 +464,7 @@ const SignUpForm = (props) => {
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Nom</Form.Label>
+            <Form.Label>Nom <span style={{ color: "#D0324B" }}>*</span></Form.Label>
             <Form.Control
               required={true}
               type="text"
@@ -486,7 +486,7 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Prénom</Form.Label>
+            <Form.Label>Prénom <span style={{ color: "#D0324B" }}>*</span></Form.Label>
             <Form.Control
               required
               type="text"
@@ -508,7 +508,7 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Date de naissance</Form.Label>
+            <Form.Label>Date de naissance <span style={{ color: "#D0324B" }}>*</span></Form.Label>
             <Form.Control
               required
               type="date"
@@ -530,7 +530,7 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
+            <Form.Label>Email <span style={{ color: "#D0324B" }}>*</span></Form.Label>
             <Form.Control
               className={emailClassName}
               required
@@ -547,7 +547,7 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Téléphone Mobile</Form.Label>
+            <Form.Label>Téléphone Mobile <span style={{ color: "#D0324B" }}>*</span></Form.Label>
             <div className="row-group">
               <Form.Select
                 style={{ width: "45%" }}
@@ -592,7 +592,7 @@ const SignUpForm = (props) => {
             </div>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Mot de passe</Form.Label>
+            <Form.Label>Mot de passe <span style={{ color: "#D0324B" }}>*</span></Form.Label>
             <Form.Control
               required
               type="password"
@@ -611,7 +611,7 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Confirmation</Form.Label>
+            <Form.Label>Confirmation <span style={{ color: "#D0324B" }}>*</span></Form.Label>
             <Form.Control
               required
               type="password"
@@ -655,7 +655,7 @@ const SignUpForm = (props) => {
               <Button
                 type="submit"
                 variant="success"
-                className="col-12 py-3 fs-2 mt-4 fw-bold"
+                className="col-12 py-3 fs-2 mt-4 fw-bold btn-fretto"
                 disabled={props.isLoading || !checkedNewsletter || !checkedTos}
               >
                 {props.isLoading && (

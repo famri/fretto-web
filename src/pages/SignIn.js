@@ -28,7 +28,7 @@ const SignIn = () => {
           signinData.isClient
         );
 
-        history.push(signinData.isClient ? "/journey-requests" : "/journeys");
+        history.push(signinData.isClient ? "/journey-requests" : "/journey-search");
       }
     }
   }, [signinStatus, signinError, history, authCtx, signinData]);

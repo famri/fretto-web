@@ -2,8 +2,13 @@
   background-color: #3eb0e5 !important;
   color: white;
   font-size: 2rem;
-  width: 35rem;
+  width: 40rem;
 }
 .error {
   color: #d0324b;
+}
+@media (max-width: 767px) {
+  .signin-card {
+    width: 33rem;
+  }
 }

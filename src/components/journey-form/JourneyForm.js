@@ -381,7 +381,7 @@ const JourneyForm = (props) => {
       <Card className="journey-card py-3 px-3">
         <Form onSubmit={(event) => formSubmissionHandler(event)}>
           <Form.Group className="mb-3 autocomplete" controlId="formDeparture">
-            <Form.Label className="form-label">Ville de départ</Form.Label>
+            <Form.Label className="form-label">Ville de départ <span style={{ color: "#D0324B" }}>*</span></Form.Label>
 
             <Form.Control
               type="text"
@@ -433,7 +433,7 @@ const JourneyForm = (props) => {
               )}
           </Form.Group>
           <Form.Group className="mb-3 autocomplete" controlId="formArrival">
-            <Form.Label className="form-label">Ville d'arrivée</Form.Label>
+            <Form.Label className="form-label">Ville d'arrivée <span style={{ color: "#D0324B" }}>*</span></Form.Label>
 
             <Form.Control
               type="text"
@@ -482,7 +482,7 @@ const JourneyForm = (props) => {
               )}
           </Form.Group>
           <Form.Group className="mb-3 " controlId="formEngineType">
-            <Form.Label className="form-label">Véhicule</Form.Label>
+            <Form.Label className="form-label">Véhicule <span style={{ color: "#D0324B" }}>*</span></Form.Label>
             <div
               style={{
                 display:
@@ -494,7 +494,7 @@ const JourneyForm = (props) => {
             >
               <Icon
                 name={vehiculeState.val.toLowerCase()}
-                color="#B3CE55"
+                color="#D0324B"
                 size={50}
               />
             </div>
@@ -556,7 +556,7 @@ const JourneyForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formDate">
-            <Form.Label className="form-label">Date</Form.Label>
+            <Form.Label className="form-label">Date <span style={{ color: "#D0324B" }}>*</span></Form.Label>
 
             <Form.Control
               required
@@ -586,7 +586,7 @@ const JourneyForm = (props) => {
             />
           </Form.Group>
           <Form.Group className="mb-3 " controlId="formTime">
-            <Form.Label className="form-label">Heure</Form.Label>
+            <Form.Label className="form-label">Heure <span style={{ color: "#D0324B" }}>*</span></Form.Label>
 
             <Form.Control
               required
@@ -614,7 +614,9 @@ const JourneyForm = (props) => {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formDescription">
-            <Form.Label className="form-label">Description</Form.Label>
+            <Form.Label className="form-label">
+              Description <span style={{ color: "#D0324B" }}>*</span>
+            </Form.Label>
 
             <Form.Control
               required
@@ -642,8 +644,7 @@ const JourneyForm = (props) => {
             <Col>
               <Button
                 type="submit"
-                className="col-12 py-3 fs-2 fw-bold"
-                variant="success"
+                className="col-12 py-3 fs-2 fw-bold btn-fretto"
               >
                 {props.isLoading && (
                   <Spinner animation="border" variant="light" />

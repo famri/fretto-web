@@ -94,3 +94,44 @@ export async function loadJourneyRequests(params) {
 
   return data;
 }
+
+//https://192.168.50.4:8443/wamya-backend/journey-requests?departure=17&arrival=-1&fromDate=2021-02-01T12:00:00.342Z&toDate=2021-03-31T12:00:00.342Z&engine=1&size=5&page=0&lang=fr_FR
+export async function searchJourneyRequests(params) {
+  let statuses = params.statuses.join(",");
+  let arrivals = params.arrivalPlaceIds.join(",");
+  let engineTypes = params.engineTypeIds.join(",");
+
+  console.log("Statuses ===> " + statuses);
+  console.log("Arrivals ===> " + arrivals);
+  console.log("EngineTypes ===> " + engineTypes);
+  
+  const response = await fetch(
+    `${FRETTO_DOMAIN}/journey-requests?departure=${params.departurePlaceId}&arrival=${arrivals}&fromDate=${params.startDate}&toDate=${params.endDate}&engine=${params.engineTypeIds}&page=${params.page}&size=${params.size}&sort=${params.sort}&lang=${params.lang}&statuses=${statuses}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+    }
+  );
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Échec du chargement des demandes de trajet.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      (data && data.errors && data.errors.join(", ")) ||
+        "Échec du chargement des demandes de trajet."
+    );
+  }
+
+  return data;
+}

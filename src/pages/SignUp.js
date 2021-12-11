@@ -79,7 +79,7 @@ const SignUp = () => {
     if (localeUserPreferenceStatus === "completed") {
       if (localeUserPreferenceError === null) {
         history.replace(
-          signupData.isClient ? "/journey-requests" : "/journeys"
+          signupData.isClient ? "/journey-requests" : "/journey-search"
         );
       }
     }

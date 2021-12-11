@@ -29,14 +29,28 @@ const Header = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <NavLink
-              to="/"
-              activeClassName="active"
-              exact={true}
-              className={classes.headerNavLink}
-            >
-              Accueil
-            </NavLink>
+            {authCtx.isLoggedIn && authCtx.isClient && (
+              <NavLink
+                to="/"
+                activeClassName="active"
+                exact={true}
+                className={classes.headerNavLink}
+              >
+                Accueil
+              </NavLink>
+            )}
+
+            {authCtx.isLoggedIn && !authCtx.isClient && (
+              <NavLink
+                to="/journey-search"
+                activeClassName="active"
+                exact={true}
+                className={classes.headerNavLink}
+              >
+                Recherche
+              </NavLink>
+            )}
+
             {!authCtx.isLoggedIn && (
               <NavLink
                 to="/signin"
@@ -65,7 +79,7 @@ const Header = () => {
               </NavLink>
             )}
 
-            {authCtx.isLoggedIn && authCtx.isClient && (
+            {authCtx.isLoggedIn && (
               <NavLink
                 to="/discussions"
                 activeClassName="active "
@@ -79,7 +93,7 @@ const Header = () => {
                 )}
               </NavLink>
             )}
-            {authCtx.isLoggedIn && authCtx.isClient && (
+            {authCtx.isLoggedIn && (
               <NavLink
                 to="/profile"
                 activeClassName="active "
@@ -91,8 +105,10 @@ const Header = () => {
           </Nav>
           {authCtx.isLoggedIn && (
             <Button
-              variant="danger"
-              className={classes.headerNavLink + " me-3 fs-2 my-3 mx-3 "}
+              variant="outline-secondary"
+              className={
+                classes.headerNavLink + " me-3 fs-2 my-3 mx-3 fst-italic"
+              }
               onClick={(event) => handleDisconnect()}
             >
               Déconnexion

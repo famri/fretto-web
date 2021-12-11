@@ -7,13 +7,12 @@ import { useLocation } from "react-router-dom";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
 import {
   fetchTransporterRatingRequest,
-  sendTransporterRating,
+  sendTransporterRating
 } from "../lib/rating-api";
 import classes from "./TransporterRating.module.css";
 
 const TransporterRating = () => {
   const { search } = useLocation();
-  const urlSearchParams = new URLSearchParams(search);
 
   const [ratingRequest, setRatingRequest] = useState();
   const [error, setError] = useState();
@@ -21,8 +20,9 @@ const TransporterRating = () => {
   const [comment, setComment] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState();
-  
+
   useEffect(() => {
+    const urlSearchParams = new URLSearchParams(search);
     if (!urlSearchParams.has("uid") || !urlSearchParams.has("h")) {
       setError("Lien erroné!");
       setIsLoading(false);
@@ -40,7 +40,7 @@ const TransporterRating = () => {
           setIsLoading(false);
         });
     }
-  }, [fetchTransporterRatingRequest]);
+  }, [search]);
 
   const handleSendTransporterReview = () => {
     if (rating > 0) {

@@ -2,7 +2,7 @@
   background-color: #3eb0e5 !important;
   color: white;
   font-size: 2rem;
-  width: 35rem;
+  width: 40rem;
 }
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -20,4 +20,10 @@ input[type="number"]::-webkit-outer-spin-button {
 .error {
   color: red;
   font-weight: bold;
+}
+
+@media (max-width: 767px) {
+  .signup-card {
+    width: 33rem;
+  }
 }

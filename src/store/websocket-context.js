@@ -234,7 +234,7 @@ export const WebSocketMessagesContextController = (props) => {
     subscriptionsResult.current.forEach((subscription) => {
       subscription.unsubscribe();
     });
-    webSocketClient.current.disconnect();
+    webSocketClient.current && webSocketClient.current.disconnect();
   }, []);
 
   useEffect(() => {

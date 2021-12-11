@@ -218,7 +218,7 @@ const JourneyRequests = (props) => {
                               size={80}
                             />
                           </div>
-                          <div className="d-flex justify-content-center">
+                          <div className="d-flex justify-content-center fs-2">
                             {jr.engineType.name}
                           </div>
                         </ListGroup.Item>

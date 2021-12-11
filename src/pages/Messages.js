@@ -69,7 +69,7 @@ const Messages = (props) => {
           () =>
             node.scrollIntoView({
               behavior: "smooth",
-              block: "start",
+              block: "center",
               inline: "nearest",
             }),
           300
@@ -96,6 +96,7 @@ const Messages = (props) => {
       lastMessageRef.current = node;
     },
     [
+      pageNumber,
       authContext.token,
       params.discussionId,
       webSocketContext.currentDiscussionMessages,
@@ -183,14 +184,22 @@ const Messages = (props) => {
           <Row xs={1} md={1}>
             <Col className="d-flex justify-content-center">
               <img
-                alt={"transporter-" + params.discussionId}
-                src={discussion.transporter.photoUrl}
+                alt={
+                  authContext.isClient ? "transporter-avatar" : "client-avatar"
+                }
+                src={
+                  authContext.isClient
+                    ? discussion.transporter.photoUrl
+                    : discussion.client.photoUrl
+                }
                 className={classes.bigAvatar}
               ></img>
             </Col>
             <Col className="d-flex justify-content-center">
-              <span className={classes.transporterName + " fs-2 ml-5"}>
-                {discussion.transporter.name}
+              <span className={classes.interlocutorName + " fs-2 ml-5"}>
+                {authContext.isClient
+                  ? discussion.transporter.name
+                  : discussion.client.name}
               </span>
             </Col>
           </Row>
@@ -231,8 +240,12 @@ const Messages = (props) => {
                         className="d-flex justify-content-start "
                       >
                         <img
-                          alt={"transporter-" + params.discussionId}
-                          src={discussion.transporter.photoUrl}
+                          alt="interlocutor-avatar"
+                          src={
+                            authContext.isClient
+                              ? discussion.transporter.photoUrl
+                              : discussion.client.photoUrl
+                          }
                           className={classes.littleAvatar}
                         ></img>
                       </Col>
@@ -243,7 +256,7 @@ const Messages = (props) => {
                       >
                         <span
                           className={
-                            classes.transporterMessageContent + " fs-2 ml-5"
+                            classes.interlocutorMessageContent + " fs-2 ml-5"
                           }
                         >
                           {m.content}
@@ -269,8 +282,12 @@ const Messages = (props) => {
                         className="d-flex justify-content-start "
                       >
                         <img
-                          alt={"transporter-" + params.discussionId}
-                          src={discussion.transporter.photoUrl}
+                          alt="interlocutor-avatar"
+                          src={
+                            authContext.isClient
+                              ? discussion.transporter.photoUrl
+                              : discussion.client.photoUrl
+                          }
                           className={classes.littleAvatar}
                         ></img>
                       </Col>
@@ -281,7 +298,7 @@ const Messages = (props) => {
                       >
                         <span
                           className={
-                            classes.transporterMessageContent + " fs-2 ml-5"
+                            classes.interlocutorMessageContent + " fs-2 ml-5"
                           }
                         >
                           {m.content}
@@ -303,8 +320,12 @@ const Messages = (props) => {
                         className="d-flex justify-content-start "
                       >
                         <img
-                          alt={"transporter-" + params.discussionId}
-                          src={discussion.transporter.photoUrl}
+                          alt="interlocutor-avatar"
+                          src={
+                            authContext.isClient
+                              ? discussion.transporter.photoUrl
+                              : discussion.client.photoUrl
+                          }
                           className={classes.littleAvatar}
                         ></img>
                       </Col>
@@ -315,7 +336,7 @@ const Messages = (props) => {
                       >
                         <span
                           className={
-                            classes.transporterMessageContent + " fs-2 ml-5"
+                            classes.interlocutorMessageContent + " fs-2 ml-5"
                           }
                         >
                           {m.content}
@@ -339,9 +360,7 @@ const Messages = (props) => {
                         className="d-flex justify-content-end "
                       >
                         <span
-                          className={
-                            classes.clientMessageContent + " fs-2 ml-5"
-                          }
+                          className={classes.ownMessageContent + " fs-2 ml-5"}
                         >
                           {m.content}
                         </span>
@@ -352,8 +371,12 @@ const Messages = (props) => {
                         className="d-flex justify-content-end "
                       >
                         <img
-                          alt={"client-" + params.discussionId}
-                          src={discussion.client.photoUrl}
+                          alt="my-avatar"
+                          src={
+                            authContext.isClient
+                              ? discussion.client.photoUrl
+                              : discussion.transporter.photoUrl
+                          }
                           className={classes.littleAvatar}
                         ></img>
                       </Col>
@@ -377,9 +400,7 @@ const Messages = (props) => {
                         className="d-flex justify-content-end "
                       >
                         <span
-                          className={
-                            classes.clientMessageContent + " fs-2 ml-5"
-                          }
+                          className={classes.ownMessageContent + " fs-2 ml-5"}
                           id={m.id}
                         >
                           {m.content}
@@ -391,8 +412,12 @@ const Messages = (props) => {
                         className="d-flex justify-content-end "
                       >
                         <img
-                          alt={"client-" + params.discussionId}
-                          src={discussion.client.photoUrl}
+                          alt="my-avatar"
+                          src={
+                            authContext.isClient
+                              ? discussion.client.photoUrl
+                              : discussion.transporter.photoUrl
+                          }
                           className={classes.littleAvatar}
                         ></img>
                       </Col>
@@ -412,9 +437,7 @@ const Messages = (props) => {
                         className="d-flex justify-content-end "
                       >
                         <span
-                          className={
-                            classes.clientMessageContent + " fs-2 ml-5"
-                          }
+                          className={classes.ownMessageContent + " fs-2 ml-5"}
                         >
                           {m.content}
                         </span>
@@ -425,8 +448,12 @@ const Messages = (props) => {
                         className="d-flex justify-content-end "
                       >
                         <img
-                          alt={"client-" + params.discussionId}
-                          src={discussion.client.photoUrl}
+                          alt="my-avatar"
+                          src={
+                            authContext.isClient
+                              ? discussion.client.photoUrl
+                              : discussion.transporter.photoUrl
+                          }
                           className={classes.littleAvatar}
                         ></img>
                       </Col>
@@ -458,7 +485,9 @@ const Messages = (props) => {
 
                 <Button
                   variant="outline-secondary"
-                  className={classes.sendMessageButton + " fs-2 fw-bold"}
+                  className={
+                    classes.sendMessageButton + " mx-2 fs-2 fw-bold fst-italic"
+                  }
                   onClick={() => {
                     handleSendMessage();
                   }}

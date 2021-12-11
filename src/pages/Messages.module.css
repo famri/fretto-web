@@ -10,19 +10,19 @@
   height: 50px;
   border-radius: 50%;
 }
-.transporterName {
+.interlocutorName {
   color: #134753;
   font-weight: bold;
 }
 
-.clientMessageContent {
+.ownMessageContent {
   color: white;
   background-color: #0084ff;
   border-radius: 25px 25px 0 25px;
   padding: 1rem;
 }
 
-.transporterMessageContent {
+.interlocutorMessageContent {
   background-color: #e4e6eb;
   border-radius: 25px 25px 25px 0;
   padding: 1rem;
@@ -31,6 +31,7 @@
   max-height: 80vh;
   overflow-y: scroll;
 }
+
 .sendMessageButton:hover {
   background-color: #0084ff; /* Green */
   color: white;

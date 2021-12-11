@@ -101,8 +101,9 @@ const SignInForm = (props) => {
     <Card className="py-4 signin-card">
       <Form className="px-4" onSubmit={(event) => signinHandler(event)}>
         <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
+          <Form.Label>Email <span style={{ color: "#D0324B" }}>*</span></Form.Label>
           <Form.Control
+          
             className={emailClassName}
             required
             type="email"
@@ -116,7 +117,7 @@ const SignInForm = (props) => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>Mot de passe</Form.Label>
+          <Form.Label>Mot de passe <span style={{ color: "#D0324B" }}>*</span></Form.Label>
           <Form.Control
             required
             type="password"
@@ -140,7 +141,7 @@ const SignInForm = (props) => {
             <Button
               type="submit"
               variant="success"
-              className="col-12 py-3 fs-2 mt-4 fw-bold"
+              className="col-12 py-3 fs-2 mt-4 fw-bold btn-fretto"
               disabled={props.isLoading}
             >
               {props.isLoading && (
