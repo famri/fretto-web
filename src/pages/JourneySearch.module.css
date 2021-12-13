@@ -4,6 +4,7 @@
   color: #134753;
   font-style: italic;
 }
+
 .journeySearchFormHeader {
   font-size: 3rem;
   font-weight: bold;
@@ -31,50 +32,50 @@
   font-weight: bold;
   font-style: italic;
 }
+
 .arrivalPlace {
   color: #d0324b;
   font-weight: bold;
   font-style: italic;
 }
+
 .journeyArrow {
   color: black;
-  font-weight: bold;
-  margin-left: 1rem;
-  margin-right: 1rem;
+  margin-left: 5px;
+  margin-right: 5px;
 }
+
 .journeyDistance {
   color: black;
   font-weight: bold;
 }
+
 .journeyWorkersText {
   color: black;
   font-weight: bold;
 }
+
 .journeyWorkersNumber {
-  color: red;
+  color: #d0324b;
   font-weight: bold;
 }
-.journeyButton {
-  min-width: 40%;
-  font-weight: bold;
-  font-size: 2rem;
-}
-.expiredHeader {
-  background-color: #e66c78 !important;
-}
-.openHeader {
-  background-color: #d6e4a3 !important;
-}
-.archivedHeader {
-  background-color: #d6e4a3 !important;
-}
+
 .avatar {
   vertical-align: middle;
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
+
 .clientName {
   color: #134753;
   font-weight: bold;
+}
+
+.vehiculeImage {
+  max-width: 100%;
+}
+
+.vehiculeSelect {
+  border-radius: 10px !important;
 }

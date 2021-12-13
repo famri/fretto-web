@@ -190,7 +190,7 @@ const JourneyRequests = (props) => {
                           <span className={classes.departurePlace}>
                             {jr.departurePlace.name}
                           </span>
-                          <span className={classes.journeyArrow}> &gt; </span>
+                          <span className={classes.journeyArrow}> »»» </span>
                           <span className={classes.arrivalPlace}>
                             {jr.arrivalPlace.name}
                           </span>

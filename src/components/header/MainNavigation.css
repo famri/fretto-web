@@ -4,7 +4,7 @@
   margin-top: 1rem;
 }
 
-.active {
+a.active {
   border-bottom: 0.5rem solid #b2cd52;
   color: #3eb0e5 !important;
 }
@@ -28,7 +28,7 @@
 
 
 @media (max-width: 767px) {
-  .active {
+  a.active {
     border-bottom: 0.5rem solid #b2cd52;
     color: #3eb0e5 !important;
     max-width: 40%;

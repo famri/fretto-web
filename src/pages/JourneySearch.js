@@ -12,13 +12,15 @@ import {
   Row,
   Spinner,
 } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import Select from "react-select";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
+import ProposalForm from "../components/proposal-form/ProposalForm";
 import Icon from "../components/widgets/Icon";
 import useHttp from "../hooks/use-http";
-import { fetchTransporterEngineTypes } from "../lib/engine-types-api";
+import { fetchEngineTypes } from "../lib/engine-types-api";
 import { searchJourneyRequests } from "../lib/journey-requests-api";
 import { fetchDepartments } from "../lib/places-api";
+import { loadTransporterVehicules } from "../lib/vehicules-api";
 import AuthContext from "../store/auth-context";
 import classes from "./JourneySearch.module.css";
 
@@ -124,40 +126,27 @@ const arrivalReducer = (state, action) => {
       throw new Error();
   }
 };
-const vehiculeReducer = (state, action) => {
-  switch (action.type) {
-    case "MENU_OPENED":
-      return {
-        touched: true,
-        val: state.val,
-        id: state.id,
-        isValid: state.isValid,
-      };
 
-    case "VEHICULE_CHOSEN":
+const engineTypeReducer = (state, action) => {
+  switch (action.type) {
+    case "USER_INPUT":
       return {
         touched: true,
         val: action.val,
-        id: action.id,
-        isValid: action.val !== "" && action.id !== null,
+        isValid: !!action.val && !!action.val.value,
       };
-
-    case "MENU_BLUR":
+    case "INPUT_BLUR":
       return {
-        touched: true,
+        touched: state.touched,
         val: state.val,
-        id: state.id,
         isValid: state.isValid,
       };
-
     case "INPUT_VALIDATION":
       return {
         touched: true,
         val: state.val,
-        id: state.id,
         isValid: state.isValid,
       };
-
     default:
       throw new Error();
   }
@@ -266,7 +255,7 @@ const validateEndDate = (startDate, endDate) => {
 
 const JourneySearch = (props) => {
   const authCtx = useContext(AuthContext);
-  const history = useHistory();
+
   const [journeyRequests, setJourneyRequests] = useState();
   const [pageNumber, setPageNumber] = useState(0);
   const [totalPages, setTotalPages] = useState();
@@ -292,18 +281,42 @@ const JourneySearch = (props) => {
     arrivalReducer,
     arrivalInitialState
   );
-  const [vehiculeState, dispatchVehicule] = useReducer(
-    vehiculeReducer,
-    vehiculeInitialState
+
+  const [engineTypeOptionState, dispatchEngineTypeOption] = useReducer(
+    engineTypeReducer,
+    {
+      touched: false,
+      val: "",
+      isValid: false,
+    }
   );
 
   const [showSearchForm, setShowSearchForm] = useState(true);
+
+  const formatOptionLabel = ({ value, label, icon }) => (
+    <Row xs={2} md={2}>
+      <Col xs={4} md={4}>
+        {icon}
+      </Col>
+      <Col xs={8} md={8} className="my-auto">
+        {label}
+      </Col>
+    </Row>
+  );
+
   const {
     sendRequest: sendLoadEngineTypesRequest,
     status: loadEngineTypesStatus,
     error: loadEngineTypesError,
     data: loadedEngineTypes,
-  } = useHttp(fetchTransporterEngineTypes, true);
+  } = useHttp(fetchEngineTypes, true);
+
+  const {
+    sendRequest: sendLoadTransporterVehiculesRequest,
+    status: loadTransporterVehiculesStatus,
+    error: loadTransporterVehiculesError,
+    data: transporterVehicules,
+  } = useHttp(loadTransporterVehicules, true);
 
   const {
     sendRequest: sendLoadDepartureSuggestionsRequest,
@@ -323,11 +336,19 @@ const JourneySearch = (props) => {
     sendLoadEngineTypesRequest({ language: "fr_FR" });
   }, [sendLoadEngineTypesRequest]);
 
+  useEffect(() => {
+    sendLoadTransporterVehiculesRequest({
+      sort: "id,asc",
+      lang: "fr_FR",
+      token: authCtx.token,
+    });
+  }, [sendLoadTransporterVehiculesRequest, authCtx.token]);
+
   const handleSearchJourneyRequests = (event) => {
     event.preventDefault();
     dispatchDeparture({ type: "INPUT_VALIDATION" });
     dispatchArrival({ type: "INPUT_VALIDATION" });
-    dispatchVehicule({ type: "INPUT_VALIDATION" });
+    dispatchEngineTypeOption({ type: "INPUT_VALIDATION" });
 
     dispatchStartDate({ type: "INPUT_VALIDATION" });
     dispatchEndDate({ type: "INPUT_VALIDATION" });
@@ -335,7 +356,7 @@ const JourneySearch = (props) => {
     if (
       departureState.isValid &&
       arrivalState.isValid &&
-      vehiculeState.isValid &&
+      engineTypeOptionState.isValid &&
       startDateState.isValid &&
       endDateState.isValid
     ) {
@@ -352,7 +373,7 @@ const JourneySearch = (props) => {
       arrivalPlaceIds: [arrivalState.suggestionChoice.id],
       startDate: searchStartDate,
       endDate: searchEndDate,
-      engineTypeIds: [vehiculeState.id],
+      engineTypeIds: [engineTypeOptionState.val.value],
       token: authCtx.token,
       page: page,
       size: PAGE_SIZE,
@@ -394,8 +415,8 @@ const JourneySearch = (props) => {
   }, [arrivalState, sendLoadArrivalSuggestionsRequest]);
 
   const engineTypeClassName =
-    vehiculeState && vehiculeState.touched
-      ? vehiculeState.val && vehiculeState.val !== ""
+    engineTypeOptionState && engineTypeOptionState.touched
+      ? engineTypeOptionState.val && engineTypeOptionState.val !== ""
         ? "is-valid"
         : "is-invalid"
       : "";
@@ -423,7 +444,10 @@ const JourneySearch = (props) => {
     loadArrivalSuggestionsError,
   ]);
 
-  if (loadEngineTypesStatus === "pending") {
+  if (
+    loadEngineTypesStatus === "pending" ||
+    loadTransporterVehiculesStatus === "pending"
+  ) {
     return <Spinner variant="warning" animation="grow"></Spinner>;
   }
 
@@ -434,6 +458,15 @@ const JourneySearch = (props) => {
       </Container>
     );
   }
+
+  if (!!loadTransporterVehiculesError) {
+    return (
+      <Container className="centered">
+        <h1 className="error">{loadTransporterVehiculesError}</h1>
+      </Container>
+    );
+  }
+
   if (!!errorMessage) {
     return (
       <Container className="centered">
@@ -606,58 +639,42 @@ const JourneySearch = (props) => {
                 <Form.Label className="form-label">
                   Véhicule <span style={{ color: "#D0324B" }}>*</span>
                 </Form.Label>
+
                 <div
-                  style={{
-                    display:
-                      vehiculeState.val !== undefined &&
-                      vehiculeState.val.toLowerCase() !== ""
-                        ? "block"
-                        : "none",
-                  }}
+                  className={
+                    classes.vehiculeSelect +
+                    " form-control " +
+                    engineTypeClassName
+                  }
                 >
-                  <Icon
-                    name={vehiculeState.val.toLowerCase()}
-                    color="#D0324B"
-                    size={50}
-                  />
+                  <Select
+                    placeholder="Choisissez un véhicule"
+                    value={engineTypeOptionState.val}
+                    formatOptionLabel={formatOptionLabel}
+                    options={loadedEngineTypes.map((engineType) => {
+                      return {
+                        value: engineType.id,
+                        label: engineType.name,
+                        icon: (
+                          <Icon
+                            name={engineType.code.toLowerCase()}
+                            color="#44B0E5"
+                            size={50}
+                          />
+                        ),
+                      };
+                    })}
+                    onChange={(selectedOption) =>
+                      dispatchEngineTypeOption({
+                        type: "USER_INPUT",
+                        val: selectedOption,
+                      })
+                    }
+                    onBlur={() =>
+                      dispatchEngineTypeOption({ type: "INPUT_BLUR" })
+                    }
+                  ></Select>
                 </div>
-                <Form.Select
-                  className={engineTypeClassName}
-                  required
-                  value={
-                    vehiculeState.id != null &&
-                    loadedEngineTypes.find((e) => e.id === vehiculeState.id)
-                      .code
-                  }
-                  onChange={(event) =>
-                    dispatchVehicule({
-                      type: "VEHICULE_CHOSEN",
-                      val: event.target.value,
-                      id: loadedEngineTypes.find(
-                        (e) => e.code === event.target.value
-                      ).id,
-                    })
-                  }
-                  onClick={(event) =>
-                    dispatchVehicule({
-                      type: "MENU_OPENED",
-                    })
-                  }
-                  onBlur={(event) =>
-                    dispatchVehicule({
-                      type: "MENU_BLUR",
-                    })
-                  }
-                >
-                  <option key="default" value="">
-                    Choisissez un véhicule
-                  </option>
-                  {loadedEngineTypes.map((engineType, index) => (
-                    <option key={engineType.id} value={engineType.code}>
-                      {engineType.name}
-                    </option>
-                  ))}
-                </Form.Select>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formDate">
@@ -753,15 +770,15 @@ const JourneySearch = (props) => {
                       <Card className={" my-3 mx-0 "}>
                         <Card.Header>
                           <Row xs={2} md={2}>
-                            <Col xs={2} md={2}>
+                            <Col xs={3} md={3}>
                               <img
                                 alt={"client-" + index + "-image"}
                                 src={jr.client.photoUrl}
                                 className={classes.avatar}
                               ></img>
                             </Col>
-                            <Col xs={10} md={10}>
-                              <span className={classes.clientName + " fs-2"}>
+                            <Col>
+                              <span className={classes.clientName + " fs-2 "}>
                                 {jr.client.firstname}
                               </span>
                             </Col>
@@ -779,10 +796,7 @@ const JourneySearch = (props) => {
                               <span className={classes.departurePlace}>
                                 {jr.departurePlace.name}
                               </span>
-                              <span className={classes.journeyArrow}>
-                                {" "}
-                                &gt;{" "}
-                              </span>
+                              <span className={classes.journeyArrow}>»»»</span>
                               <span className={classes.arrivalPlace}>
                                 {jr.arrivalPlace.name}
                               </span>
@@ -837,32 +851,24 @@ const JourneySearch = (props) => {
                             </Accordion.Header>
                             <Accordion.Body
                               key={jr.id + "-description"}
-                              className={
-                                classes.journeyDescription +
-                                " d-flex justify-content-center fs-2"
-                              }
+                              className="fs-2"
                             >
                               <p>{jr.description}</p>
                             </Accordion.Body>
                           </Accordion.Item>
+                          <Accordion.Item eventKey="1">
+                            <Accordion.Header>
+                              <h2> Proposer un devis</h2>
+                            </Accordion.Header>
+                            <Accordion.Body>
+                              <ProposalForm
+                                journeyId={jr.id}
+                                onSubmit={() => {}}
+                                vehicules={transporterVehicules}
+                              ></ProposalForm>
+                            </Accordion.Body>
+                          </Accordion.Item>
                         </Accordion>
-                        <Card.Footer className="d-flex justify-content-around">
-                          <Button
-                            className={
-                              classes.journeyButton + " fw-bold fs-4 col-12"
-                            }
-                            variant="primary"
-                            onClick={() => {
-                              history.push(
-                                "/journey-requests/" + jr.id + "/proposals"
-                              );
-                            }}
-                          >
-                            <div>
-                              <span>Proposer un devis</span>
-                            </div>
-                          </Button>
-                        </Card.Footer>
                       </Card>
                     </Col>
                   ))}

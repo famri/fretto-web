@@ -1,0 +1,9 @@
+.vehiculeImage {
+  max-width: 100%;
+}
+.proposalCurrency {
+  color: #d0324b;
+}
+.vehiculeSelect {
+  border-radius: 10px !important;
+}
