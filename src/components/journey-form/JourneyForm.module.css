@@ -14,28 +14,36 @@
   right: 0;
   padding-left: 1rem;
   font-size: 2rem;
+  border-radius: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .autocomplete {
   /*the container must be positioned relative:*/
   position: relative;
-  /*display: inline-block;*/
+  display: inline-block;
 }
 
-.journey-card {
+.journeyCard {
   background-color: #3eb0e5 !important;
   color: white;
-  font-size: 2rem;
 }
-.form-label {
+.formLabel {
   font-weight: bold;
+  font-size: large;
 }
-.api-error {
-  color: red;
+
+input {
+  font-size: large !important;
 }
-.form-control {
-  font-size: 2rem !important;
+.vehiculeImage {
+  max-width: 100%;
 }
-.form-select {
-  font-size: 2rem !important;
+
+.vehiculeSelect {
+  border-radius: 10px !important;
+}
+textarea {
+  font-size: large !important;
 }

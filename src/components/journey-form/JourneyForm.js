@@ -3,11 +3,13 @@ import { Col, Row, Spinner } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import useHttp from "../../hooks/use-http";
 import { fetchEngineTypes } from "../../lib/engine-types-api";
 import { fetchSuggestions } from "../../lib/places-api";
 import Icon from "../widgets/Icon";
-import "./JourneyForm.css";
+import classes from "./JourneyForm.module.css";
+
 const validateWorkers = (workers) => {
   const workersPattern = /^[0-3]{1}$/;
   return workersPattern.test(workers);
@@ -72,32 +74,26 @@ const placeReducer = (state, action) => {
   }
 };
 
-const vehiculeReducer = (state, action) => {
+const engineTypeReducer = (state, action) => {
   switch (action.type) {
-    case "MENU_OPENED":
-      return {
-        touched: true,
-        val: state.val,
-        isValid: state.isValid,
-      };
-
-    case "VEHICULE_CHOSEN":
+    case "USER_INPUT":
       return {
         touched: true,
         val: action.val,
-        isValid: action.val !== "",
+        isValid: !!action.val && !!action.val.value,
       };
-
-    case "MENU_BLUR":
+    case "INPUT_BLUR":
+      return {
+        touched: state.touched,
+        val: state.val,
+        isValid: state.isValid,
+      };
+    case "INPUT_VALIDATION":
       return {
         touched: true,
         val: state.val,
         isValid: state.isValid,
       };
-
-    case "INPUT_VALIDATION":
-      return { touched: true, val: state.val, isValid: state.isValid };
-
     default:
       throw new Error();
   }
@@ -205,6 +201,13 @@ const vehiculeInitialState = {
   isValid: false,
 };
 
+const customSelectStyles = {
+  control: () => ({
+    border: "none",
+    display: "flex",
+  }),
+};
+
 const JourneyForm = (props) => {
   const {
     sendRequest: sendLoadEngineTypesRequest,
@@ -239,10 +242,16 @@ const JourneyForm = (props) => {
     placeReducer,
     arrivalInitialState
   );
-  const [vehiculeState, dispatchVehicule] = useReducer(
-    vehiculeReducer,
-    vehiculeInitialState
+
+  const [engineTypeOptionState, dispatchEngineTypeOption] = useReducer(
+    engineTypeReducer,
+    {
+      touched: false,
+      val: "",
+      isValid: false,
+    }
   );
+
   const [workersState, dispatchWorkers] = useReducer(workersReducer, {
     touched: false,
     val: "0",
@@ -268,11 +277,22 @@ const JourneyForm = (props) => {
     }
   );
 
+  const formatOptionLabel = ({ value, label, icon }) => (
+    <Row xs={2} md={2}>
+      <Col xs={4} md={4}>
+        {icon}
+      </Col>
+      <Col xs={8} md={8} className="my-auto">
+        {label}
+      </Col>
+    </Row>
+  );
+
   const formSubmissionHandler = (event) => {
     event.preventDefault();
     dispatchDeparture({ type: "INPUT_VALIDATION" });
     dispatchArrival({ type: "INPUT_VALIDATION" });
-    dispatchVehicule({ type: "INPUT_VALIDATION" });
+    dispatchEngineTypeOption({ type: "INPUT_VALIDATION" });
     dispatchWorkers({ type: "INPUT_VALIDATION" });
     dispatchDate({ type: "INPUT_VALIDATION" });
     dispatchTime({ type: "INPUT_VALIDATION" });
@@ -281,7 +301,7 @@ const JourneyForm = (props) => {
     if (
       departureState.isValid &&
       arrivalState.isValid &&
-      vehiculeState.isValid &&
+      engineTypeOptionState.isValid &&
       workersState.isValid &&
       dateState.isValid &&
       timeState.isValid &&
@@ -296,9 +316,7 @@ const JourneyForm = (props) => {
         arrivalPlaceId: arrivalState.suggestionChoice.id,
         arrivalPlaceType: arrivalState.suggestionChoice.type,
         dateTime: journeyDateTime.substr(0, journeyDateTime.length - 1),
-        engineTypeId: loadedEngineTypes.find(
-          (e) => e.code === vehiculeState.val
-        ).id,
+        engineTypeId: engineTypeOptionState.val,
         workers: parseInt(workersState.val),
 
         description: descriptionState.val,
@@ -327,8 +345,8 @@ const JourneyForm = (props) => {
   }, [arrivalState, sendLoadArrivalSuggestionsRequest]);
 
   const engineTypeClassName =
-    vehiculeState && vehiculeState.touched
-      ? vehiculeState.val && vehiculeState.val !== ""
+    engineTypeOptionState && engineTypeOptionState.touched
+      ? engineTypeOptionState.val && engineTypeOptionState.val !== ""
         ? "is-valid"
         : "is-invalid"
       : "";
@@ -378,10 +396,12 @@ const JourneyForm = (props) => {
   }
   if (loadEngineTypesStatus === "completed") {
     return (
-      <Card className="journey-card py-3 px-3">
+      <Card className={classes.journeyCard + " py-3 px-3"}>
         <Form onSubmit={(event) => formSubmissionHandler(event)}>
           <Form.Group className="mb-3 autocomplete" controlId="formDeparture">
-            <Form.Label className="form-label">Ville de départ <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Ville de départ <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
 
             <Form.Control
               type="text"
@@ -406,14 +426,14 @@ const JourneyForm = (props) => {
             {departureState.showSuggestion &&
               loadDepartureSuggestionsStatus === "completed" &&
               !!loadDepartureSuggestionsError && (
-                <div className="suggestion">
+                <div className={classes.suggestion}>
                   <p>{loadDepartureSuggestionsError}</p>
                 </div>
               )}
             {departureState.showSuggestion &&
               loadDepartureSuggestionsStatus === "completed" &&
               loadedDepartureSuggestions.length > 0 && (
-                <div className="suggestion">
+                <div className={classes.suggestion}>
                   {loadedDepartureSuggestions.map((suggestion, i) => {
                     return (
                       <p
@@ -433,7 +453,9 @@ const JourneyForm = (props) => {
               )}
           </Form.Group>
           <Form.Group className="mb-3 autocomplete" controlId="formArrival">
-            <Form.Label className="form-label">Ville d'arrivée <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Ville d'arrivée <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
 
             <Form.Control
               type="text"
@@ -455,14 +477,14 @@ const JourneyForm = (props) => {
             {arrivalState.showSuggestion &&
               loadArrivalSuggestionsStatus === "completed" &&
               !!loadArrivalSuggestionsError && (
-                <div className="suggestion">
+                <div className={classes.suggestion}>
                   <p>{loadArrivalSuggestionsError}</p>
                 </div>
               )}
             {arrivalState.showSuggestion &&
               loadArrivalSuggestionsStatus === "completed" &&
               loadedArrivalSuggestions.length > 0 && (
-                <div className="suggestion">
+                <div className={classes.suggestion}>
                   {loadedArrivalSuggestions.map((suggestion, i) => {
                     return (
                       <div
@@ -482,55 +504,47 @@ const JourneyForm = (props) => {
               )}
           </Form.Group>
           <Form.Group className="mb-3 " controlId="formEngineType">
-            <Form.Label className="form-label">Véhicule <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Véhicule <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
             <div
-              style={{
-                display:
-                  vehiculeState.val !== undefined &&
-                  vehiculeState.val.toLowerCase() !== ""
-                    ? "block"
-                    : "none",
-              }}
+              className={
+                classes.vehiculeSelect +
+                " form-control fs-2 " +
+                engineTypeClassName
+              }
             >
-              <Icon
-                name={vehiculeState.val.toLowerCase()}
-                color="#D0324B"
-                size={50}
-              />
+              <Select
+                styles={customSelectStyles}
+                placeholder="Choisissez un véhicule"
+                value={engineTypeOptionState.val}
+                formatOptionLabel={formatOptionLabel}
+                options={loadedEngineTypes.map((engineType) => {
+                  return {
+                    value: engineType.id,
+                    label: engineType.name,
+                    icon: (
+                      <Icon
+                        name={engineType.code.toLowerCase()}
+                        color="#44B0E5"
+                        size={50}
+                      />
+                    ),
+                  };
+                })}
+                onChange={(selectedOption) =>
+                  dispatchEngineTypeOption({
+                    type: "USER_INPUT",
+                    val: selectedOption,
+                  })
+                }
+                onBlur={() => dispatchEngineTypeOption({ type: "INPUT_BLUR" })}
+              ></Select>
             </div>
-            <Form.Select
-              className={engineTypeClassName}
-              required
-              onChange={(event) =>
-                dispatchVehicule({
-                  type: "VEHICULE_CHOSEN",
-                  val: event.target.value,
-                })
-              }
-              onClick={(event) =>
-                dispatchVehicule({
-                  type: "MENU_OPENED",
-                })
-              }
-              onBlur={(event) =>
-                dispatchVehicule({
-                  type: "MENU_BLUR",
-                })
-              }
-            >
-              <option key="default" value="">
-                Choisissez un véhicule
-              </option>
-              {loadedEngineTypes.map((engineType, index) => (
-                <option key={engineType.id} value={engineType.code}>
-                  {engineType.name}
-                </option>
-              ))}
-            </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formWorkers">
-            <Form.Label className="form-label">
-              Main d'oeuvre (personnes)
+            <Form.Label className={classes.formLabel}>
+              Manutentionnaires (personnes)
             </Form.Label>
 
             <Form.Control
@@ -556,7 +570,9 @@ const JourneyForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formDate">
-            <Form.Label className="form-label">Date <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Date <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
 
             <Form.Control
               required
@@ -586,7 +602,9 @@ const JourneyForm = (props) => {
             />
           </Form.Group>
           <Form.Group className="mb-3 " controlId="formTime">
-            <Form.Label className="form-label">Heure <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Heure <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
 
             <Form.Control
               required
@@ -614,8 +632,8 @@ const JourneyForm = (props) => {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formDescription">
-            <Form.Label className="form-label">
-              Description <span style={{ color: "#D0324B" }}>*</span>
+            <Form.Label className={classes.formLabel}>
+              Description <span className="mandatoryAsterisk">*</span>
             </Form.Label>
 
             <Form.Control
@@ -642,10 +660,7 @@ const JourneyForm = (props) => {
           {props.errorMessage && <p className="error">{props.errorMessage}</p>}
           <Form.Group as={Row}>
             <Col>
-              <Button
-                type="submit"
-                className="col-12 py-3 fs-2 fw-bold btn-fretto"
-              >
+              <Button type="submit" className="col-12 py-3  btn-fretto">
                 {props.isLoading && (
                   <Spinner animation="border" variant="light" />
                 )}

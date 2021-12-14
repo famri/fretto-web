@@ -16,6 +16,7 @@ input {
 
 .suggestion {
   border-radius: 10px !important;
+  font-size: large !important;
 }
 
 select {
@@ -34,6 +35,12 @@ option {
 .btn-fretto {
   color: #134753 !important;
   font-style: italic !important;
+  font-weight: bold !important;
+  font-size: large !important;
   background-color: #b2cd52 !important;
   border-color: #b2cd52 !important;
+}
+
+.mandatoryAsterisk {
+  color: #d0324b !important;
 }

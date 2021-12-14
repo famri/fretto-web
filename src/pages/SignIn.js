@@ -36,10 +36,10 @@ const SignIn = () => {
   return (
     <Fragment>
       <FrettoLogo width="170px"></FrettoLogo>
-      <h2 className="text-center py-2 fs-1">Heureux de vous revoir !</h2>
+      <h2 className="text-center py-2 fs-1 signup-message">Heureux de vous revoir !</h2>
       <div className="text-center my-3">
-        <span className="fs-5">Pas encore inscrit sur Fretto ? </span>
-        <Link to="/signup" className="link-dark">
+        <span className="fs-4">Pas encore inscrit sur Fretto ? </span>
+        <Link to="/signup" className="link-dark fs-4">
           Inscription
         </Link>
       </div>
@@ -51,8 +51,8 @@ const SignIn = () => {
         ></SignInForm>
       </div>
       <div className="text-center my-3">
-        <span className="fs-5">Mot de passe oublié ? </span>
-        <Link to="/request-password-reset" className="link-dark">
+        <span className="fs-4">Mot de passe oublié ? </span>
+        <Link to="/request-password-reset" className="link-dark fs-4">
           Réinitialiser
         </Link>
       </div>

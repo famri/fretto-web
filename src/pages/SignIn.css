@@ -1,1 +1,6 @@
-
+.signin-message {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #134753;
+  font-style: italic;
+}

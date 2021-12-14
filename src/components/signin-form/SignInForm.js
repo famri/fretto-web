@@ -1,6 +1,6 @@
 import { useReducer } from "react";
-import { Button, Card, Form, Spinner ,Col} from "react-bootstrap";
-import "./SignInForm.css";
+import { Button, Card, Form, Spinner } from "react-bootstrap";
+import classes from "./SignInForm.module.css";
 
 const validateEmail = (email) => {
   const emailPattern = /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/;
@@ -98,12 +98,13 @@ const SignInForm = (props) => {
   };
 
   return (
-    <Card className="py-4 signin-card">
+    <Card className={classes.signinCard + " py-4 "}>
       <Form className="px-4" onSubmit={(event) => signinHandler(event)}>
         <Form.Group className="mb-3">
-          <Form.Label>Email <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+          <Form.Label className={classes.formLabel}>
+            Email <span className="mandatoryAsterisk">*</span>
+          </Form.Label>
           <Form.Control
-          
             className={emailClassName}
             required
             type="email"
@@ -117,7 +118,9 @@ const SignInForm = (props) => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>Mot de passe <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+          <Form.Label  className={classes.formLabel}>
+            Mot de passe <span style={{ color: "#D0324B" }}>*</span>
+          </Form.Label>
           <Form.Control
             required
             type="password"
@@ -137,19 +140,15 @@ const SignInForm = (props) => {
         </Form.Group>
         {props.errorMessage && <p className="error">{props.errorMessage}</p>}
         <Form.Group>
-          <Col>
-            <Button
-              type="submit"
-              variant="success"
-              className="col-12 py-3 fs-2 mt-4 fw-bold btn-fretto"
-              disabled={props.isLoading}
-            >
-              {props.isLoading && (
-                <Spinner animation="border" variant="light" />
-              )}
-              <span className="mx-2">Connexion </span>
-            </Button>
-          </Col>
+          <Button
+            type="submit"
+            variant="success"
+            className="col-12 btn-fretto"
+            disabled={props.isLoading}
+          >
+            {props.isLoading && <Spinner animation="border" variant="light" />}
+            <span className="mx-2">Connexion </span>
+          </Button>
         </Form.Group>
       </Form>
     </Card>

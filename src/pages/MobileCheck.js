@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import "react-image-crop/dist/ReactCrop.css";
 import { useHistory } from "react-router";
+import SuccessModal from "../components/modal/SuccessModal";
 import { validateMobileValidationCode } from "../lib/profile-api";
 import AuthContext from "../store/auth-context";
 import classes from "./MobileCheck.module.css";
-import SuccessModal from "../components/modal/SuccessModal";
 const MobileCheck = () => {
   const authContext = useContext(AuthContext);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -55,38 +55,42 @@ const MobileCheck = () => {
         Saisissez le code reçu par SMS
       </h1>
 
-      <Form
-        className="my-5 "
-        onSubmit={(event) => {
-          handleCodeSubmit(event);
-        }}
-      >
-        <Row xs={1} md={2}>
-          <Col md={10}>
-            <Form.Control
-              required
-              type="text"
-              placeholde="Votre code de vérification"
-              minLength={4}
-              maxLength={4}
-              onChange={(event) => onChange(event)}
-            ></Form.Control>
-          </Col>
-          <Col md={2} className={classes.sendButtonCol}>
+      <Card className={classes.mobileCheckCard}>
+        <Card.Body>
+          <Form
+            className="my-5 "
+            onSubmit={(event) => {
+              handleCodeSubmit(event);
+            }}
+          >
+            <Form.Group className="mb-5">
+              <Form.Label className={classes.formLabel}>
+                Code <span className="mandatoryAsterisk">*</span>
+              </Form.Label>
+              <Form.Control
+                required
+                type="text"
+                placeholde="Votre code de vérification"
+                minLength={4}
+                maxLength={4}
+                onChange={(event) => onChange(event)}
+              ></Form.Control>
+            </Form.Group>
+
+            {validationError && (
+              <h1 className=" d-flex justify-content-center my-3 error">
+                {validationError}
+              </h1>
+            )}
             <Button
               type="submit"
-              className={classes.sendButton + " fs-2 fw-bold"}
+              className={classes.sendButton + " col-12 btn-fretto"}
             >
               Envoyer
             </Button>
-          </Col>
-        </Row>
-        {validationError && (
-          <h1 className=" d-flex justify-content-center my-3 error">
-            {validationError}
-          </h1>
-        )}
-      </Form>
+          </Form>
+        </Card.Body>
+      </Card>
       <SuccessModal
         id={"3"}
         show={showSuccessModal}

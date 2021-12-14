@@ -14,11 +14,11 @@ RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set loglevel info
 RUN npm config set fetch-retries 3
 RUN npm config set fetch-retry-mintimeout 15000
-RUN npm config set fetch-retry-maxtimeout 6000000
-RUN npm config set cache-min 86400
+RUN npm config set fetch-retry-maxtimeout 90000
+RUN npm config set cache-min 864
 
 # install app dependencies
-RUN npm install --prefer-offline --no-audit
+RUN npm install -g --silent
 RUN npm install react-scripts@4.0.3 -g --silent
 
 # add app

@@ -1,7 +1,7 @@
-import Modal from "react-bootstrap/Modal";
-import SignUpForm from "../signup-form/SignUpForm";
 import { Fragment } from "react";
+import Modal from "react-bootstrap/Modal";
 import ReactDOM from "react-dom";
+import SignUpForm from "../signup-form/SignUpForm";
 import "./SignUpModal.css";
 const SignUpModal = (props) => {
   return (
@@ -21,7 +21,7 @@ const SignUpModal = (props) => {
             </Modal.Title>
           </Modal.Header>
 
-          <Modal.Body>
+          <Modal.Body className="mx-auto">
             <SignUpForm
               onSignup={props.onSignup}
               errorMessage={props.errorMessage}

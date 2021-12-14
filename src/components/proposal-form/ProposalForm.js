@@ -126,6 +126,13 @@ const ProposalForm = (props) => {
     </Row>
   );
 
+  const customSelectStyles = {
+    control: () => ({
+      border: "none",
+      display: "flex",
+    }),
+  };
+
   const priceClassName = priceState.touched
     ? priceState.isValid
       ? "is-valid"
@@ -142,9 +149,13 @@ const ProposalForm = (props) => {
     return (
       <Form onSubmit={(event) => handleSubmit(event)}>
         <Form.Group>
-          <Form.Label className="fs-4 my-3">
+          <Form.Label className="fs-4 fw-bold my-3">
             Proposer un tarif
-            <span className={classes.proposalCurrency}> en DT TTC</span>:
+            <span className={classes.proposalCurrency + " fs-4 fw-bold"}>
+              {" "}
+              en DT TTC
+            </span>
+            :
           </Form.Label>
           <Row className="my-3">
             <Col>
@@ -169,10 +180,11 @@ const ProposalForm = (props) => {
           <Col>
             <div
               className={
-                classes.vehiculeSelect + " form-control " + vehiculeClassName
+                classes.vehiculeSelect + " form-control fs-2 " + vehiculeClassName
               }
             >
               <Select
+                styles={customSelectStyles}
                 placeholder="Choisissez un véhicule"
                 value={vehiculeOptionState.val}
                 formatOptionLabel={formatOptionLabel}

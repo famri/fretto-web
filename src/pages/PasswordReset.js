@@ -91,13 +91,13 @@ const PasswordReset = () => {
       </h2>
 
       <div className="mx-auto">
-        <Card className="py-4 signin-card">
+        <Card className={classes.passwordResetCard + " py-4 "}>
           <Form
             className="px-4"
             onSubmit={(event) => paswordResetRequestHandler(event)}
           >
             <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+              <Form.Label className={classes.formLabel}>Email</Form.Label>
               <Form.Control
                 className={emailClassName}
                 required
@@ -117,13 +117,13 @@ const PasswordReset = () => {
                 <Button
                   type="submit"
                   variant="success"
-                  className="col-12 py-3 fs-2 mt-4 fw-bold"
+                  className="col-12 py-3 mt-4 btn-fretto"
                   disabled={status === "pending"}
                 >
                   {status === "pending" && (
                     <Spinner animation="border" variant="light" />
                   )}
-                  <span className="mx-2">Réinitialiser </span>
+                  <span className="mx-2 ">Réinitialiser </span>
                 </Button>
               </Col>
             </Form.Group>

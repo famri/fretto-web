@@ -275,7 +275,7 @@ const AboutSection = (props) => {
 
               <Form.Select
                 disabled={!editAboutSection}
-                className={genderClassName}
+                className={genderClassName + " fs-2"}
                 required
                 onChange={(event) =>
                   dispatchGender({

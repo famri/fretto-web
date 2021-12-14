@@ -1,9 +1,10 @@
 import { useEffect, useReducer, useState } from "react";
 import { Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import useHttp from "../../hooks/use-http";
 import { fetchGenders } from "../../lib/genders-api";
 import LoadingSpinner from "../loading/LoadingSpinner";
-import "./SignUpForm.css";
+import classes from "./SignUpForm.module.css";
 
 const validatePhone = (phoneNumber) => {
   const phonePattern = /^[0-9]{8}$/;
@@ -417,7 +418,7 @@ const SignUpForm = (props) => {
   }
   if (fetchGendersStatus === "completed") {
     return (
-      <Card className="py-4 signup-card ">
+      <Card className={classes.signupCard + " py-4"}>
         <Form className="px-4" onSubmit={(event) => handleSignup(event)}>
           {props.showTransporterSwitch && (
             <Form.Group className="mb-3">
@@ -431,9 +432,11 @@ const SignUpForm = (props) => {
             </Form.Group>
           )}
           <Form.Group className="mb-3">
-            <Form.Label>Genre <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Genre <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
             <Form.Select
-              className={genderClassName}
+              className={genderClassName + " fs-2"}
               required
               onChange={(event) =>
                 dispatchGender({
@@ -453,7 +456,7 @@ const SignUpForm = (props) => {
               }
               value={genderState.val}
             >
-              <option key="default" value="">
+              <option key="default" value="" style={{ color: "grey" }}>
                 Genre
               </option>
               {gendersData.map((gender, index) => (
@@ -464,7 +467,9 @@ const SignUpForm = (props) => {
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Nom <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Nom <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
             <Form.Control
               required={true}
               type="text"
@@ -486,7 +491,9 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Prénom <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Prénom <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
             <Form.Control
               required
               type="text"
@@ -508,7 +515,9 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Date de naissance <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Date de naissance <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
             <Form.Control
               required
               type="date"
@@ -530,7 +539,9 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Email <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Email <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
             <Form.Control
               className={emailClassName}
               required
@@ -547,11 +558,12 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Téléphone Mobile <span style={{ color: "#D0324B" }}>*</span></Form.Label>
-            <div className="row-group">
+            <Form.Label className={classes.formLabel}>
+              Téléphone Mobile <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
+            <div className={classes.rowGroup}>
               <Form.Select
-                style={{ width: "45%" }}
-                className={iccClassName}
+                className={classes.iccSelect + " " + iccClassName + " fs-2"}
                 required
                 onChange={(event) =>
                   dispatchIcc({
@@ -576,7 +588,7 @@ const SignUpForm = (props) => {
               </Form.Select>
               <Form.Control
                 style={{ display: "inline" }}
-                className={phoneClassName}
+                className={classes.mobileInput + " " + phoneClassName}
                 required
                 type="number"
                 placeholder="Numéro mobile"
@@ -592,7 +604,9 @@ const SignUpForm = (props) => {
             </div>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Mot de passe <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Mot de passe <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
             <Form.Control
               required
               type="password"
@@ -611,7 +625,9 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Confirmation <span style={{ color: "#D0324B" }}>*</span></Form.Label>
+            <Form.Label className={classes.formLabel}>
+              Confirmation <span className="mandatoryAsterisk">*</span>
+            </Form.Label>
             <Form.Control
               required
               type="password"
@@ -630,14 +646,19 @@ const SignUpForm = (props) => {
             ></Form.Control>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Check
-              required
-              type="checkbox"
-              label="J'accepte les conditions d'utilisation du service Fretto."
-              className="fs-3"
-              checked={checkedTos}
-              onChange={() => setCheckedTos(!checkedTos)}
-            />
+            <Form.Check required type="checkbox" className="fs-3">
+              <Form.Check.Input
+                type="checkbox"
+                onChange={() => setCheckedTos(!checkedTos)}
+                checked={checkedTos}
+              ></Form.Check.Input>
+              <Form.Check.Label>
+                J'accepte les <Link to="/tos">conditions d'utilisation</Link> et
+                la{" "}
+                <Link to="/privacy-policy">politique de confidentialité</Link>
+                {" "}du service Fretto.
+              </Form.Check.Label>
+            </Form.Check>
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Check
@@ -655,7 +676,7 @@ const SignUpForm = (props) => {
               <Button
                 type="submit"
                 variant="success"
-                className="col-12 py-3 fs-2 mt-4 fw-bold btn-fretto"
+                className="col-12 btn-fretto"
                 disabled={props.isLoading || !checkedNewsletter || !checkedTos}
               >
                 {props.isLoading && (

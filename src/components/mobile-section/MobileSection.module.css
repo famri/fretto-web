@@ -1,0 +1,14 @@
+.iccSelect {
+  width: 45%;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+.mobileInput {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+.rowGroup {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

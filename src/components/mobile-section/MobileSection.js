@@ -9,6 +9,8 @@ import {
 } from "../../lib/profile-api";
 import AuthContext from "../../store/auth-context";
 import ErrorModal from "../modal/ErrorModal";
+import classes from "./MobileSection.module.css";
+
 const validatePhone = (phoneNumber) => {
   const phonePattern = /^[0-9]{8}$/;
   return phonePattern.test(phoneNumber);
@@ -168,11 +170,10 @@ const MobileSection = (props) => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label className="fs-2">Téléphone Mobile</Form.Label>
-              <div className="row-group">
+              <div className={classes.rowGroup}>
                 <Form.Select
                   disabled={!editMobileSection}
-                  style={{ width: "45%" }}
-                  className={iccClassName}
+                  className={classes.iccSelect + "  fs-2 " + iccClassName }
                   required
                   onChange={(event) =>
                     dispatchIcc({
@@ -201,7 +202,7 @@ const MobileSection = (props) => {
                 <Form.Control
                   disabled={!editMobileSection}
                   style={{ display: "inline" }}
-                  className={phoneClassName}
+                  className={classes.mobileInput + " " + phoneClassName}
                   required
                   type="number"
                   onChange={(e) =>

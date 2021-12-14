@@ -10,7 +10,7 @@ import {
   Offcanvas,
   Pagination,
   Row,
-  Spinner,
+  Spinner
 } from "react-bootstrap";
 import Select from "react-select";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
@@ -332,6 +332,13 @@ const JourneySearch = (props) => {
     data: loadedArrivalSuggestions,
   } = useHttp(fetchDepartments);
 
+  const customSelectStyles = {
+    control: () => ({
+      border: "none",
+      display: "flex",
+    }),
+  };
+
   useEffect(() => {
     sendLoadEngineTypesRequest({ language: "fr_FR" });
   }, [sendLoadEngineTypesRequest]);
@@ -533,8 +540,8 @@ const JourneySearch = (props) => {
                 className="mb-3 autocomplete"
                 controlId="formDeparture"
               >
-                <Form.Label className="form-label">
-                  Ville de départ <span style={{ color: "#D0324B" }}>*</span>
+                <Form.Label className={classes.formLabel}>
+                  Ville de départ <span className="mandatoryAsterisk">*</span>
                 </Form.Label>
 
                 <Form.Control
@@ -561,14 +568,14 @@ const JourneySearch = (props) => {
                 {departureState.showSuggestion &&
                   loadDepartureSuggestionsStatus === "completed" &&
                   !!loadDepartureSuggestionsError && (
-                    <div className="suggestion">
+                    <div className={classes.suggestion}>
                       <p>{loadDepartureSuggestionsError}</p>
                     </div>
                   )}
                 {departureState.showSuggestion &&
                   loadDepartureSuggestionsStatus === "completed" &&
                   loadedDepartureSuggestions.length > 0 && (
-                    <div className="suggestion">
+                    <div className={classes.suggestion}>
                       {loadedDepartureSuggestions.map((suggestion, i) => {
                         return (
                           <p
@@ -588,7 +595,9 @@ const JourneySearch = (props) => {
                   )}
               </Form.Group>
               <Form.Group className="mb-3 autocomplete" controlId="formArrival">
-                <Form.Label className="form-label">Ville d'arrivée</Form.Label>
+                <Form.Label className={classes.formLabel}>
+                  Ville d'arrivée
+                </Form.Label>
 
                 <Form.Control
                   type="text"
@@ -609,14 +618,14 @@ const JourneySearch = (props) => {
                 {arrivalState.showSuggestion &&
                   loadArrivalSuggestionsStatus === "completed" &&
                   !!loadArrivalSuggestionsError && (
-                    <div className="suggestion">
+                    <div className={classes.suggestion}>
                       <p>{loadArrivalSuggestionsError}</p>
                     </div>
                   )}
                 {arrivalState.showSuggestion &&
                   loadArrivalSuggestionsStatus === "completed" &&
                   loadedArrivalSuggestions.length > 0 && (
-                    <div className="suggestion">
+                    <div className={classes.suggestion}>
                       {loadedArrivalSuggestions.map((suggestion, i) => {
                         return (
                           <div
@@ -636,18 +645,19 @@ const JourneySearch = (props) => {
                   )}
               </Form.Group>
               <Form.Group className="mb-3 " controlId="formEngineType">
-                <Form.Label className="form-label">
-                  Véhicule <span style={{ color: "#D0324B" }}>*</span>
+                <Form.Label className={classes.formLabel}>
+                  Véhicule <span className="mandatoryAsterisk">*</span>
                 </Form.Label>
 
                 <div
                   className={
                     classes.vehiculeSelect +
-                    " form-control " +
+                    " form-control fs-2 " +
                     engineTypeClassName
                   }
                 >
                   <Select
+                    styles={customSelectStyles}
                     placeholder="Choisissez un véhicule"
                     value={engineTypeOptionState.val}
                     formatOptionLabel={formatOptionLabel}
@@ -678,8 +688,8 @@ const JourneySearch = (props) => {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formDate">
-                <Form.Label className="form-label">
-                  Départ entre le<span style={{ color: "#D0324B" }}>*</span>
+                <Form.Label className={classes.formLabel}>
+                  Départ entre le <span className="mandatoryAsterisk">*</span>
                 </Form.Label>
 
                 <Form.Control
@@ -710,8 +720,8 @@ const JourneySearch = (props) => {
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formDate">
-                <Form.Label className="form-label">
-                  et le<span style={{ color: "#D0324B" }}>*</span>
+                <Form.Label className={classes.formLabel}>
+                  et le <span className="mandatoryAsterisk">*</span>
                 </Form.Label>
 
                 <Form.Control
@@ -746,7 +756,7 @@ const JourneySearch = (props) => {
                 <Col>
                   <Button
                     type="submit"
-                    className="col-12 py-3 fs-2 fw-bold btn-fretto"
+                    className="col-12 py-3 btn-fretto"
                     disabled={isLoading}
                   >
                     {isLoading && (

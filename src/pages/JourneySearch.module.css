@@ -79,3 +79,26 @@
 .vehiculeSelect {
   border-radius: 10px !important;
 }
+
+.suggestion {
+  position: absolute;
+
+  border-right: none;
+  border-left: none;
+  background-color: white;
+  color: black;
+  z-index: 99;
+
+  left: 0;
+  right: 0;
+  padding-left: 1rem;
+  font-size: 2rem;
+  border-radius: 10px;
+  margin-left: 10px;
+  margin-right: 20px;
+}
+
+.formLabel {
+  font-weight: bold;
+  font-size: large;
+}

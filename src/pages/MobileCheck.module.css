@@ -1,6 +1,15 @@
 .mobileCheckTitle {
-  font-size: 4rem;
+  font-size: 3rem;
   font-weight: bold;
   color: #134753;
   font-style: italic;
+}
+
+.mobileCheckCard {
+  background-color: #3eb0e5 !important;
+  color: white;
+}
+.formLabel {
+  font-weight: bold;
+  font-size: large;
 }
