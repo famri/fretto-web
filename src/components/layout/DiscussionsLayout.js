@@ -2,7 +2,7 @@ import { Card, Dropdown, Pagination } from "react-bootstrap";
 
 const DiscussionsLayout = (props) => {
   return (
-    <Card>
+    <Card className="my-5">
       <Card.Header>
         <div className="d-flex justify-content-end ">
           <Dropdown

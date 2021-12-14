@@ -42,7 +42,7 @@ const Profile = () => {
   if (status === "completed") {
     return (
       <Container>
-        <Card>
+        <Card className="my-5">
           <Card.Header className="d-flex justify-content-center">
             <Row xs={1} md={1}>
               <Col className="d-flex justify-content-center">

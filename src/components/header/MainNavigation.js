@@ -1,11 +1,11 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Badge, Button, Container, Nav, Navbar } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logos/fretto_logo.png";
 import AuthContext from "../../store/auth-context";
 import {
   WebSocketContext,
-  WebSocketContextMethods
+  WebSocketContextMethods,
 } from "../../store/websocket-context";
 import classes from "./MainNavigation.css";
 
@@ -17,9 +17,17 @@ const Header = () => {
     webSocketContextMethods.disconnect();
     authCtx.logout();
   };
-
+  const [isExpanded, setIsExpanded] = useState(false);
   return (
-    <Navbar expand="md" bg="light" sticky="top" className="border-bottom">
+    <Navbar
+      collapseOnSelect
+      expand="md"
+      bg="light"
+      sticky="top"
+      className="border-bottom"
+      expanded={isExpanded}
+      onToggle={(newValue) => setIsExpanded(newValue)}
+    >
       <Container>
         <Navbar.Brand>
           <Link to="/">
@@ -28,7 +36,12 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
+          <Nav
+            className="me-auto"
+            onClick={() => {
+              setIsExpanded(!isExpanded);
+            }}
+          >
             {authCtx.isLoggedIn && authCtx.isClient && (
               <NavLink
                 to="/"
