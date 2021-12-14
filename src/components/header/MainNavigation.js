@@ -1,11 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Badge, Button, Container, Nav, Navbar } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logos/fretto_logo.png";
 import AuthContext from "../../store/auth-context";
 import {
   WebSocketContext,
-  WebSocketContextMethods,
+  WebSocketContextMethods
 } from "../../store/websocket-context";
 import classes from "./MainNavigation.css";
 
@@ -17,7 +17,7 @@ const Header = () => {
     webSocketContextMethods.disconnect();
     authCtx.logout();
   };
-  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <Navbar
       collapseOnSelect
@@ -25,8 +25,6 @@ const Header = () => {
       bg="light"
       sticky="top"
       className="border-bottom"
-      expanded={isExpanded}
-      onToggle={(newValue) => setIsExpanded(newValue)}
     >
       <Container>
         <Navbar.Brand>
@@ -36,64 +34,71 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav
-            className="me-auto"
-            onClick={() => {
-              setIsExpanded(!isExpanded);
-            }}
-          >
+          <Nav className="me-auto">
             {authCtx.isLoggedIn && authCtx.isClient && (
-              <NavLink
+              <Nav.Link
+                eventKey="1"
+                as={NavLink}
                 to="/"
                 activeClassName="active"
                 exact={true}
                 className={classes.headerNavLink}
               >
                 Accueil
-              </NavLink>
+              </Nav.Link>
             )}
 
             {authCtx.isLoggedIn && !authCtx.isClient && (
-              <NavLink
+              <Nav.Link
+                eventKey="2"
+                as={NavLink}
                 to="/journey-search"
                 activeClassName="active"
                 exact={true}
                 className={classes.headerNavLink}
               >
                 Recherche
-              </NavLink>
+              </Nav.Link>
             )}
 
             {!authCtx.isLoggedIn && (
-              <NavLink
+              <Nav.Link
+                eventKey="3"
+                as={NavLink}
                 to="/signin"
                 activeClassName="active"
                 className={classes.headerNavLink}
               >
                 Connexion
-              </NavLink>
+              </Nav.Link>
             )}
             {!authCtx.isLoggedIn && (
-              <NavLink
+              <Nav.Link
+                eventKey="4"
+                as={NavLink}
                 to="/signup"
                 activeClassName="active"
                 className={classes.headerNavLink}
               >
                 Inscription
-              </NavLink>
+              </Nav.Link>
             )}
             {authCtx.isLoggedIn && authCtx.isClient && (
-              <NavLink
+              <Nav.Link
+                eventKey="5"
+                as={NavLink}
                 to="/journey-requests"
                 activeClassName="active"
                 className={classes.headerNavLink}
               >
                 Demandes
-              </NavLink>
+              </Nav.Link>
             )}
 
             {authCtx.isLoggedIn && (
-              <NavLink
+              <Nav.Link
+                eventKey="6"
+                as={NavLink}
                 to="/discussions"
                 activeClassName="active "
                 className={classes.headerNavLink}
@@ -104,16 +109,29 @@ const Header = () => {
                     {webSocketContext.missedMessagesCount}
                   </Badge>
                 )}
-              </NavLink>
+              </Nav.Link>
+            )}
+            {authCtx.isLoggedIn && !authCtx.isClient && (
+              <Nav.Link
+                as={NavLink}
+                eventKey="7"
+                to="/journeys"
+                activeClassName="active "
+                className={classes.headerNavLink}
+              >
+                Mes Trajets
+              </Nav.Link>
             )}
             {authCtx.isLoggedIn && (
-              <NavLink
+              <Nav.Link
+                as={NavLink}
+                eventKey="8"
                 to="/profile"
                 activeClassName="active "
                 className={classes.headerNavLink}
               >
                 Profil
-              </NavLink>
+              </Nav.Link>
             )}
           </Nav>
           {authCtx.isLoggedIn && (
