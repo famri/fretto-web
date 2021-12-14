@@ -56,6 +56,8 @@ const vehiculeOptionReducer = (state, action) => {
 
 const ProposalForm = (props) => {
   const history = useHistory();
+
+  const [isLoading, setIsLoading] = useState(false);
   const [priceState, dispatchPrice] = useReducer(priceReducer, {
     touched: false,
     val: "",
@@ -89,14 +91,18 @@ const ProposalForm = (props) => {
     dispatchPrice({ type: "INPUT_VALIDATION" });
     dispatchVehiculeOption({ type: "INPUT_VALIDATION" });
     if (priceState.isValid && vehiculeOptionState.isValid) {
+      setIsLoading(true);
       try {
         props.onSubmit(
           props.journeyId,
           vehiculeOptionState.val.value,
-          priceState.val
+          priceState.val,
+          props.clientFirstname
         );
       } catch (error) {
         setError(error.message);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -180,7 +186,9 @@ const ProposalForm = (props) => {
           <Col>
             <div
               className={
-                classes.vehiculeSelect + " form-control fs-2 " + vehiculeClassName
+                classes.vehiculeSelect +
+                " form-control fs-2 " +
+                vehiculeClassName
               }
             >
               <Select
@@ -203,7 +211,13 @@ const ProposalForm = (props) => {
 
         {!!error && <h2 className="error my-3"> {error}</h2>}
 
-        <Button className="fs-2 fw-bold col-12 my-3" type="submit">
+        <Button
+          className="fs-2 fw-bold col-12 my-3"
+          type="submit"
+          disabled={
+            isLoading || !priceState.isValid || !vehiculeOptionState.isValid
+          }
+        >
           Envoyer
         </Button>
       </Form>

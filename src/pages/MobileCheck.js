@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Container, Form } from "react-bootstrap";
 import "react-image-crop/dist/ReactCrop.css";
 import { useHistory } from "react-router";
 import SuccessModal from "../components/modal/SuccessModal";

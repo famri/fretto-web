@@ -1,3 +1,5 @@
+import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useReducer, useState } from "react";
 import {
   Accordion,
@@ -10,7 +12,7 @@ import {
   Offcanvas,
   Pagination,
   Row,
-  Spinner
+  Spinner,
 } from "react-bootstrap";
 import Select from "react-select";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
@@ -18,6 +20,7 @@ import ProposalForm from "../components/proposal-form/ProposalForm";
 import Icon from "../components/widgets/Icon";
 import useHttp from "../hooks/use-http";
 import { fetchEngineTypes } from "../lib/engine-types-api";
+import { sendProposal } from "../lib/journey-proposals-api";
 import { searchJourneyRequests } from "../lib/journey-requests-api";
 import { fetchDepartments } from "../lib/places-api";
 import { loadTransporterVehicules } from "../lib/vehicules-api";
@@ -168,13 +171,6 @@ const arrivalInitialState = {
   suggestionChoice: { id: -1 },
 };
 
-const vehiculeInitialState = {
-  touched: false,
-  val: "",
-  id: null,
-  isValid: false,
-};
-
 const startDateReducer = (state, action) => {
   switch (action.type) {
     case "DATE_OPENED":
@@ -292,6 +288,7 @@ const JourneySearch = (props) => {
   );
 
   const [showSearchForm, setShowSearchForm] = useState(true);
+  const [showProposalFormMap, setShowProposalFormMap] = useState();
 
   const formatOptionLabel = ({ value, label, icon }) => (
     <Row xs={2} md={2}>
@@ -337,6 +334,31 @@ const JourneySearch = (props) => {
       border: "none",
       display: "flex",
     }),
+  };
+
+  const submitProposal = (journeyId, vehiculeId, price, clientFirstname) => {
+    sendProposal({
+      token: authCtx.token,
+      journeyId: journeyId,
+      price: price,
+      vehiculeId: vehiculeId,
+      lang: "fr_FR",
+    }).then((_) => {
+      setShowProposalFormMap((prevShowProposalFormMap) => {
+        const nextMap = new Map(prevShowProposalFormMap);
+        nextMap.set(journeyId, false);
+        return nextMap;
+      });
+
+      setTimeout(() => {
+        var currentJourneyRequests = [...journeyRequests];
+        var index = currentJourneyRequests.findIndex((j) => j.id === journeyId);
+        if (index !== -1) {
+          currentJourneyRequests.splice(index, 1);
+          setJourneyRequests(currentJourneyRequests);
+        }
+      }, 3000);
+    });
   };
 
   useEffect(() => {
@@ -389,7 +411,13 @@ const JourneySearch = (props) => {
       lang: "fr_FR",
     })
       .then((data) => {
+        var map = new Map();
+        data.content.forEach((jr) => map.set(jr.id, true));
+
+        setShowProposalFormMap(map);
+
         setJourneyRequests([...data.content]);
+
         setTotalPages(data.totalPages);
         setShowSearchForm(false);
         setIsLoading(false);
@@ -771,11 +799,11 @@ const JourneySearch = (props) => {
         </Offcanvas>
 
         {journeyRequests !== undefined ? (
-          journeyRequests.length > 0 ? (
-            <Card className="my-5">
-              <Card.Body>
-                <Row xs={1} md={3} className={"g-" + journeyRequests.length}>
-                  {journeyRequests.map((jr, index) => (
+          <Card className="my-5">
+            <Card.Body>
+              <Row xs={1} md={3} className={"g-" + journeyRequests.length}>
+                {journeyRequests.length > 0 ? (
+                  journeyRequests.map((jr, index) => (
                     <Col key={jr.id}>
                       <Card className={" my-3 mx-0 "}>
                         <Card.Header>
@@ -871,28 +899,44 @@ const JourneySearch = (props) => {
                               <h2> Proposer un devis</h2>
                             </Accordion.Header>
                             <Accordion.Body>
-                              <ProposalForm
-                                journeyId={jr.id}
-                                onSubmit={() => {}}
-                                vehicules={transporterVehicules}
-                              ></ProposalForm>
+                              {showProposalFormMap.get(jr.id) ? (
+                                <ProposalForm
+                                  journeyId={jr.id}
+                                  onSubmit={submitProposal}
+                                  vehicules={transporterVehicules}
+                                  clientFirstname={jr.client.firstname}
+                                ></ProposalForm>
+                              ) : (
+                                <Row xs={2} md={2}>
+                                  <Col xs={2} md={2}>
+                                    <FontAwesomeIcon
+                                      icon={faCheckCircle}
+                                      size="3x"
+                                      color="#B3CE55"
+                                    />
+                                  </Col>
+                                  <Col xs={10} md={10}>
+                                    <h1>Devis envoyé !</h1>
+                                  </Col>
+                                </Row>
+                              )}
                             </Accordion.Body>
                           </Accordion.Item>
                         </Accordion>
                       </Card>
                     </Col>
-                  ))}
-                </Row>
-              </Card.Body>
-              <Card.Footer>
-                <Pagination size="lg" className="centered">
-                  {pagingItems}
-                </Pagination>
-              </Card.Footer>
-            </Card>
-          ) : (
-            <h1>Aucun trajet ne correspond à vos critères.</h1>
-          )
+                  ))
+                ) : (
+                  <h1>Aucun trajet ne correspond à vos critères.</h1>
+                )}
+              </Row>
+            </Card.Body>
+            <Card.Footer>
+              <Pagination size="lg" className="centered">
+                {pagingItems}
+              </Pagination>
+            </Card.Footer>
+          </Card>
         ) : (
           <h1>Saisissez vos critères de recherche.</h1>
         )}

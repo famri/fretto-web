@@ -48,7 +48,6 @@ export async function updateProposalStatus(params) {
     }
   );
 
-  
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
   }
@@ -67,6 +66,46 @@ export async function updateProposalStatus(params) {
       );
     } catch (error) {
       throw new Error("Échec de changement de statut de l'offre.");
+    }
+  }
+
+  return null;
+}
+
+export async function sendProposal(params) {
+  const response = await fetch(
+    `${FRETTO_DOMAIN}/journey-requests/${params.journeyId}/proposals?lang=${params.lang}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: JSON.stringify({
+        price: params.price,
+        vehiculeId: params.vehiculeId,
+      }),
+    }
+  );
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+  let data;
+
+  if (!response.ok) {
+    try {
+      data = await response.json();
+      throw new Error(
+        (data &&
+          data.errorCode &&
+          data.errorCode === "OBJECT_NOT_FOUND" &&
+          "La demande de trajet est inexistante.") ||
+          (data && data.errors && data.errors.join(", ")) ||
+          "Échec de l'envoi de votre devis."
+      );
+    } catch (error) {
+      throw new Error("Échec de l'envoi de votre devis.");
     }
   }
 
