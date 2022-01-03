@@ -1,11 +1,11 @@
-import { Card, Dropdown, Pagination, Row, Col } from "react-bootstrap";
+import { Card, Dropdown, Pagination, Col, Row } from "react-bootstrap";
 
-const DiscussionsLayout = (props) => {
+const TransporterProposalsLayout = (props) => {
   return (
-    <Card className="my-5">
+    <Card>
       <Card.Header>
         <Row className="d-flex flex-sm-column flex-md-row justify-content-md-end">
-          <Col className="mb-2 col-auto">
+          <Col className="mb-2 col-auto ">
             <Dropdown
               onSelect={(eventKey) => {
                 props.onSortChosen(eventKey);
@@ -27,11 +27,11 @@ const DiscussionsLayout = (props) => {
               </Dropdown.Menu>
             </Dropdown>
           </Col>
-          <Col className="mb-2 col-auto">
+          <Col className="mb-2 col-auto  ">
             <Dropdown
               className="mx-2"
               onSelect={(eventKey) => {
-                props.onFilterChosen(eventKey);
+                props.onStatusChosen(eventKey);
               }}
             >
               <Dropdown.Toggle
@@ -39,10 +39,33 @@ const DiscussionsLayout = (props) => {
                 id="dropdown-period"
                 className="fs-2 fw-bold"
               >
-                {props.filterTitle}
+                {props.statusTitle}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                {props.filterItems.map((item) => (
+                {props.statusItems.map((item) => (
+                  <Dropdown.Item key={item.key} eventKey={item.key}>
+                    <span className="fs-3">{item.name}</span>
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </Col>
+          <Col className="mb-2 col-auto ">
+            <Dropdown
+              className="mx-2"
+              onSelect={(eventKey) => {
+                props.onPeriodChosen(eventKey);
+              }}
+            >
+              <Dropdown.Toggle
+                variant="primary"
+                id="dropdown-period"
+                className="fs-2 fw-bold"
+              >
+                {props.periodTitle}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {props.periodItems.map((item) => (
                   <Dropdown.Item key={item.key} eventKey={item.key}>
                     <span className="fs-3">{item.name}</span>
                   </Dropdown.Item>
@@ -62,4 +85,4 @@ const DiscussionsLayout = (props) => {
   );
 };
 
-export default DiscussionsLayout;
+export default TransporterProposalsLayout;

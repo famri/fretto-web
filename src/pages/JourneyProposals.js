@@ -2,7 +2,7 @@ import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
 import {
   faCommentAlt,
   faStar as faStarSolid,
-  faStarHalfAlt
+  faStarHalfAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
@@ -16,7 +16,7 @@ import {
   ListGroup,
   OverlayTrigger,
   Row,
-  Tooltip
+  Tooltip,
 } from "react-bootstrap";
 import { useHistory } from "react-router";
 import { useParams } from "react-router-dom";
@@ -27,18 +27,20 @@ import useHttp from "../hooks/use-http";
 import {
   createDiscussion,
   findDiscussion,
-  sendMessage
+  sendMessage,
 } from "../lib/discussions-api";
 import {
   loadJourneyProposals,
-  updateProposalStatus
+  updateProposalStatus,
 } from "../lib/journey-proposals-api";
 import { loadJourneyRequest } from "../lib/journey-requests-api";
 import AuthContext from "../store/auth-context";
+import ToastsContext from "../store/toasts-context";
 import classes from "./JourneyProposals.module.css";
 const JourneyProposals = () => {
   const params = useParams();
   const authCtx = useContext(AuthContext);
+  const toastsContext = useContext(ToastsContext);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
   const [journeyRequest, setJourneyRequest] = useState();
@@ -46,9 +48,9 @@ const JourneyProposals = () => {
   const [error, setError] = useState();
   const [chosenProposalId, setChosenProposalId] = useState();
   const [showAcceptProposalModal, setShowAcceptProposalModal] = useState();
-  const [contact, setContact] = useState(false);
-  const [firstMessageContent, setFirstMessageContent] = useState("");
-  const [sendMessageError, setSendMessageError] = useState();
+
+
+
   useEffect(() => {
     loadJourneyRequest({
       journeyRequestId: params.journeyId,
@@ -146,40 +148,39 @@ const JourneyProposals = () => {
       clientId: authCtx.isClient ? authCtx.oauthId : interlocutorId,
       transporterId: authCtx.isClient ? interlocutorId : authCtx.oauthId,
       token: authCtx.token,
-    }).then((discussion) => {
-      if (discussion !== null) {
-        history.push("/discussions/" + discussion.id + "/messages");
-      } else {
-        setContact(true);
-      }
-    });
+    })
+      .then((discussion) => {
+        if (discussion !== null) {
+          history.push("/discussions/" + discussion.id + "/messages");
+        } else {
+          createDiscussion({
+            clientId: authCtx.isClient ? authCtx.oauthId : interlocutorId,
+            transporterId: authCtx.isClient ? interlocutorId : authCtx.oauthId,
+            token: authCtx.token,
+          })
+            .then((discussion) => {
+              if (discussion !== null) {
+                history.push("/discussions/" + discussion.id + "/messages");
+              }
+            })
+            .catch((error) =>
+              toastsContext.pushToast({
+                variant: "danger",
+                headerText: "Erreur",
+                bodyText: error.message,
+              })
+            );
+        }
+      })
+      .catch((error) => {
+        toastsContext.pushToast({
+          variant: "danger",
+          headerText: "Erreur",
+          bodyText: error.message,
+        });
+      });
   };
 
-  const sendFirstMessage = (interlocutorId) => {
-    if (firstMessageContent.trim().length > 0) {
-      createDiscussion({
-        token: authCtx.token,
-        clientId: authCtx.isClient ? authCtx.oauthId : interlocutorId,
-        transporterId: authCtx.isClient ? interlocutorId : authCtx.oauthId,
-      })
-        .then((discussion) => {
-          sendMessage({
-            token: authCtx.token,
-            discussionId: discussion.id,
-            message: firstMessageContent.trim(),
-          })
-            .then(() => {
-              history.push("/discussions/" + discussion.id + "/messages");
-            })
-            .catch((error) => {
-              setSendMessageError(error.message);
-            });
-        })
-        .catch((error) => {
-          setSendMessageError(error.message);
-        });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -305,32 +306,8 @@ const JourneyProposals = () => {
                         )}
                       </Col>
                     </Row>
-                    {contact && proposal.status.code === "ACCEPTED" && (
-                      <InputGroup>
-                        <Form.Control
-                          type="text"
-                          rows={1}
-                          as={"textarea"}
-                          placeholder="Votre message..."
-                          onChange={(event) => {
-                            setFirstMessageContent(event.target.value);
-                          }}
-                        ></Form.Control>
-                        <Button
-                          variant="outline-secondary"
-                          className={classes.sendFirstMessageButton + " fs-2"}
-                          onClick={() =>
-                            sendFirstMessage(proposal.transporter.id)
-                          }
-                        >
-                          Envoyer
-                        </Button>
-                      </InputGroup>
-                    )}
-                    {!!sendMessageError &&
-                      proposal.status.code === "ACCEPTED" && (
-                        <h1 className="fs-2 error">{sendMessageError}</h1>
-                      )}
+
+        
                   </Card.Header>
                   <Card.Img
                     src={proposal.vehicule.photoUrl}

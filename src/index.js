@@ -6,14 +6,20 @@ import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { AuthContextProvider } from "./store/auth-context";
-import { JourneyRequestsContextProvider } from "./store/Journey-requests-context";
+import { JourneyRequestsContextProvider } from "./store/journey-requests-context";
+import { ToastsContextProvider } from "./store/toasts-context";
+import { TransporterProposalsContextProvider } from "./store/transporter-proposals-context";
 import { WebSocketMessagesContextController } from "./store/websocket-context";
 ReactDOM.render(
   <BrowserRouter>
     <AuthContextProvider>
       <WebSocketMessagesContextController>
         <JourneyRequestsContextProvider>
-          <App />
+          <TransporterProposalsContextProvider>
+            <ToastsContextProvider>
+              <App />
+            </ToastsContextProvider>
+          </TransporterProposalsContextProvider>
         </JourneyRequestsContextProvider>
       </WebSocketMessagesContextController>
     </AuthContextProvider>

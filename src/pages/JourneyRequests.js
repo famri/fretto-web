@@ -17,7 +17,7 @@ import Icon from "../components/widgets/Icon";
 import useHttp from "../hooks/use-http";
 import { loadJourneyRequests } from "../lib/journey-requests-api";
 import AuthContext from "../store/auth-context";
-import JourneyRequestsContext from "../store/Journey-requests-context";
+import JourneyRequestsContext from "../store/journey-requests-context";
 import classes from "./JourneyRequests.module.css";
 
 const PAGE_SIZE = 25;
@@ -27,11 +27,11 @@ const JourneyRequests = (props) => {
   const authCtx = useContext(AuthContext);
   const journeyRequestsContext = useContext(JourneyRequestsContext);
   const periodItems = [
-    { key: "w1", name: "Dernière semaine" },
-    { key: "m1", name: "Dernier mois" },
-    { key: "m3", name: "Dernier trimestre" },
-    { key: "m6", name: "Dernier semestre" },
-    { key: "y1", name: "Dernière année" },
+    { key: "lm3", name: "Il y a un trimestre" },
+    { key: "lm1", name: "Il y a un mois" },
+    { key: "w1", name: "Dans une semaine" },
+    { key: "m1", name: "Dans un mois" },
+    
   ];
 
   const sortItems = [

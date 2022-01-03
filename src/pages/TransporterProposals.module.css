@@ -1,0 +1,68 @@
+.rejectedHeader {
+  background-color: #e66c78 !important;
+  color: white;
+}
+.acceptedHeader {
+  background-color: #d6e4a3 !important;
+}
+.submittedHeader {
+  background-color: #5996f1 !important;
+  color: white;
+}
+.canceledHeader {
+  background-color: #ebebebdc !important;
+}
+.proposalPrice {
+  color: limegreen;
+  font-weight: bold;
+}
+.proposalVehiculeName {
+  color: black;
+  font-weight: bold;
+}
+.proposalVehiculeRegistration {
+  color: black;
+  font-weight: bold;
+}
+
+.journeyCard {
+  min-width: 25%;
+}
+.departurePlace {
+  color: #b2cd52;
+  font-weight: bold;
+  font-style: italic;
+}
+.arrivalPlace {
+  color: #d0324b;
+  font-weight: bold;
+  font-style: italic;
+}
+.journeyArrow {
+  color: black;
+  font-weight: bold;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.journeyDistance {
+  color: black;
+  font-weight: bold;
+}
+.journeyWorkersText {
+  color: black;
+  font-weight: bold;
+}
+.journeyWorkersNumber {
+  color: red;
+  font-weight: bold;
+}
+.avatar {
+  vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.contactButton {
+  color: #3eb0e5;
+}

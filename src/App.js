@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Route, Switch } from "react-router-dom";
+import "./App.css";
 import Layout from "./components/layout/Layout";
 import ClientReviews from "./pages/ClientReviews";
 import ContactUs from "./pages/ContactUs";
@@ -11,6 +12,7 @@ import IdentityCheck from "./pages/IdentityCheck";
 import Jobs from "./pages/Jobs";
 import JourneyProposals from "./pages/JourneyProposals";
 import JourneyRequests from "./pages/JourneyRequests";
+import JourneySearch from "./pages/JourneySearch";
 import Logout from "./pages/Logout";
 import Messages from "./pages/Messages";
 import MobileCheck from "./pages/MobileCheck";
@@ -21,10 +23,10 @@ import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Support from "./pages/Support";
+import TransporterProposals from "./pages/TransporterProposals";
 import TransporterRating from "./pages/TransporterRating";
 import AuthContext from "./store/auth-context";
-import "./App.css";
-import JourneySearch from "./pages/JourneySearch";
+
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -67,6 +69,11 @@ function App() {
         {authCtx.isLoggedIn && (
           <Route path="/discussions">
             <Discussions />
+          </Route>
+        )}
+        {authCtx.isLoggedIn && !authCtx.isClient && (
+          <Route path="/journeys">
+            <TransporterProposals />
           </Route>
         )}
         {!authCtx.isLoggedIn && (

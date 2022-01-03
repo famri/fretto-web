@@ -111,3 +111,39 @@ export async function sendProposal(params) {
 
   return null;
 }
+
+export async function loadTransporterProposals(params) {
+  const response = await fetch(
+    `${FRETTO_DOMAIN}/users/me/proposals?lang=${params.lang}&page=${params.page}&size=${params.size}&sort=${params.sort}&period=${params.period}&statuses=${params.statuses}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+    }
+  );
+
+  if (response.status === 401) {
+    throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
+  }
+  let data;
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Échec de chargement des devis.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      (data &&
+        data.errorCode &&
+        data.errorCode === "OBJECT_NOT_FOUND" &&
+        "La demande de trajet est inexistante.") ||
+        (data.errors && data.errors.join(", ")) ||
+        "Échec de chargement des devis."
+    );
+  }
+
+  return data;
+}
