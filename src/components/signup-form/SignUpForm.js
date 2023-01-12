@@ -7,7 +7,7 @@ import LoadingSpinner from "../loading/LoadingSpinner";
 import classes from "./SignUpForm.module.css";
 
 const validatePhone = (phoneNumber) => {
-  const phonePattern = /^[0-9]{8}$/;
+  const phonePattern = /^[0-9]{9,10}$/;
   return phonePattern.test(phoneNumber);
 };
 
@@ -21,7 +21,7 @@ const validateEmail = (email) => {
   return emailPattern.test(email);
 };
 const validatePassword = (password) => {
-  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,12}$/;
+  const passwordPattern = /^[0-9a-zA-Z@#$%^&+=(?=\\S+$)]{8,20}$/;
   return passwordPattern.test(password);
 };
 
@@ -270,7 +270,7 @@ const SignUpForm = (props) => {
   });
   const [iccState, dispatchIcc] = useReducer(iccReducer, {
     touched: false,
-    val: "+216",
+    val: "+33",
     isValid: true,
   });
   const [phoneState, dispatchPhone] = useReducer(phoneReducer, {
@@ -385,7 +385,7 @@ const SignUpForm = (props) => {
       lastnameState.isValid &&
       firstnameState.isValid &&
       birthDateState.isValid &&
-      passwordState.isValid &&
+      emailState.isValid &&
       passwordState.isValid &&
       passwordConfirmState.isValid &&
       checkedTos &&
@@ -584,7 +584,7 @@ const SignUpForm = (props) => {
                 value={iccState.val}
               >
                 <option value="">Indicateur</option>
-                <option value="+216">+216</option>
+                <option value="+33">+33</option>
               </Form.Select>
               <Form.Control
                 style={{ display: "inline" }}

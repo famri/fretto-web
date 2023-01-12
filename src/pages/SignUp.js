@@ -45,7 +45,7 @@ const SignUp = () => {
         );
 
         sendTimezoneUserPreferenceRequest({
-          userPreference: { timezone: "Africa/Tunis" },
+          userPreference: { timezone: "Europe/Paris" },
           token: signupData.token,
         });
       }
@@ -106,7 +106,7 @@ const SignUp = () => {
         <SignUpForm 
           isLoading={signupStatus === "pending"}
           errorMessage={signupError}
-          onSignUp={sendSignupRequest}
+          onSignup={sendSignupRequest}
           showTransporterSwitch={true}
         ></SignUpForm>
       </div>

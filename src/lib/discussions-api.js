@@ -1,9 +1,7 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
-
-//https://192.168.50.4:8443/wamya-backend/users/me/discussions
+//${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/discussions
 export async function loadDiscussions(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/users/me/discussions?page=${params.page}&size=${params.size}&filter=${params.filter}&sort=${params.sort}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/users/me/discussions?page=${params.page}&size=${params.size}&filter=${params.filter}&sort=${params.sort}`,
     {
       method: "GET",
       headers: {
@@ -33,10 +31,10 @@ export async function loadDiscussions(params) {
   return data;
 }
 
-//https://192.168.50.4:8443/wamya-backend/users/me/discussions/1/messages?page=0&size=25
+//${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/discussions/1/messages?page=0&size=25
 export async function loadDiscussionMessages(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/users/me/discussions/${params.discussionId}/messages?page=${params.page}&size=${params.size}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/discussions/${params.discussionId}/messages?page=${params.page}&size=${params.size}`,
     {
       method: "GET",
       headers: {
@@ -66,10 +64,10 @@ export async function loadDiscussionMessages(params) {
   return data;
 }
 
-//https://192.168.50.4:8443/wamya-backend/users/me/discussions/1
+//${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/discussions/1
 export async function loadDiscussion(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/users/me/discussions/${params.discussionId}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/discussions/${params.discussionId}`,
     {
       method: "GET",
       headers: {
@@ -102,10 +100,10 @@ export async function loadDiscussion(params) {
   return data;
 }
 
-//https://192.168.50.4:8443/wamya-backend/users/me/discussions/203/messages
+//${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/discussions/203/messages
 export async function sendMessage(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/users/me/discussions/${params.discussionId}/messages`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/discussions/${params.discussionId}/messages`,
     {
       method: "POST",
       headers: {
@@ -136,10 +134,10 @@ export async function sendMessage(params) {
   return data;
 }
 
-//https://192.168.50.4:8443/wamya-backend/users/me/messages/count?read=false
+//${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/messages/count?read=false
 export async function countMissedMessages(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/users/me/messages/count?read=false`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/messages/count?read=false`,
     {
       method: "GET",
       headers: {
@@ -169,10 +167,10 @@ export async function countMissedMessages(params) {
   return data.count;
 }
 
-// PATCH https://192.168.50.4:8443/wamya-backend/users/me/discussions/203/messages/1
+// PATCH ${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/discussions/203/messages/1
 export async function updateMessageReadStatus(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/users/me/discussions/${params.discussionId}/messages/${params.messageId}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/discussions/${params.discussionId}/messages/${params.messageId}`,
     {
       method: "PATCH",
       headers: {
@@ -202,10 +200,10 @@ export async function updateMessageReadStatus(params) {
   return;
 }
 
-//https://192.168.50.4:8443/wamya-backend/users/me/discussions?clientId={clientId}&transporterId={transporterId}
+//${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/discussions?clientId={clientId}&transporterId={transporterId}
 export async function findDiscussion(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/users/me/discussions?clientId=${params.clientId}&transporterId=${params.transporterId}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/discussions?clientId=${params.clientId}&transporterId=${params.transporterId}`,
     {
       method: "GET",
       headers: {
@@ -235,10 +233,10 @@ export async function findDiscussion(params) {
   return data;
 }
 
-//POST https://192.168.50.4:8443/wamya-backend/users/me/discussions
+//POST ${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/discussions
 
 export async function createDiscussion(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/users/me/discussions`, {
+  const response = await fetch(`${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/discussions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

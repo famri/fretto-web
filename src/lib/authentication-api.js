@@ -1,10 +1,9 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443";
 const WAMYA_BACKEND = "wamya-backend";
 const OAUTH_BACKEND = "oauth";
 
 export async function signup(signupParams) {
   const signupResponse = await fetch(
-    `${FRETTO_DOMAIN}/${WAMYA_BACKEND}/accounts?lang=fr_FR`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${WAMYA_BACKEND}/accounts?lang=fr_FR`,
     {
       method: "POST",
       body: JSON.stringify(signupParams),
@@ -42,9 +41,13 @@ export async function signup(signupParams) {
   const token = signupResponseData.access_token;
 
   const checkTokenResponse = await fetch(
-    `${FRETTO_DOMAIN}/${OAUTH_BACKEND}/check_token?token=${token}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${OAUTH_BACKEND}/realms/fretto/protocol/openid-connect/userinfo`,
     {
-      method: "POST",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Bearer ${token}`,
+      },
     }
   );
 
@@ -69,15 +72,15 @@ export async function signup(signupParams) {
   return {
     token: signupResponseData.access_token,
     expiresInSec: signupResponseData.expires_in,
-    sub: checkTokenData.sub,
-    oauthId: checkTokenData.user_id,
+    sub: checkTokenData.email,
+    oauthId: checkTokenData.sub,
     isClient: checkTokenData.authorities.includes("ROLE_CLIENT"),
   };
 }
 
 export async function signin(signinData) {
   const signinResponse = await fetch(
-    `${FRETTO_DOMAIN}/${WAMYA_BACKEND}/login`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${WAMYA_BACKEND}/login`,
     {
       method: "POST",
       body: JSON.stringify(signinData),
@@ -108,7 +111,7 @@ export async function signin(signinData) {
   const token = signinResponseData.access_token;
 
   const checkTokenResponse = await fetch(
-    `${FRETTO_DOMAIN}/${OAUTH_BACKEND}/check_token?token=${token}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${OAUTH_BACKEND}/check_token?token=${token}`,
     {
       method: "POST",
     }

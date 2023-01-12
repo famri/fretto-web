@@ -8,7 +8,7 @@ const validateEmail = (email) => {
 };
 
 const validatePassword = (password) => {
-  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,12}$/;
+  const passwordPattern = /^[0-9a-zA-Z@#$%^&+=(?=\\S+$)]{8,20}$/;
   return passwordPattern.test(password);
 };
 

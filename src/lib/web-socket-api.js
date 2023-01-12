@@ -1,6 +1,5 @@
 import webstomp from "webstomp-client";
 
-const FRETTO_WS_DOMAIN = "wss://192.168.50.4:8443/wamya-backend/wamya-ws";
 const RECONNECT_DELAY = 10000; //10 seconds
 const MAX_RECONNECT_RETRIES = 180;
 let retries = 0;
@@ -8,7 +7,7 @@ let webstompClient;
 let subscriptionsResult = [];
 export function configureWebsocketClient(token, subscriptions) {
   webstompClient = webstomp.client(
-    `${FRETTO_WS_DOMAIN}?access_token=${token}`,
+    `${process.env.REACT_APP_WS_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/wamya-ws?access_token=${token}`,
 
     {
       heartbeat: { incoming: 10000, outgoing: 10000 },

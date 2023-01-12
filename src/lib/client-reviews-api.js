@@ -1,8 +1,6 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
-
 export async function loadClientReviews(params) {
   /* const response = await fetch(
-    `${FRETTO_DOMAIN}/client-reviews?page=${params.page}&size=${params.size}`
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/client-reviews?page=${params.page}&size=${params.size}`
   );
 
   let data;

@@ -1,7 +1,6 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
 export async function requestPasswordReset(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/accounts/do-request-password-reset?lang=${params.locale}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/accounts/do-request-password-reset?lang=${params.locale}`,
     {
       method: "POST",
       body: JSON.stringify({ username: params.username }),
@@ -10,7 +9,6 @@ export async function requestPasswordReset(params) {
       },
     }
   );
-
 
   let data;
 

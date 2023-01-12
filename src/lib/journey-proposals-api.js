@@ -1,7 +1,6 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
 export async function loadJourneyProposals(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/journey-requests/${params.journeyId}/proposals?filter=${params.filter}&lang=${params.lang}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/journey-requests/${params.journeyId}/proposals?filter=${params.filter}&lang=${params.lang}`,
     {
       method: "GET",
       headers: {
@@ -37,7 +36,7 @@ export async function loadJourneyProposals(params) {
 
 export async function updateProposalStatus(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/journey-requests/${params.journeyId}/proposals/${params.proposalId}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/journey-requests/${params.journeyId}/proposals/${params.proposalId}`,
     {
       method: "PATCH",
       headers: {
@@ -74,7 +73,7 @@ export async function updateProposalStatus(params) {
 
 export async function sendProposal(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/journey-requests/${params.journeyId}/proposals?lang=${params.lang}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/journey-requests/${params.journeyId}/proposals?lang=${params.lang}`,
     {
       method: "POST",
       headers: {
@@ -114,7 +113,7 @@ export async function sendProposal(params) {
 
 export async function loadTransporterProposals(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/users/me/proposals?lang=${params.lang}&page=${params.page}&size=${params.size}&sort=${params.sort}&period=${params.period}&statuses=${params.statuses}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/proposals?lang=${params.lang}&page=${params.page}&size=${params.size}&sort=${params.sort}&period=${params.period}&statuses=${params.statuses}`,
     {
       method: "GET",
       headers: {

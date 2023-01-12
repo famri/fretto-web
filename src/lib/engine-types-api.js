@@ -1,8 +1,6 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
-
 export async function fetchEngineTypes(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/engine-types?lang=${params.language}`
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/engine-types?lang=${params.language}`
   );
 
   let data;

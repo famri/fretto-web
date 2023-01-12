@@ -1,8 +1,6 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
-
 export async function fetchSuggestions(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/places?lang=${params.language}&input=${params.text}&country=${params.country}`
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/places?lang=${params.language}&input=${params.text}&country=${params.country}`
   );
 
   let data;
@@ -24,7 +22,7 @@ export async function fetchSuggestions(params) {
 
 export async function fetchDepartments(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/departments?lang=${params.language}&input=${params.text}&country=${params.country}`
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/departments?lang=${params.language}&input=${params.text}&country=${params.country}`
   );
 
   let data;

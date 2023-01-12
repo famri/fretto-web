@@ -1,7 +1,6 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
 export async function loadProfileInfo(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/profiles/me/info?lang=${params.locale}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/profiles/me/info?lang=${params.locale}`,
     {
       method: "GET",
       headers: {
@@ -32,20 +31,23 @@ export async function loadProfileInfo(params) {
 }
 
 export async function updateAboutSection(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/profiles/me/about`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${params.token}`,
-    },
-    body: JSON.stringify({
-      genderId: params.genderId,
-      firstname: params.firstname,
-      lastname: params.lastname,
-      dateOfBirth: params.dateOfBirth,
-      minibio: params.minibio,
-    }),
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/profiles/me/about`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: JSON.stringify({
+        genderId: params.genderId,
+        firstname: params.firstname,
+        lastname: params.lastname,
+        dateOfBirth: params.dateOfBirth,
+        minibio: params.minibio,
+      }),
+    }
+  );
 
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
@@ -66,16 +68,19 @@ export async function updateAboutSection(params) {
 }
 
 export async function updateEmailSection(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/profiles/me/email`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${params.token}`,
-    },
-    body: JSON.stringify({
-      email: params.email,
-    }),
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/profiles/me/email`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: JSON.stringify({
+        email: params.email,
+      }),
+    }
+  );
 
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
@@ -101,17 +106,20 @@ export async function updateEmailSection(params) {
 }
 
 export async function updateMobileSection(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/profiles/me/mobile`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${params.token}`,
-    },
-    body: JSON.stringify({
-      iccId: params.iccId,
-      mobileNumber: params.mobileNumber,
-    }),
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/profiles/me/mobile`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: JSON.stringify({
+        iccId: params.iccId,
+        mobileNumber: params.mobileNumber,
+      }),
+    }
+  );
 
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
@@ -135,13 +143,16 @@ export async function updateProfileImage(params) {
   const formData = new FormData();
   formData.append("image", params.image);
 
-  const response = await fetch(`${FRETTO_DOMAIN}/profiles/me/avatars`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${params.token}`,
-    },
-    body: formData,
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/profiles/me/avatars`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: formData,
+    }
+  );
 
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
@@ -165,13 +176,16 @@ export async function uploadIdentityFile(params) {
   const formData = new FormData();
   formData.append("document", params.document);
 
-  const response = await fetch(`${FRETTO_DOMAIN}/users/me/identities`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${params.token}`,
-    },
-    body: formData,
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/identities`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: formData,
+    }
+  );
 
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
@@ -192,16 +206,19 @@ export async function uploadIdentityFile(params) {
 }
 
 export async function sendEmailValidationLink(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/validation-codes/email/send?lang=${params.locale}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${params.token}`,
-    },
-    body: JSON.stringify({
-      email: params.email,
-    }),
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/validation-codes/email/send?lang=${params.locale}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: JSON.stringify({
+        email: params.email,
+      }),
+    }
+  );
 
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
@@ -222,17 +239,20 @@ export async function sendEmailValidationLink(params) {
 }
 
 export async function sendMobileValidationCode(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/validation-codes/sms/send?lang=${params.locale}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${params.token}`,
-    },
-    body: JSON.stringify({
-      icc: params.icc,
-      mobileNumber: params.mobileNumber,
-    }),
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/validation-codes/sms/send?lang=${params.locale}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: JSON.stringify({
+        icc: params.icc,
+        mobileNumber: params.mobileNumber,
+      }),
+    }
+  );
 
   if (response.status === 401) {
     throw new Error("Votre session a expiré. Veuillez vous reconnecter.");
@@ -254,7 +274,7 @@ export async function sendMobileValidationCode(params) {
 
 export async function validateMobileValidationCode(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/validation-codes/sms/validate`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/validation-codes/sms/validate`,
     {
       method: "POST",
       headers: {

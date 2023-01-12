@@ -1,7 +1,6 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
 export async function fetchTransporterRatingRequest(params) {
   const response = await fetch(
-    `${FRETTO_DOMAIN}/rating-details?h=${params.hash}&uid=${params.uid}&lang=fr_FR`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/rating-details?h=${params.hash}&uid=${params.uid}&lang=fr_FR`,
     {
       method: "GET",
       headers: {
@@ -28,13 +27,16 @@ export async function fetchTransporterRatingRequest(params) {
 }
 //params: uid, hash, comment, rating
 export async function sendTransporterRating(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/ratings?lang=fr_FR`, {
-    method: "POST",
-    body: JSON.stringify(params),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/ratings?lang=fr_FR`,
+    {
+      method: "POST",
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   let data;
 

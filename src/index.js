@@ -13,7 +13,7 @@ import { WebSocketMessagesContextController } from "./store/websocket-context";
 ReactDOM.render(
   <BrowserRouter>
     <AuthContextProvider>
-      <WebSocketMessagesContextController>
+      {/*<WebSocketMessagesContextController>*/}
         <JourneyRequestsContextProvider>
           <TransporterProposalsContextProvider>
             <ToastsContextProvider>
@@ -21,7 +21,7 @@ ReactDOM.render(
             </ToastsContextProvider>
           </TransporterProposalsContextProvider>
         </JourneyRequestsContextProvider>
-      </WebSocketMessagesContextController>
+      {/*</WebSocketMessagesContextController>*/}
     </AuthContextProvider>
   </BrowserRouter>,
 

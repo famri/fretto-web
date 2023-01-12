@@ -1,12 +1,14 @@
-const FRETTO_DOMAIN = "https://192.168.50.4:8443/wamya-backend";
 export async function sendUserContactForm(params) {
-  const response = await fetch(`${FRETTO_DOMAIN}/user-messages`, {
-    method: "POST",
-    body: JSON.stringify(params),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/user-messages`,
+    {
+      method: "POST",
+      body: JSON.stringify(params),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   let data;
 
