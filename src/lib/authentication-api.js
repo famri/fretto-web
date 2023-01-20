@@ -41,11 +41,10 @@ export async function signup(signupParams) {
   const token = signupResponseData.access_token;
 
   const checkTokenResponse = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${OAUTH_BACKEND}/realms/fretto/protocol/openid-connect/userinfo`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${OAUTH_BACKEND}/userinfo`,
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Bearer ${token}`,
       },
     }
@@ -74,7 +73,7 @@ export async function signup(signupParams) {
     expiresInSec: signupResponseData.expires_in,
     sub: checkTokenData.email,
     oauthId: checkTokenData.sub,
-    isClient: checkTokenData.authorities.includes("ROLE_CLIENT"),
+    isClient: checkTokenData.roles.includes("CLIENT"),
   };
 }
 
@@ -111,9 +110,13 @@ export async function signin(signinData) {
   const token = signinResponseData.access_token;
 
   const checkTokenResponse = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${OAUTH_BACKEND}/check_token?token=${token}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${OAUTH_BACKEND}/userinfo`,
     {
-      method: "POST",
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     }
   );
 
@@ -136,8 +139,8 @@ export async function signin(signinData) {
   return {
     token: signinResponseData.access_token,
     expiresInSec: signinResponseData.expires_in,
-    sub: checkTokenData.sub,
-    oauthId: checkTokenData.user_id,
-    isClient: checkTokenData.authorities.includes("ROLE_CLIENT"),
+    sub: checkTokenData.email,
+    oauthId: checkTokenData.sub,
+    isClient: checkTokenData.roles.includes("CLIENT"),
   };
 }
