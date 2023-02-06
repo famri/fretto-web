@@ -32,7 +32,7 @@ export async function loadProfileInfo(params) {
 
 export async function updateAboutSection(params) {
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/profiles/me/about`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/profiles/me/about`,
     {
       method: "PATCH",
       headers: {
@@ -69,7 +69,7 @@ export async function updateAboutSection(params) {
 
 export async function updateEmailSection(params) {
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/profiles/me/email`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/profiles/me/email`,
     {
       method: "PATCH",
       headers: {
@@ -107,7 +107,7 @@ export async function updateEmailSection(params) {
 
 export async function updateMobileSection(params) {
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/profiles/me/mobile`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/profiles/me/mobile`,
     {
       method: "PATCH",
       headers: {
@@ -144,7 +144,7 @@ export async function updateProfileImage(params) {
   formData.append("image", params.image);
 
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/profiles/me/avatars`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/profiles/me/avatars`,
     {
       method: "POST",
       headers: {
@@ -177,7 +177,7 @@ export async function uploadIdentityFile(params) {
   formData.append("document", params.document);
 
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/identities`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/users/me/identities`,
     {
       method: "POST",
       headers: {
@@ -207,7 +207,7 @@ export async function uploadIdentityFile(params) {
 
 export async function sendEmailValidationLink(params) {
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/validation-codes/email/send?lang=${params.locale}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/validation-codes/email/send?lang=${params.locale}`,
     {
       method: "POST",
       headers: {
@@ -240,7 +240,7 @@ export async function sendEmailValidationLink(params) {
 
 export async function sendMobileValidationCode(params) {
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/validation-codes/sms/send?lang=${params.locale}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/validation-codes/sms/send?lang=${params.locale}`,
     {
       method: "POST",
       headers: {
@@ -274,7 +274,7 @@ export async function sendMobileValidationCode(params) {
 
 export async function validateMobileValidationCode(params) {
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/validation-codes/sms/validate`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/validation-codes/sms/validate`,
     {
       method: "POST",
       headers: {

@@ -1,6 +1,6 @@
 export async function loadTransporterVehicules(params) {
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/users/me/vehicules?&sort=${params.sort}&lang=${params.lang}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/users/me/vehicles?&sort=${params.sort}&lang=${params.lang}`,
     {
       method: "GET",
       headers: {

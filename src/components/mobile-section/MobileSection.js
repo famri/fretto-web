@@ -12,7 +12,7 @@ import ErrorModal from "../modal/ErrorModal";
 import classes from "./MobileSection.module.css";
 
 const validatePhone = (phoneNumber) => {
-  const phonePattern = /^[0-9]{8}$/;
+  const phonePattern = /^[0-9]{9,10}$/;
   return phonePattern.test(phoneNumber);
 };
 const iccReducer = (state, action) => {
@@ -91,7 +91,7 @@ const MobileSection = (props) => {
 
   const ICC_LIST = [
     { key: "", value: "Indicateur" },
-    { key: "1", value: "+216" },
+    { key: "1", value: "+33" },
   ];
   const handleSave = () => {
     dispatchIcc({ type: "INPUT_VALIDATION" });

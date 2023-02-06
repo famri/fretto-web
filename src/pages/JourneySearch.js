@@ -23,7 +23,7 @@ import { fetchEngineTypes } from "../lib/engine-types-api";
 import { sendProposal } from "../lib/journey-proposals-api";
 import { searchJourneyRequests } from "../lib/journey-requests-api";
 import { fetchDepartments } from "../lib/places-api";
-import { loadTransporterVehicules } from "../lib/vehicules-api";
+import { loadTransporterVehicules } from "../lib/vehicles-api";
 import AuthContext from "../store/auth-context";
 import classes from "./JourneySearch.module.css";
 

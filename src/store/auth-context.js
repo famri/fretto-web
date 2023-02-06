@@ -47,14 +47,6 @@ export const AuthContextProvider = (props) => {
     date += expiresInSec * 1000;
     const expiryDate = new Date(date);
 
-    setAuthState({
-      token: token,
-      expiryDate: expiryDate,
-      sub: sub,
-      oauthId: oauthId,
-      isClient: isClient,
-    });
-
     localStorage.setItem(
       FRETTO_AUTH,
       JSON.stringify({
@@ -65,6 +57,15 @@ export const AuthContextProvider = (props) => {
         isClient: isClient,
       })
     );
+    
+    setAuthState({
+      token: token,
+      expiryDate: expiryDate,
+      sub: sub,
+      oauthId: oauthId,
+      isClient: isClient,
+    });
+
     setTimeout(() => logoutHandler(), expiresInSec * 1000);
   };
 

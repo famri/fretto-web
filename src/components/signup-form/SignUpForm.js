@@ -206,6 +206,7 @@ const passwordReducer = (state, action) => {
 };
 
 const SignUpForm = (props) => {
+
   const {
     sendRequest: fetchGendersRequest,
     data: gendersData,
@@ -391,18 +392,20 @@ const SignUpForm = (props) => {
       checkedTos &&
       checkedNewsletter
     ) {
-      props.onSignup({
-        isTransporter: isTransporter,
-        genderId: genderState.val,
-        firstname: firstnameState.val,
-        lastname: lastnameState.val,
-        dateOfBirth: birthDateState.val,
-        email: emailState.val,
-        icc: iccState.val,
-        mobileNumber: phoneState.val,
-        userPassword: passwordState.val,
-        receiveNewsletter: checkedNewsletter,
-      });
+      props.onSignup(
+        {
+          isTransporter: isTransporter,
+          genderId: genderState.val,
+          firstname: firstnameState.val,
+          lastname: lastnameState.val,
+          dateOfBirth: birthDateState.val,
+          email: emailState.val,
+          icc: iccState.val,
+          mobileNumber: phoneState.val,
+          userPassword: passwordState.val,
+          receiveNewsletter: checkedNewsletter,
+        }
+      );
     }
   };
 
@@ -655,8 +658,8 @@ const SignUpForm = (props) => {
               <Form.Check.Label>
                 J'accepte les <Link to="/tos">conditions d'utilisation</Link> et
                 la{" "}
-                <Link to="/privacy-policy">politique de confidentialité</Link>
-                {" "}du service Fretto.
+                <Link to="/privacy-policy">politique de confidentialité</Link>{" "}
+                du service Fretto.
               </Form.Check.Label>
             </Form.Check>
           </Form.Group>

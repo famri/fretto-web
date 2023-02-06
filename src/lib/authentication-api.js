@@ -1,7 +1,11 @@
+import { createUserPreference } from "./user-preferences-api";
+
 const WAMYA_BACKEND = "wamya-backend";
 const OAUTH_BACKEND = "oauth";
 
 export async function signup(signupParams) {
+
+  // Signup user
   const signupResponse = await fetch(
     `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${WAMYA_BACKEND}/accounts?lang=fr_FR`,
     {
@@ -40,6 +44,7 @@ export async function signup(signupParams) {
 
   const token = signupResponseData.access_token;
 
+  // Check user token on userinfo endpoint 
   const checkTokenResponse = await fetch(
     `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/${OAUTH_BACKEND}/userinfo`,
     {
@@ -66,6 +71,20 @@ export async function signup(signupParams) {
         checkTokenData.errors.join(", ")) ||
         "Échec de la validation du token. Veuillez réessayer ou contacter le support si le problème persiste."
     );
+  }
+  // Save user timeZone and locale to server
+  const { timeZone, locale } = Intl.DateTimeFormat().resolvedOptions();
+
+  const timezonePreferenceSaved = await createUserPreference({
+    userPreference: { key: "timezone", value: timeZone },
+    token: signupResponseData.access_token,
+  });
+
+  if (timezonePreferenceSaved) {
+    await createUserPreference({
+      userPreference: { key: "locale", value: locale },
+      token: signupResponseData.access_token,
+    });
   }
 
   return {

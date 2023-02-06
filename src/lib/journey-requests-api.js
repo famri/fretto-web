@@ -34,7 +34,7 @@ export async function createJourneyRequest(params) {
 //${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/journey-requests/62
 export async function loadJourneyRequest(params) {
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/journey-requests/${params.journeyRequestId}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/users/me/journey-requests/${params.journeyRequestId}`,
     {
       method: "GET",
       headers: {
@@ -67,7 +67,7 @@ export async function loadJourneyRequest(params) {
 //${process.env.REACT_APP_HTTP_PROTOCOL}://192.168.50.4:8443/wamya-backend/users/me/journey-requests?period=m6&page=0&size=25&sort=date-time,desc&lang=fr_FR
 export async function loadJourneyRequests(params) {
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/users/me/journey-requests?period=${params.period}&page=${params.page}&size=${params.size}&sort=${params.sort}&lang=${params.lang}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/users/me/journey-requests?period=${params.period}&page=${params.page}&size=${params.size}&sort=${params.sort}&lang=${params.lang}`,
     {
       method: "GET",
       headers: {
@@ -108,7 +108,7 @@ export async function searchJourneyRequests(params) {
   console.log("EngineTypes ===> " + engineTypes);
 
   const response = await fetch(
-    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/journey-requests?departure=${params.departurePlaceId}&arrival=${arrivals}&fromDate=${params.startDate}&toDate=${params.endDate}&engine=${params.engineTypeIds}&page=${params.page}&size=${params.size}&sort=${params.sort}&lang=${params.lang}&statuses=${statuses}`,
+    `${process.env.REACT_APP_HTTP_PROTOCOL}://${process.env.REACT_APP_FRETTO_DOMAIN}/wamya-backend/journey-requests?departure=${params.departurePlaceId}&arrival=${arrivals}&fromDate=${params.startDate}&toDate=${params.endDate}&engine=${params.engineTypeIds}&page=${params.page}&size=${params.size}&sort=${params.sort}&lang=${params.lang}&statuses=${statuses}`,
     {
       method: "GET",
       headers: {

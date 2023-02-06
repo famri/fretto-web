@@ -28,5 +28,5 @@ export async function createUserPreference(params) {
     }
   }
 
-  return null;
+  return true;
 }
